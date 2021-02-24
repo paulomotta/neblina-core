@@ -2,20 +2,10 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <in>clutils.c</in>
-      <in>lex.yy.c</in>
-      <in>libneblina.c</in>
-      <in>neblina.tab.c</in>
-      <in>neblina_io.c</in>
-      <in>neblina_list.c</in>
-      <in>neblina_math.c</in>
-      <in>neblina_packages.c</in>
-      <in>neblina_std.c</in>
-      <in>neblina_str.c</in>
-      <in>neblina_sym.c</in>
-      <in>neblina_time.c</in>
-      <in>neblina_vm.c</in>
-      <in>package.c</in>
+      <df name="src">
+        <in>clutils.c</in>
+        <in>libneblina.c</in>
+      </df>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Arquivos Importantes"
@@ -63,59 +53,11 @@
           <preBuildCommand>./configure CC=${IDE_CC} CXX=${IDE_CXX} CFLAGS="-g3 -gdwarf-2" CXXFLAGS="-g3 -gdwarf-2"</preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="clutils.c" ex="false" tool="0" flavor2="0">
+      <item path="src/clutils.c" ex="false" tool="0" flavor2="0">
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="lex.yy.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="libneblina.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina.tab.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_io.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_list.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_math.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_packages.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_std.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_str.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_sym.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_time.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="neblina_vm.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <item path="package.c" ex="false" tool="0" flavor2="0">
+      <item path="src/libneblina.c" ex="false" tool="0" flavor2="0">
         <cTool flags="0">
         </cTool>
       </item>

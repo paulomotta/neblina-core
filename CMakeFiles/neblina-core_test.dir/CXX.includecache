@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/paulo/Documentos/pesquisa/quantum/neblina-core/test/neblina-core_test.cpp
+iostream
+-
+gtest/gtest.h
+/home/paulo/Documentos/pesquisa/quantum/neblina-core/test/gtest/gtest.h
+

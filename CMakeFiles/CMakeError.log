@@ -1,0 +1,61 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_100f7/fast && /usr/bin/gmake -f CMakeFiles/cmTC_100f7.dir/build.make CMakeFiles/cmTC_100f7.dir/build
+gmake[1]: Entering directory '/home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_100f7.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_100f7.dir/src.c.o   -c /home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_100f7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_100f7.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_100f7.dir/src.c.o  -o cmTC_100f7 
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: CMakeFiles/cmTC_100f7.dir/src.c.o: na função "main":
+src.c:(.text+0x2d): referência não definida para "pthread_create"
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: src.c:(.text+0x39): referência não definida para "pthread_detach"
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: src.c:(.text+0x45): referência não definida para "pthread_cancel"
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: src.c:(.text+0x56): referência não definida para "pthread_join"
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: src.c:(.text+0x6a): referência não definida para "pthread_atfork"
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_100f7.dir/build.make:104: cmTC_100f7] Error 1
+gmake[1]: Leaving directory '/home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:138: cmTC_100f7/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_ba71e/fast && /usr/bin/gmake -f CMakeFiles/cmTC_ba71e.dir/build.make CMakeFiles/cmTC_ba71e.dir/build
+gmake[1]: Entering directory '/home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ba71e.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_ba71e.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ba71e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ba71e.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_ba71e.dir/CheckFunctionExists.c.o  -o cmTC_ba71e  -lpthreads 
+/usr/lib64/gcc/x86_64-suse-linux/7/../../../../x86_64-suse-linux/bin/ld: não foi possível localizar -lpthreads
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_ba71e.dir/build.make:104: cmTC_ba71e] Error 1
+gmake[1]: Leaving directory '/home/paulo/Documentos/pesquisa/quantum/neblina-core/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:138: cmTC_ba71e/fast] Error 2
+
+
+

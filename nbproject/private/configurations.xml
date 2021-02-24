@@ -2,47 +2,32 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name=".deps">
+      <df name="dist">
+        <df name="include">
+        </df>
       </df>
-      <df name="CL">
-        <in>cl.h</in>
-        <in>cl.hpp</in>
-        <in>cl_ext.h</in>
-        <in>cl_gl.h</in>
-        <in>cl_gl_ext.h</in>
-        <in>cl_platform.h</in>
-        <in>opencl.h</in>
+      <df name="include">
+        <df name="CL">
+          <in>cl.h</in>
+          <in>cl.hpp</in>
+          <in>cl_ext.h</in>
+          <in>cl_gl.h</in>
+          <in>cl_gl_ext.h</in>
+          <in>cl_platform.h</in>
+          <in>opencl.h</in>
+        </df>
+        <in>clutils.h</in>
+        <in>libneblina.h</in>
+        <in>neblina.h</in>
+        <in>oclvector.h</in>
       </df>
-      <in>clutils.c</in>
-      <in>clutils.h</in>
-      <in>config.h</in>
-      <in>lex.yy.c</in>
-      <in>libneblina.c</in>
-      <in>libneblina.h</in>
-      <in>neblina.h</in>
-      <in>neblina.tab.c</in>
-      <in>neblina.tab.h</in>
-      <in>neblina_io.c</in>
-      <in>neblina_io.h</in>
-      <in>neblina_list.c</in>
-      <in>neblina_list.h</in>
-      <in>neblina_math.c</in>
-      <in>neblina_math.h</in>
-      <in>neblina_packages.c</in>
-      <in>neblina_packages.h</in>
-      <in>neblina_std.c</in>
-      <in>neblina_std.h</in>
-      <in>neblina_str.c</in>
-      <in>neblina_str.h</in>
-      <in>neblina_sym.c</in>
-      <in>neblina_sym.h</in>
-      <in>neblina_time.c</in>
-      <in>neblina_time.h</in>
-      <in>neblina_vm.c</in>
-      <in>neblina_vm.h</in>
-      <in>oclvector.h</in>
-      <in>package.c</in>
-      <in>package.h</in>
+      <df name="src">
+        <in>clutils.c</in>
+        <in>libneblina.c</in>
+      </df>
+      <df name="test">
+        <in>neblina-core_test.cpp</in>
+      </df>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
