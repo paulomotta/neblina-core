@@ -6,6 +6,9 @@
         <in>clutils.c</in>
         <in>libneblina.c</in>
       </df>
+      <df name="test">
+        <in>neblina-core_test.cpp</in>
+      </df>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Arquivos Importantes"
@@ -29,7 +32,7 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-O5"/>
+        <element flagsID="0" commonFlags="-fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -41,12 +44,21 @@
           <executablePath>neblina</executablePath>
           <cTool>
             <incDir>
+              <pElem>include</pElem>
+              <pElem>..</pElem>
               <pElem>.</pElem>
             </incDir>
             <preprocessorList>
-              <Elem>HAVE_CONFIG_H</Elem>
+              <Elem>neblina_core_EXPORTS</Elem>
             </preprocessorList>
           </cTool>
+          <ccTool>
+            <incDir>
+              <pElem>include</pElem>
+              <pElem>..</pElem>
+              <pElem>.</pElem>
+            </incDir>
+          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
@@ -60,6 +72,8 @@
       <item path="src/libneblina.c" ex="false" tool="0" flavor2="0">
         <cTool flags="0">
         </cTool>
+      </item>
+      <item path="test/neblina-core_test.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

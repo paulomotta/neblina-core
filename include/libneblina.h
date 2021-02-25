@@ -1,7 +1,13 @@
 #ifndef __LIBNEBLINA_H_
 #define __LIBNEBLINA_H_
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+    
+
 #include "neblina.h"
-#include "clutils.h"
+//#include "clutils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,6 +61,12 @@ void matreqhost( matrix_t * v );
 void matreqdev ( matrix_t * v );
 void smatreqhost( smatrix_t * v ) ;
 void smatreqdev ( smatrix_t * v );
+
+
+#ifdef	__cplusplus
+}
+#endif
+
 #endif
 
 

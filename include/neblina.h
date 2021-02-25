@@ -1,7 +1,11 @@
 #ifndef __NEBLINA_H__
 #define __NEBLINA_H__
 
-#include "CL/cl.h"
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+#include "CL/opencl.h"
 #include "clutils.h"
 #define SYM_NO_ERROR             0x000000
 #define SYM_ALREADY_IN_TABLE     0x000001
@@ -196,6 +200,8 @@ typedef struct __std_list {
 #define evalue(v)  ((v).value.e)
 
 
-
+#ifdef	__cplusplus
+}
+#endif
 
 #endif

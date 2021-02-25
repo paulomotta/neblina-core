@@ -1,6 +1,6 @@
 #include "libneblina.h"
-#include "neblina.h"
-#include "clutils.h"
+//#include "neblina.h"
+//#include "clutils.h"
 #include <stdio.h>
 #include <stdlib.h>
 void ord_smat( double * m, int * idx, int max, int N ) {

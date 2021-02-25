@@ -1,6 +1,10 @@
 #ifndef ____cl_utils
 #define ____cl_utils
-#include "CL/cl.h"
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+#include "CL/opencl.h"
 
 #define DEBUGCL  0
 #define NKERNELS 27
@@ -52,8 +56,8 @@ typedef struct __cl_info {
     cl_uint           fp64;                    
 } cl_info;
 
-extern cl_device_type  proctype;
-extern int             id_device;
+cl_device_type  proctype;
+int            id_device;
 
 cl_info clinfo;
 cl_kernel clkernels[NKERNELS];
@@ -113,5 +117,9 @@ void InitCLEngine();
         barrier(CLK_LOCAL_MEM_FENCE); \n \
 	} \n \
 }" 
+
+ #ifdef	__cplusplus
+}
+#endif
 
 #endif
