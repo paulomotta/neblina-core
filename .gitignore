@@ -1,1 +1,6 @@
 /dist/
+*.o
+neblina-core_test
+*.cmake
+*.make
+*.so

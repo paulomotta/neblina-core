@@ -5,17 +5,18 @@
 #include <CL/opencl.h>
 #include <math.h>
 #include "clutils.h"
+#include "neblina.h"
 
-extern cl_info clinfo;
-extern cl_kernel clkernels[NKERNELS];
+//extern cl_info clinfo;
+//extern cl_kernel clkernels[NKERNELS];
 
 double * addVector( double * v1, double * v2, int n ) {
     cl_int status;
     cl_mem v1Dev, v2Dev, outDev;
     double * out = (double *) malloc( n * sizeof(double) );
     cl_kernel kernel = clkernels[KERVETADD];
-    CLERR
-    outDev = clCreateBuffer (clinfo.c, CL_MEM_WRITE_ONLY, n*sizeof(double), NULL, &status);
+    //CLERR
+    outDev = clCreateBuffer (clinfo.c, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, n*sizeof(double), out, &status);
     CLERR    
     v1Dev = clCreateBuffer (clinfo.c, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, n*sizeof(double), v1, &status);
     CLERR

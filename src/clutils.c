@@ -383,6 +383,8 @@ void ReleaseCLInfo( cl_info info ) {
 
 void InitCLEngine() {
     cl_int status;
+    proctype = CL_DEVICE_TYPE_ALL;
+    id_device = 0;
     if( nkernelsRmat == 0 )
         clinfo = GetCLInfo("/etc/neblina/vector.cl");
     else

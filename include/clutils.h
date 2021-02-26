@@ -56,8 +56,8 @@ typedef struct __cl_info {
     cl_uint           fp64;                    
 } cl_info;
 
-cl_device_type  proctype;
-int            id_device;
+cl_device_type proctype;
+int id_device;
 
 cl_info clinfo;
 cl_kernel clkernels[NKERNELS];
