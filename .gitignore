@@ -4,5 +4,9 @@ neblina-core_test
 *.cmake
 *.make
 *.so
-CMakeCache.txt
+/CMakeCache.txt
+/CTestTestfile.cmake
 *.log
+/Testing/Temporary/CTestCostData.txt
+/Testing/Temporary/*.log
+
