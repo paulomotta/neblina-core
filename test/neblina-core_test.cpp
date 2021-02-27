@@ -40,19 +40,22 @@ int main() {
     //GetCLInfo("/etc/neblina/vector.cl");
     std::cin.get();
     showDevicesList();
-    int n = 3;
+    int n = 3000;
     double * v1 = (double *) malloc( n * sizeof(double) );
     double * v2 = (double *) malloc( n * sizeof(double) );
     double * res = (double *) malloc( n * sizeof(double) );
     
-    v1[0]=1.;
-    v1[1]=2.;
-    v1[2]=3.;
-    v2[0]=3.;
-    v2[1]=2.;
-    v2[2]=1.;
-    
+    for (int i=0; i < n; ++i){
+        v1[i]=1.;
+        v2[i]=1.;
+    }
+      
     res = addVector( v1, v2, n );
     
+    for (int i=0; i < n; ++i){
+        printf("res[%d]=%f\n",i,res[i]);
+    }
+    
+    ReleaseCLInfo(clinfo);
     return 0;
 }

@@ -187,6 +187,9 @@ char* filetobuf(char *file)
 }
 
 cl_info GetCLInfo( char * filename ) {
+    
+    #define DEBUGCL
+
     cl_int status;
     cl_uint numPlatforms;
     cl_uint num_compute_units;
@@ -215,7 +218,7 @@ cl_info GetCLInfo( char * filename ) {
     for (iplatform=0; iplatform < numPlatforms && findDevice == 0; iplatform++)
     {
         currentPlatform = allPlatforms[iplatform];
-        #if DEBUGCL
+#ifdef DEBUGCL
             // query more detailed info about current platfor
 
 
@@ -253,7 +256,7 @@ cl_info GetCLInfo( char * filename ) {
               CLERR
             }
         }*/
-        #if DEBUGCL
+#ifdef DEBUGCL
         printf ("Number of devices in this platform that match specified type: %d\n", numDevices);
         #endif
         // get information of all devices available on current platform
@@ -279,7 +282,7 @@ cl_info GetCLInfo( char * filename ) {
         fprintf (stderr, "Neblina OpenCL runtime error: No matching device found! \n");
         exit( -1);
     }    
-    #if DEBUGCL
+#ifdef DEBUGCL
     // print out some information on the device we'll be using.
     // Check OpenCL documentation for all supported parameters (there's a lot of them)
     char name[100];
@@ -335,6 +338,7 @@ cl_info GetCLInfo( char * filename ) {
     else
         info.fp64 = 0;
     //printf("FP64 ENABLE: %d %d\n", info.fp64, fp_config  );
+#undef DEBUGCL
     return info; 
 }
 

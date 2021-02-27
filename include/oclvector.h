@@ -31,6 +31,10 @@ double * addVector( double * v1, double * v2, int n ) {
     size_t globalWorkSize = n;
     status = clEnqueueNDRangeKernel(clinfo.q, kernel, 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
     CLERR
+            
+    status = clEnqueueReadBuffer(clinfo.q, outDev, CL_TRUE, 0, n*sizeof(double), out, 0, NULL, NULL);
+    CLERR
+
     status = clFinish(clinfo.q);
     return out;
 }

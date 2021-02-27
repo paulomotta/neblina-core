@@ -4,3 +4,5 @@ neblina-core_test
 *.cmake
 *.make
 *.so
+CMakeCache.txt
+*.log
