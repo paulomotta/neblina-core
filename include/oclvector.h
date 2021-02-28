@@ -7,8 +7,6 @@
 #include "clutils.h"
 #include "neblina.h"
 
-//extern cl_info clinfo;
-//extern cl_kernel clkernels[NKERNELS];
 
 double * addVector( double * v1, double * v2, int n ) {
     cl_int status;
