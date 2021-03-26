@@ -390,9 +390,9 @@ void InitCLEngine() {
     proctype = CL_DEVICE_TYPE_ALL;
     id_device = 0;
     if( nkernelsRmat == 0 )
-        clinfo = GetCLInfo("/etc/neblina/vector.cl");
+        clinfo = GetCLInfo("./include/vector.cl");
     else
-        rebuildProgram("/etc/neblina/vector.cl");    
+        rebuildProgram("./include/vector.cl");    
     int ii;
     for(ii=0;ii<32;ii++)
         rmatstat[ii] = 0;
