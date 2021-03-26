@@ -14,6 +14,7 @@ extern "C" {
 
 #define ivget(vet,i) ((vet).value.i[i-1])
 #define fvget(vet,i) ((vet).value.i[i-1])
+#define COMPLEX_SIZE (2 * sizeof(double))
 
 typedef struct __slist {
     int col;
