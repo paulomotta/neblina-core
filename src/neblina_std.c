@@ -88,23 +88,12 @@ void ** vec_len( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vecreqdev( a ); vecreqdev( b ); 
-        int ii = 0;
-        object_t * out = (object_t *) malloc( sizeof( object_t ) );
-        vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        r->value.f = (double *) malloc( b->len * sizeof(double) );
+        vector_t * r = vector_new(b->len, T_FLOAT);
+        vecreqdev( a ); vecreqdev( b ); vecreqdev( r ); 
        
         r->mem = addVectorF( a->mem, b->mem, b->len ); 
         
-        
-        r->len = b->len;
-        r->type = T_FLOAT;
-        r->location = LOCDEV;
-        type( *out ) = T_VECTOR;
-        vvalue( *out ) = (void *) r;
-        static void * ret[1];
-        ret[0] = (void *) out;
-        return ret;
+        return (void *) r;
 }
 
  void ** vec_conj( void ** i, int * status ) {
