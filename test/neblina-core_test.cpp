@@ -91,11 +91,7 @@ TEST_F(NeblinaCoreFixture, vec_add) {
         b->value.f[i] = 1.;
     }
     
-    object_t * in[2]; 
-    object_t o; vvalue( o ) = a; o.type = T_VECTOR;
-    in[0] = &o; 
-    object_t p; vvalue( p ) = b; p.type = T_VECTOR;
-    in[1] = &p; 
+    object_t ** in = convertToObject(a,b);
     
     r = (vector_t *) vec_add((void **) in, NULL );
 
