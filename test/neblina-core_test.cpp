@@ -105,6 +105,34 @@ TEST_F(NeblinaCoreFixture, vec_add) {
 
 }
 
+TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
+
+    int n = 3;
+    
+    vector_t * a = vector_new(n, T_FLOAT);
+    vector_t * b = vector_new(n, T_FLOAT);
+    vector_t * r;
+    vector_t * out = vector_new(n, T_FLOAT);
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+        b->value.f[i] = 2.;
+    }
+    
+    object_t ** in = convertToObject(a,b);
+    
+    r = (vector_t *) vec_prod((void **) in, NULL );
+
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
+    CLERR
+    EXPECT_EQ(0, status);
+
+    for (int i = 0; i < n; ++i) {
+        EXPECT_EQ(4., out->value.f[i]);
+    }
+
+}
+
 TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     int n = 3;
