@@ -170,12 +170,14 @@ void ** vec_len( void ** i, int * status ) {
         r->len = b->len;
         r->type = a->type;
         r->location = LOCDEV;
-        type( out ) = T_VECTOR;
-        vvalue( out ) = (void *) r;
-        static void * ret[1];
-        ret[0] = (void *) &out;
+        
         clear_input( i, 2 );
-        return ret;
+        return (void *) r;
+//        type( out ) = T_VECTOR;
+//        vvalue( out ) = (void *) r;
+//        static void * ret[1];
+//        ret[0] = (void *) &out;
+//        return ret;
 }
 
  void ** vec_sum( void ** i, int * status ) {
