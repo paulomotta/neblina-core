@@ -3,10 +3,11 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
+
+#include "neblina.h"
 #define new_str(i) (char *) malloc( sizeof(char)*(i))
 
-
+ object_t ** convertToObject(vector_t * a, vector_t * b);
 
  void ** neblina_type   ( void ** i, int * status );
  void ** vec_len        ( void ** i, int * status );
