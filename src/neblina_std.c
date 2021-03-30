@@ -1246,30 +1246,33 @@ void ** init ( void ** i, int * status ) {
     return ret;
 }*/
 
+ object_t ** convertToObject2(int n, vector_t * a) {
+    object_t ** in;
+    in = (object_t **) malloc(2 * sizeof(object_t *));
+
+    in[0] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[0] ) = n; in[0]->type = T_INT;
+
+    in[1] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[1] ) = a; in[1]->type = T_VECTOR;
+    
+    return in;
+ }
 
  void ** vec_add_off    ( void ** i, int * status ) {
     
         object_t ** in = (object_t **) i;
         int offset = ivalue( *in[0] );
-        //printf("Off = %d\n", offset ); 
         vector_t * a = (vector_t *) vvalue( *in[1] );
         int parts = a->len / offset;
-        vecreqdev( a );
-        object_t out; 
-        vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        r->value.f = (double *) malloc( offset * sizeof(double) );
-       
-        r->mem = vecAddOff( a->mem, offset, parts ); 
         
-        r->len = offset;
-        r->type = T_FLOAT;
-        r->location = LOCDEV;
-        type( out ) = T_VECTOR;
-        vvalue( out ) = (void *) r;
-        clear_input(i,2);    
-        static void * ret[1];
-        ret[0] = (void *) &out;
-        return ret;
+        vector_t * r = vector_new(offset, T_FLOAT);
+        vecreqdev( a ); vecreqdev( r );
+
+        r->mem = vecAddOff( a->mem, offset, parts ); 
+
+        clear_input( i, 2 );
+        return (void *) r;
 }
 
  void ** vec_add_off2   ( void ** i, int * status ) {
