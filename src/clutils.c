@@ -187,15 +187,13 @@ char* filetobuf(char *file)
 }
 
 cl_info GetCLInfo( char * filename ) {
-    
-    #define DEBUGCL
-
+    #undef DEBUGCL
     cl_int status;
     cl_uint numPlatforms;
     cl_uint num_compute_units;
     int k = 0;    
     status = clGetPlatformIDs (0, NULL, &numPlatforms);
-    printf("%u",numPlatforms);
+    //printf("%u",numPlatforms);
     CLERR
     cl_device_type targetDeviceType = proctype;
     int id = 0;
@@ -239,7 +237,7 @@ cl_info GetCLInfo( char * filename ) {
             printf (" Vendor: %s\n", vendor);
             printf ("Version: %s\n", version);
             printf ("Profile: %s\n", profile);
-        #endif
+#endif
         // get number of devices available on current platform that match target type
         cl_uint numDevices;
         status = clGetDeviceIDs (currentPlatform, CL_DEVICE_TYPE_ALL, 0, NULL, &numDevices);
@@ -258,7 +256,7 @@ cl_info GetCLInfo( char * filename ) {
         }*/
 #ifdef DEBUGCL
         printf ("Number of devices in this platform that match specified type: %d\n", numDevices);
-        #endif
+#endif
         // get information of all devices available on current platform
         if (numDevices > 0)
         {
@@ -290,7 +288,7 @@ cl_info GetCLInfo( char * filename ) {
     checkErrors (status, "clGetDeviceInfo", __LINE__);
     printf ("Matching device found:\n");
     printf ("--------------> Name: %s\n", name);
-    #endif
+#endif
     
     cl_device_fp_config fp_config;
     clGetDeviceInfo(currentDevice, CL_DEVICE_DOUBLE_FP_CONFIG, sizeof(fp_config), &fp_config, NULL);
@@ -471,12 +469,12 @@ void showDevicesList() {
     cl_uint num_compute_units;
     int k = 0;    
     status = clGetPlatformIDs (0, NULL, &numPlatforms);
-    printf("%u",numPlatforms);
+    //printf("%u",numPlatforms);
     if (status == CL_SUCCESS) {
-        printf("Success. Platforms available: %u", numPlatforms);
+        //printf("Success. Platforms available: %u", numPlatforms);
                 
     } else {
-        printf("Error. Platforms available: %u", numPlatforms);
+        //printf("Error. Platforms available: %u", numPlatforms);
     }
 //    platforms = (cl_platform_id*) malloc(sizeof(cl_platform_id) * platformCount);
 //    clGetPlatformIDs(platformCount, platforms, NULL);
