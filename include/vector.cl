@@ -26,8 +26,8 @@ __kernel void addVector( __global real * out, __global const real * v1, __global
 
 __kernel void addVectorComplex( __global real * out, __global const real * v1, __global const real * v2 ) {
     int i = get_global_id(0);
-    out[i] = v1[i] + v2[i];
-    out[i+1] = v1[i+1] + v2[i+1];
+    out[2*i] = v1[2*i] + v2[2*i];
+    out[2*i+1] = v1[2*i+1] + v2[2*i+1];
 }
 
 __kernel void subVector( __global real * out, __global const real * v1, __global const real * v2 ) {
@@ -437,7 +437,8 @@ __kernel void prodVector( __global real * out, __global const real * v1, __globa
 
 __kernel void prodComplexVector( __global real * out, __global const real * v1, __global const real * v2 ) {
     int i = get_global_id(0);
-    int idx_re = 2*i, idx_im = 2*i+1;
+    int idx_re = 2*i;
+    int idx_im = 2*i+1;
     out[idx_re]  = v1[idx_re] * v2[idx_re] - v1[idx_im] * v2[idx_im];
     out[idx_im]  = v1[idx_re] * v2[idx_im] + v1[idx_im] * v2[idx_re];
 }
