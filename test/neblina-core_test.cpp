@@ -191,6 +191,32 @@ TEST_F(NeblinaCoreFixture, vec_conj) {
 
 }
 
+TEST_F(NeblinaCoreFixture, vec_add_off) {
+
+    int n = 4;
+    
+    vector_t * a = vector_new(n, T_FLOAT);
+    vector_t * r;
+    vector_t * out = vector_new(n, T_FLOAT);
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+    }
+    int offset = 2;
+    object_t ** in = convertToObject2(offset, a);
+    
+    r = (vector_t *) vec_add_off((void **) in, NULL );
+
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, offset * sizeof (double), out->value.f, 0, NULL, NULL);
+    CLERR
+    EXPECT_EQ(0, status);
+
+    for (int i = 0; i < offset; ++i) {
+        EXPECT_EQ(4., out->value.f[i]);
+    }
+
+}
+
 TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     int n = 3;
