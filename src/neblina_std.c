@@ -163,7 +163,7 @@ void ** vec_len( void ** i, int * status ) {
             r->value.f = (double *) malloc( b->len * sizeof(double) );
             r->mem = prodVector( a->mem, b->mem, b->len ); 
         } else {
-            r->value.f = (double *) malloc( 2 * b->len * sizeof(double) );
+            r->value.f = (double *) malloc( b->len * COMPLEX_SIZE );
             r->mem = prodComplexVector( a->mem, b->mem, b->len ); 
         }
 
