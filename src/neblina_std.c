@@ -114,21 +114,13 @@ void ** vec_len( void ** i, int * status ) {
  void ** vec_conj( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
-        object_t out;
-        vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        vecreqdev( a );
-        r->value.f = (double *) malloc( a->len * sizeof(double) );
+        vector_t * r = vector_new(a->len, T_FLOAT);
+        vecreqdev( a ); vecreqdev( r );
+
         r->mem = vecConj( a->mem, a->len ); 
     
-        r->len = a->len;
-        r->type = T_FLOAT;
-        r->location = LOCDEV;
-        type( out ) = T_VECTOR;
-        vvalue( out ) = (void *) r;
-        static void * ret[1];
-        ret[0] = (void *) &out;
         clear_input( i, 1 );
-        return ret;
+        return (void *) r;
 }
  void ** vec_conjugate( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
