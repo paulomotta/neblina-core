@@ -5,6 +5,7 @@
 #include <CL/opencl.h>
 #include <math.h>
 #include "clutils.h"
+#include "libneblina.h"
 #include "neblina.h"
 
 
@@ -210,7 +211,7 @@ cl_mem prodComplexVector(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     cl_int status;
     cl_mem outDev;
     cl_kernel kernel = clkernels[KERVETCOMPLEXPROD];
-    outDev = clCreateBuffer(clinfo.c, CL_MEM_WRITE_ONLY, n*sizeof(double), NULL, &status);
+    outDev = clCreateBuffer(clinfo.c, CL_MEM_WRITE_ONLY, n * COMPLEX_SIZE, NULL, &status);
     CLERR    
     status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);
     CLERR
