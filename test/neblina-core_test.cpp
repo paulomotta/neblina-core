@@ -20,11 +20,11 @@ public:
     void SetUp() {
         err = clGetPlatformIDs(0, NULL, &num_platforms);
         if (err == CL_SUCCESS) {
-            std::cout << "Success. Platforms available: " << num_platforms
-                    << std::endl;
+            //std::cout << "Success. Platforms available: " << num_platforms
+            //        << std::endl;
         } else {
-            std::cout << "Error. Platforms available: " << num_platforms
-                    << std::endl;
+            //std::cout << "Error. Platforms available: " << num_platforms
+            //        << std::endl;
         }
 
         InitCLEngine();
@@ -133,6 +133,37 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
 
 }
 
+TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
+
+    int n = 3;
+    
+    vector_t * a = vector_new(n, T_COMPLEX);
+    vector_t * b = vector_new(n, T_COMPLEX);
+    vector_t * r;
+    vector_t * out = vector_new(n, T_COMPLEX);
+
+    for (int i = 0; i < 2*a->len; i+=2) {
+        a->value.f[i] = 2.;
+        a->value.f[i+1] = 2.;
+        b->value.f[i] = 2.;
+        b->value.f[i+1] = 2.;
+    }
+    
+    object_t ** in = convertToObject(a,b);
+    
+    r = (vector_t *) vec_prod((void **) in, NULL );
+
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
+    CLERR
+    EXPECT_EQ(0, status);
+
+    for (int i = 0; i < 2*a->len; i+=2) {
+        EXPECT_EQ(0., out->value.f[i]);
+        EXPECT_EQ(8., out->value.f[i+1]);
+    }
+
+}
+
 TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     int n = 3;
@@ -143,7 +174,7 @@ TEST_F(NeblinaCoreFixture, addVectorFC) {
     vector_t * r = vector_new(n, T_COMPLEX);
     
 
-    for (int i = 0; i < a->len; i++) {
+    for (int i = 0; i < 2*a->len; i+=2) {
         a->value.f[i] = 1.;
         a->value.f[i+1] = 1.;
         b->value.f[i] = 1.;
@@ -162,7 +193,7 @@ TEST_F(NeblinaCoreFixture, addVectorFC) {
     CLERR
     EXPECT_EQ(0, status);
 
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < 2*a->len; i+=2) {
         EXPECT_EQ(2., out[i]);
         EXPECT_EQ(2., out[i+1]);
     }
