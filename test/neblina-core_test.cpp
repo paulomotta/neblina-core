@@ -164,6 +164,39 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
 
 }
 
+TEST_F(NeblinaCoreFixture, matvec_mul3_WithFloat) {
+
+    int n = 3;
+    
+    vector_t * a = vector_new(n, T_FLOAT);
+    matrix_t * b = matrix_new( n, n, T_FLOAT ); 
+    vector_t * r;
+    vector_t * out = vector_new(n, T_FLOAT);
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+    }
+    
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            b->value.f[i*b->ncol + j] = 3.;
+        }
+    }
+    
+    object_t ** in = convertToObject3(a,b);
+    
+    r = (vector_t *) matvec_mul3((void **) in, NULL );
+
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof(double), out->value.f, 0, NULL, NULL);
+    CLERR
+    EXPECT_EQ(0, status);
+
+    for (int i = 0; i < a->len; i++) {
+        EXPECT_EQ(18., out->value.f[i]);
+    }
+
+}
+
 TEST_F(NeblinaCoreFixture, vec_conj) {
 
     int n = 3;
