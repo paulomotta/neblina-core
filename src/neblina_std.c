@@ -175,14 +175,13 @@ void ** vec_len( void ** i, int * status ) {
  void ** vec_sum( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
-        object_t  out;
+        object_t * out = (object_t *) malloc(sizeof(object_t *));
+        
         vecreqdev( a );
-        fvalue( out ) = sumVector( a->mem, a->len );
-        type( out ) = T_FLOAT;
+        out->value.f = sumVector( a->mem, a->len );
+        out->type  = T_FLOAT;
         clear_input( i, 1 );        
-        static void * ret[1];
-        ret[0] = (void *) &out;
-        return ret;
+        return (void *) out;
 }
 
  void ** vec_norm( void ** i, int * status ) {
