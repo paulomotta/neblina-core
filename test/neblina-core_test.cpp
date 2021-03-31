@@ -217,6 +217,25 @@ TEST_F(NeblinaCoreFixture, vec_add_off) {
 
 }
 
+TEST_F(NeblinaCoreFixture, vec_sum) {
+
+    int n = 4;
+    
+    vector_t * a = vector_new(n, T_FLOAT);
+    object_t * r;
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+    }
+
+    object_t ** in = convertToObject(a, NULL);
+    
+    r = (object_t *) vec_sum((void **) in, NULL );
+
+    EXPECT_EQ(8., r->value.f);
+
+}
+
 TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     int n = 3;
