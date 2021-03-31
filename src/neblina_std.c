@@ -83,7 +83,8 @@ void ** vec_len( void ** i, int * status ) {
         ret[0] = (void *) &out;
         return ret;
 }
- object_t ** convertToObject(vector_t * a, vector_t * b) {
+ 
+object_t ** convertToObject(vector_t * a, vector_t * b) {
     object_t ** in;
      if (b != NULL) {
         in = (object_t **) malloc(2 * sizeof(object_t *));
@@ -98,6 +99,23 @@ void ** vec_len( void ** i, int * status ) {
     
     return in;
  }
+
+object_t ** convertToObject3(vector_t * a, matrix_t * b) {
+    object_t ** in;
+     if (b != NULL) {
+        in = (object_t **) malloc(2 * sizeof(object_t *));
+        in[1] = (object_t *) malloc(sizeof(object_t *));
+        vvalue( *in[1] ) = b; in[1]->type = T_MATRIX;
+     } else {
+        in = (object_t **) malloc(sizeof(object_t *));
+     }
+    
+    in[0] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[0] ) = a; in[0]->type = T_VECTOR;
+    
+    return in;
+ }
+
  void ** vec_add( void ** i, int * status ) {
         
         object_t ** in = (object_t **) i;
@@ -833,12 +851,14 @@ void ** vec_len( void ** i, int * status ) {
                 r->len = m->nrow;
                 r->type = T_COMPLEX;
             }
-            type( out ) = T_VECTOR;
-            vvalue( out ) = (void *) r;
-            static void * ret[1];
-            clear_input(i, 2);
-            ret[0] = (void *) &out;
-            return ret;
+            
+            return (void *) r;
+//            type( out ) = T_VECTOR;
+//            vvalue( out ) = (void *) r;
+//            static void * ret[1];
+//            clear_input(i, 2);
+//            ret[0] = (void *) &out;
+//            return ret;
         } else  if( type( *in[1] ) == T_SMATRIX ) {
                 smatrix_t * m = (smatrix_t *) vvalue( *in[1] );                
                 smatreqdev( m );
