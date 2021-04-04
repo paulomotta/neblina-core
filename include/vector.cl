@@ -408,7 +408,7 @@ __kernel void sparseComplexMatMulVec(   __global real * vec_out,
         if( col == -1 )
             continue;
         re_m = m[2*idxt];
-        im_m = m[2*idxt+1];
+        im_m = -m[2*idxt+1]; //using the complex conjugate for dot product
         re_v = vec_in[2*col];
         im_v = vec_in[2*col+1];    
         sum_re += re_m*re_v - im_m*im_v;
