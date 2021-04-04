@@ -115,6 +115,14 @@ typedef struct __matrix_t {
     cl_mem             mem;
 } matrix_t;
 
+typedef struct __slist {
+    int col;
+    double re;
+    double im;
+    struct __slist * next;
+
+} slist;
+
 typedef struct __smatrix_t {
     int nrow;
     int ncol;
@@ -123,8 +131,12 @@ typedef struct __smatrix_t {
     int maxcols;
 
     double * m;
-    int   * idx_col;    
-    
+    int   * idx_col;
+    int * rcount;
+    int * icount;
+    slist ** smat;
+    int isPacked;
+            
     data_type        type;
     unsigned char    location;
     cl_mem           mMem;
