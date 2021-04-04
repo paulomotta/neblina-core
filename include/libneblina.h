@@ -16,14 +16,6 @@ extern "C" {
 #define fvget(vet,i) ((vet).value.i[i-1])
 #define COMPLEX_SIZE (2 * sizeof(double))
 
-typedef struct __slist {
-    int col;
-    double re;
-    double im;
-    struct __slist * next;
-
-} slist;
-
 
  void ** movetodev      ( void ** i, int * status );
  void ** movetohost     ( void ** i, int * status );
@@ -42,6 +34,8 @@ void slist_clear( slist * l );
 smatrix_t * smatrix_new( int nrow, int ncol, data_type type );
 void smatrix_t_clear( smatrix_t * m );
 void smatrix_load_double( smatrix_t * m, FILE * f );
+void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
+void smatrix_pack(smatrix_t * m);
 
 void smatrix_load_complex( smatrix_t * m, FILE * f );
 vector_t * vector_new( int len, data_type type ) ;

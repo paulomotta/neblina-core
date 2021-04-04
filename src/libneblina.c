@@ -125,12 +125,81 @@ void slist_clear( slist * l ) {
     } while( l != NULL );
 }
 
+void smatrix_pack(smatrix_t * m){
+    //essa parte seta os valores que foram lidos do arquivo em smat para o formato de 
+    //array continuo
+    m->idx_col = (int *) malloc( m->nrow * m->maxcols * sizeof(int) );
+    m->m = (double *) malloc( m->nrow * m->maxcols * sizeof(double) );
+    
+    memset( m->idx_col, -1, m->nrow * m->maxcols * sizeof(int));  
+    memset( m->m      ,  0, m->nrow * m->maxcols * sizeof(double));
+
+    slist * tmp = NULL;
+    for(int i=0; i < m->nrow; i++ ) {
+        tmp = m->smat[i];        
+//        printf("%p \n",&tmp);
+        while( tmp != NULL ) {
+            int idx = i*m->maxcols + m->icount[i];
+//            printf("%d %d %d ",i, tmp->col, idx);
+            m->idx_col[idx] = tmp->col;
+            int midx = i*m->maxcols + m->icount[i];
+//            printf("%d ",midx);
+            m->m[midx] = tmp->re;
+//            printf("%lf ",tmp->re);
+//            printf("%d ",m->icount[i]);
+            m->icount[i]++;
+            tmp = tmp->next;
+//            printf("\n");
+        }    
+//        printf("\n");
+        slist_clear( m->smat[i] );    
+    }
+//    printf("--------\n");
+    m->isPacked = 1;
+}
+
+void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r){
+    
+    if (m->smat ==  NULL) {
+        m->smat = (slist **) malloc( m->nrow * sizeof( slist * ) );
+        for(int x=0; x < m->nrow; x++ )
+            m->smat[x] = NULL;   
+    }
+        
+    if( i < 0 ||  i >= m->nrow ) {
+        printf("invalid row index on loading sparse matrix %d\n",i);
+        exit( -1 );
+    }
+    if( j < 0 || j >= m->ncol ) {
+        printf("invalid col index on loading sparse matrix\n");
+        exit( -1 );
+    }
+                    
+    m->smat[i] = slist_add( m->smat[i], j, r, 0.0);
+    m->rcount[i]++;
+    if( m->rcount[i] > m->maxcols ) {
+        m->maxcols = m->rcount[i];
+    }
+}
+
 smatrix_t * smatrix_new( int nrow, int ncol, data_type type ) {
-    smatrix_t * ret = (smatrix_t *) malloc( sizeof( smatrix_t ) );
-    ret->ncol = ncol;
-    ret->nrow = nrow;
-    ret->type = type;
-    return ret;
+    smatrix_t * m = (smatrix_t *) malloc( sizeof( smatrix_t ) );
+    m->ncol = ncol;
+    m->nrow = nrow;
+    m->type = type;
+    
+    m->rcount = (int *) malloc( m->nrow * sizeof(int) );
+    m->icount = (int *) malloc( m->nrow * sizeof(int) );
+
+    memset( m->rcount, 0, m->nrow * sizeof(int));    
+    memset( m->icount, 0,m->nrow * sizeof(int));    
+
+    m->smat = NULL;
+    m->isPacked = 0;
+    m->maxcols = 0;
+  
+    
+    return m;
 }
 
 void smatrix_t_clear( smatrix_t * m ) {
@@ -358,7 +427,6 @@ matrix_t * matrix_multiply( matrix_t * a, matrix_t * b ) {
     return ret;
 }
 
-
 vector_t * smatvec_multiply( smatrix_t * a, vector_t * b ) {
     vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
     ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
@@ -367,16 +435,20 @@ vector_t * smatvec_multiply( smatrix_t * a, vector_t * b ) {
     int maxcols = a->maxcols;
     int idx,i;
     for(idx=0; idx < nrows; idx++ ) {
-        if( idx >= nrows )
+//        printf("idx=%d\n",idx);
+        if( idx >= nrows ) //?
             return NULL;
             
         double sum = 0.0f;
         int row = idx;
         for (i = 0; i < maxcols; i++) {
+//            printf("row=%d maxcols=%d i=%d result=%d ",row,maxcols,i,((row * maxcols) + i));
             int col = a->idx_col[((row * maxcols) + i)];
+//            printf("col=%d ",col);
             if( col == -1 )
                 break;
             double value = a->m[((row * maxcols) + i)];
+//            printf("value= %lf \n",value);
             sum += value * b->value.f[col]; 
         }
         ret->value.f[row] = sum;
