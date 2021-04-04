@@ -9,6 +9,7 @@ extern "C" {
 
  object_t ** convertToObject(vector_t * a, vector_t * b);
  object_t ** convertToObject3(vector_t * a, matrix_t * b);
+ object_t ** convertToObject4(vector_t * a, smatrix_t * b);
  object_t ** convertToObject2(int n, vector_t * a);
 
  void ** neblina_type   ( void ** i, int * status );
