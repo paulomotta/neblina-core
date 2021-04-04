@@ -158,6 +158,33 @@ void smatrix_pack(smatrix_t * m){
     m->isPacked = 1;
 }
 
+void smatrix_pack_complex(smatrix_t * m){
+    
+    m->idx_col = (int *) malloc( m->nrow * m->maxcols * sizeof(int) );
+    m->m = (double *) malloc( m->nrow * m->maxcols * COMPLEX_SIZE );
+    
+    memset( m->idx_col, -1, m->nrow * m->maxcols * sizeof(int));  
+    memset( m->m      ,  0, m->nrow * m->maxcols * COMPLEX_SIZE);
+
+    slist * tmp = NULL;
+    for(int i=0; i < m->nrow; i++ ) {
+        tmp = m->smat[i];        
+        while( tmp != NULL ) {
+            int idx = i*m->maxcols + m->icount[i];
+            m->idx_col[idx] = tmp->col;
+            int midx = 2*(i*m->maxcols + m->icount[i]);
+            m->m[midx] = tmp->re;
+            m->m[midx+1] = tmp->im;
+            m->icount[i]++;
+            tmp = tmp->next;
+
+        }    
+        slist_clear( m->smat[i] );    
+    }
+
+    m->isPacked = 1;
+}
+
 void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r){
     
     if (m->smat ==  NULL) {
@@ -176,6 +203,30 @@ void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r){
     }
                     
     m->smat[i] = slist_add( m->smat[i], j, r, 0.0);
+    m->rcount[i]++;
+    if( m->rcount[i] > m->maxcols ) {
+        m->maxcols = m->rcount[i];
+    }
+}
+
+void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im){
+    
+    if (m->smat ==  NULL) {
+        m->smat = (slist **) malloc( m->nrow * sizeof( slist * ) );
+        for(int x=0; x < m->nrow; x++ )
+            m->smat[x] = NULL;   
+    }
+        
+    if( i < 0 ||  i >= m->nrow ) {
+        printf("invalid row index on loading sparse matrix %d\n",i);
+        exit( -1 );
+    }
+    if( j < 0 || j >= m->ncol ) {
+        printf("invalid col index on loading sparse matrix\n");
+        exit( -1 );
+    }
+                    
+    m->smat[i] = slist_add( m->smat[i], j, r, im);
     m->rcount[i]++;
     if( m->rcount[i] > m->maxcols ) {
         m->maxcols = m->rcount[i];

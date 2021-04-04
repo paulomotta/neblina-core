@@ -36,6 +36,8 @@ void smatrix_t_clear( smatrix_t * m );
 void smatrix_load_double( smatrix_t * m, FILE * f );
 void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
 void smatrix_pack(smatrix_t * m);
+void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im);
+void smatrix_pack_complex(smatrix_t * m);
 
 void smatrix_load_complex( smatrix_t * m, FILE * f );
 vector_t * vector_new( int len, data_type type ) ;
