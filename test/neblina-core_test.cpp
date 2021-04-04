@@ -335,6 +335,69 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixFloat) {
 
 }
 
+TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixComplex) {
+
+    int n = 10;
+    
+    vector_t * a = vector_new(n, T_COMPLEX);
+    smatrix_t * b = smatrix_new( n, n, T_COMPLEX ); 
+    vector_t * r;
+    vector_t * out = vector_new(n, T_COMPLEX);
+
+    for (int i = 0; i < 2 * a->len; i+=2) {
+        a->value.f[i] = 3.;
+        a->value.f[i+1] = 3.;
+    }
+    
+    smatrix_set_complex_value(b, 0, 0, 3., 3.);
+    smatrix_set_complex_value(b, 0, 1, 3., 3.);
+    smatrix_set_complex_value(b, 0, 9, 3., 3.);
+    
+    smatrix_set_complex_value(b, 1, 1, 3., 3.);
+    smatrix_set_complex_value(b, 1, 5, 3., 3.);
+    smatrix_set_complex_value(b, 1, 8, 3., 3.);
+    
+    smatrix_set_complex_value(b, 2, 2, 3., 3.);
+    smatrix_set_complex_value(b, 2, 4, 3., 3.);
+    smatrix_set_complex_value(b, 2, 7, 3., 3.);
+
+    smatrix_set_complex_value(b, 3, 3, 3., 3.);
+    smatrix_set_complex_value(b, 3, 1, 3., 3.);
+    smatrix_set_complex_value(b, 3, 6, 3., 3.);
+    
+    smatrix_pack_complex(b);
+
+    object_t ** in = convertToObject4(a,b);
+    
+    r = (vector_t *) matvec_mul3((void **) in, NULL );
+
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
+    CLERR
+    EXPECT_EQ(0, status);
+
+    EXPECT_EQ(54., out->value.f[0]);
+    EXPECT_EQ(0., out->value.f[1]);
+    EXPECT_EQ(54., out->value.f[2]);
+    EXPECT_EQ(0., out->value.f[3]);
+    EXPECT_EQ(54., out->value.f[4]);
+    EXPECT_EQ(0., out->value.f[5]);
+    EXPECT_EQ(54., out->value.f[6]);
+    EXPECT_EQ(0., out->value.f[7]);
+    EXPECT_EQ(0., out->value.f[8]);
+    EXPECT_EQ(0., out->value.f[9]);
+    EXPECT_EQ(0., out->value.f[10]);
+    EXPECT_EQ(0., out->value.f[11]);
+    EXPECT_EQ(0., out->value.f[12]);
+    EXPECT_EQ(0., out->value.f[13]);
+    EXPECT_EQ(0., out->value.f[14]);
+    EXPECT_EQ(0., out->value.f[15]);
+    EXPECT_EQ(0., out->value.f[16]);
+    EXPECT_EQ(0., out->value.f[17]);
+    EXPECT_EQ(0., out->value.f[18]);
+    EXPECT_EQ(0., out->value.f[19]);
+
+}
+
 TEST_F(NeblinaCoreFixture, vec_conj) {
 
     int n = 3;
