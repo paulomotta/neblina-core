@@ -404,7 +404,7 @@ TEST_F(NeblinaCoreFixture, vec_conj) {
     
     vector_t * a = vector_new(n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
+    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < 2 * a->len; i+=2) {
         a->value.f[i] = 2.;
@@ -415,12 +415,13 @@ TEST_F(NeblinaCoreFixture, vec_conj) {
     
     r = (vector_t *) vec_conj((void **) in, NULL );
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
+    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
     CLERR
     EXPECT_EQ(0, status);
 
     for (int i = 0; i < n; ++i) {
-        EXPECT_EQ(8., out->value.f[i]);
+        EXPECT_EQ(2., out->value.f[2*i]);
+        EXPECT_EQ(-2., out->value.f[2*i+1]);
     }
 
 }

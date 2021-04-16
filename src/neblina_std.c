@@ -148,10 +148,10 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
  void ** vec_conj( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
-        vector_t * r = vector_new(a->len, T_FLOAT);
+        vector_t * r = vector_new(a->len, T_COMPLEX);
         vecreqdev( a ); vecreqdev( r );
 
-        r->mem = vecConj( a->mem, a->len ); 
+        r->mem = vecConjugate( a->mem, a->len ); 
     
         clear_input( i, 1 );
         return (void *) r;
