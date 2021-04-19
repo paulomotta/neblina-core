@@ -344,9 +344,9 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixComplex) {
     vector_t * r;
     vector_t * out = vector_new(n, T_COMPLEX);
 
-    for (int i = 0; i < 2 * a->len; i+=2) {
-        a->value.f[i] = 3.;
-        a->value.f[i+1] = 3.;
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[2*i] = 3.;
+        a->value.f[2*i+1] = 3.;
     }
     
     smatrix_set_complex_value(b, 0, 0, 3., 3.);
