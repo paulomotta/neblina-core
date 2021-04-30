@@ -9,6 +9,9 @@ include_directories(${GTEST_INCLUDE_DIR})
 
 find_package(OpenCL REQUIRED)
 include_directories( ${OPENCL_INCLUDE_DIR} )
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 #set(API_LIBRARIES ${OPENCL_LIBRARIES})
 #set(API_INCLUDE_DIRS ${OPENCL_INCLUDE_DIRS})
 
@@ -29,10 +32,10 @@ include_directories("..")
 LINK_DIRECTORIES(${PROJECT_DIR})
 
 add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c ${SOURCE_PATH}/clutils.c ${SOURCE_PATH}/neblina_list.c ${SOURCE_PATH}/neblina_std.c )
-target_link_libraries(neblina-core ${OpenCL_LIBRARY})
+target_link_libraries(neblina-core PRIVATE Threads::Threads ${OpenCL_LIBRARY})
 
 add_executable(neblina-core_test ${PROJECT_TEST_DIR}/neblina-core_test.cpp)
-target_link_libraries(neblina-core_test ${GTEST_BOTH_LIBRARIES} neblina-core)
+target_link_libraries(neblina-core_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
 
 add_test( neblina-core_test neblina-core_test )
 
