@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/neblina-core_test.dir/test/neblina-core_test.cpp.o  -o neblina-core_test  -Wl,-rpath,/home/paulo/Documentos/pesquisa/quantum/neblina-core -lgtest -lgtest_main libneblina-core.so 

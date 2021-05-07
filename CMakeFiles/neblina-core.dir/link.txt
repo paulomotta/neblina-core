@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC   -shared -Wl,-soname,libneblina-core.so -o libneblina-core.so CMakeFiles/neblina-core.dir/src/libneblina.c.o CMakeFiles/neblina-core.dir/src/clutils.c.o 

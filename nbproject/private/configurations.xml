@@ -2,6 +2,92 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="build">
+        <df name="CMakeFiles">
+          <df name="3.17.0">
+            <df name="CompilerIdC">
+              <df name="tmp">
+              </df>
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <df name="tmp">
+              </df>
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="Continuous.dir">
+          </df>
+          <df name="ContinuousBuild.dir">
+          </df>
+          <df name="ContinuousConfigure.dir">
+          </df>
+          <df name="ContinuousCoverage.dir">
+          </df>
+          <df name="ContinuousMemCheck.dir">
+          </df>
+          <df name="ContinuousStart.dir">
+          </df>
+          <df name="ContinuousSubmit.dir">
+          </df>
+          <df name="ContinuousTest.dir">
+          </df>
+          <df name="ContinuousUpdate.dir">
+          </df>
+          <df name="Experimental.dir">
+          </df>
+          <df name="ExperimentalBuild.dir">
+          </df>
+          <df name="ExperimentalConfigure.dir">
+          </df>
+          <df name="ExperimentalCoverage.dir">
+          </df>
+          <df name="ExperimentalMemCheck.dir">
+          </df>
+          <df name="ExperimentalStart.dir">
+          </df>
+          <df name="ExperimentalSubmit.dir">
+          </df>
+          <df name="ExperimentalTest.dir">
+          </df>
+          <df name="ExperimentalUpdate.dir">
+          </df>
+          <df name="neblina-core.dir">
+            <df name="src">
+            </df>
+          </df>
+          <df name="neblina-core_test.dir">
+            <df name="test">
+            </df>
+          </df>
+          <df name="Nightly.dir">
+          </df>
+          <df name="NightlyBuild.dir">
+          </df>
+          <df name="NightlyConfigure.dir">
+          </df>
+          <df name="NightlyCoverage.dir">
+          </df>
+          <df name="NightlyMemCheck.dir">
+          </df>
+          <df name="NightlyMemoryCheck.dir">
+          </df>
+          <df name="NightlyStart.dir">
+          </df>
+          <df name="NightlySubmit.dir">
+          </df>
+          <df name="NightlyTest.dir">
+          </df>
+          <df name="NightlyUpdate.dir">
+          </df>
+        </df>
+        <df name="Testing">
+          <df name="Temporary">
+          </df>
+        </df>
+      </df>
       <df name="CMakeFiles">
         <df name="3.17.0">
           <df name="CompilerIdC">
