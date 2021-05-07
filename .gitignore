@@ -10,4 +10,6 @@ neblina-core_test
 *.log
 /Testing/Temporary/CTestCostData.txt
 /Testing/Temporary/*.log
-
+/CMakeFiles/
+*.tcl
+Makefile
