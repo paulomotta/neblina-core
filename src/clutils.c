@@ -388,9 +388,9 @@ void InitCLEngine() {
     proctype = CL_DEVICE_TYPE_ALL;
     id_device = 0;
     if( nkernelsRmat == 0 )
-        clinfo = GetCLInfo("./include/vector.cl");
+        clinfo = GetCLInfo("/usr/local/include/vector.cl");
     else
-        rebuildProgram("./include/vector.cl");    
+        rebuildProgram("/usr/local/include/vector.cl");    
     int ii;
     for(ii=0;ii<32;ii++)
         rmatstat[ii] = 0;
