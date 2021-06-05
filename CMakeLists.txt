@@ -45,6 +45,13 @@ if (EXISTS ${PROJECT_BINARY_DIR}/libneblina-core.so)
   #file(RENAME ${PROJECT_TEST_DIR}/libneblina-core.so ${PROJECT_TEST_DIR}/neblina-core.so)
 endif()
 
-install (TARGETS neblina-core DESTINATION ${DIST_PATH})
-install (FILES ${HEADER_PATH}/neblina-core.h DESTINATION ${DIST_INCLUDE_PATH})
-install (FILES ${DIST_PATH}/libneblina-core.so DESTINATION ${DIST_PATH} RENAME neblina-core.so)
+# Installs the library
+include(GNUInstallDirs)
+
+install (TARGETS neblina-core DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install (FILES ${HEADER_PATH}/neblina.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${HEADER_PATH}/neblina_list.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${HEADER_PATH}/neblina_std.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${HEADER_PATH}/libneblina.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${HEADER_PATH}/clutils.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install (FILES ${HEADER_PATH}/vector.cl DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
