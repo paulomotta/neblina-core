@@ -13,3 +13,6 @@ neblina-core_test
 /CMakeFiles/
 *.tcl
 Makefile
+*.txt
+*.zip
+*.xml
