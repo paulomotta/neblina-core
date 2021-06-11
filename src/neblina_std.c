@@ -1478,7 +1478,7 @@ extern int nkernelsRmat;
        strcpy( strkernelsRmat[id], nkernel );
        nkernelsRmat++;   
        rmatstat[id] = 1; 
-       InitCLEngine();
+       InitCLEngine(0); //fixed for now, this function is not exposed to Python yet
        cl_int st;
        rm->kernel = clCreateKernel (clinfo.p, kernelname, &st);
        

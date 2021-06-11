@@ -76,7 +76,7 @@ void checkErrors(cl_int status, char *label, int line);
 char* filetobuf(char *file);
 cl_info GetCLInfo( char * filename );
 void ReleaseCLInfo( cl_info info );
-void InitCLEngine();
+void InitCLEngine(int device);
 
 /**
  * modified code from http://dhruba.name/2012/08/14/opencl-cookbook-listing-all-devices-and-their-critical-attributes/

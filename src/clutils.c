@@ -383,10 +383,10 @@ void ReleaseCLInfo( cl_info info ) {
 }
 
 
-void InitCLEngine() {
+void InitCLEngine(int device) {
     cl_int status;
     proctype = CL_DEVICE_TYPE_ALL;
-    id_device = 0;
+    id_device = device;
     if( nkernelsRmat == 0 )
         clinfo = GetCLInfo("/usr/local/include/vector.cl");
     else
