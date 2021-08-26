@@ -31,7 +31,14 @@ include_directories("${HEADER_PATH}")
 include_directories("..")
 LINK_DIRECTORIES(${PROJECT_DIR})
 
-add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c ${SOURCE_PATH}/clutils.c ${SOURCE_PATH}/neblina_list.c ${SOURCE_PATH}/neblina_std.c )
+add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c 
+                                ${SOURCE_PATH}/clutils.c 
+                                ${SOURCE_PATH}/neblina_list.c 
+                                ${SOURCE_PATH}/neblina_std.c 
+                                ${SOURCE_PATH}/neblina_vector.c 
+                                ${SOURCE_PATH}/neblina_matrix.c 
+                                ${SOURCE_PATH}/neblina_smatrix.c 
+                                 )
 target_link_libraries(neblina-core PRIVATE Threads::Threads ${OpenCL_LIBRARY})
 
 add_executable(neblina-core_test ${PROJECT_TEST_DIR}/neblina-core_test.cpp)
