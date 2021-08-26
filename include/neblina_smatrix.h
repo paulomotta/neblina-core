@@ -1,0 +1,62 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   neblina_smatrix.h
+ * Author: paulo
+ *
+ * Created on 26 de agosto de 2021, 00:05
+ */
+
+#ifndef NEBLINA_SMATRIX_H
+#define NEBLINA_SMATRIX_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct __smatrix_t {
+    int nrow;
+    int ncol;
+    
+
+    int maxcols;
+
+    double * m;
+    int   * idx_col;
+    int * rcount;
+    int * icount;
+    slist ** smat;
+    int isPacked;
+            
+    data_type        type;
+    unsigned char    location;
+    cl_mem           mMem;
+    cl_mem           idxColMem;
+    
+
+} smatrix_t;
+
+smatrix_t * smatrix_new( int nrow, int ncol, data_type type );
+void smatrix_t_clear( smatrix_t * m );
+void smatrix_load_double( smatrix_t * m, FILE * f );
+void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
+void smatrix_pack(smatrix_t * m);
+void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im);
+void smatrix_pack_complex(smatrix_t * m);
+
+void smatrix_load_complex( smatrix_t * m, FILE * f );
+void smatrix_delete( smatrix_t * v );
+void smatreqhost( smatrix_t * v ) ;
+void smatreqdev ( smatrix_t * v );
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* NEBLINA_SMATRIX_H */
+
