@@ -5,6 +5,10 @@ extern "C" {
 #endif
 
 #include "neblina.h"
+#include "neblina_vector.h"
+#include "neblina_matrix.h"
+#include "neblina_smatrix.h"
+    
 #define new_str(i) (char *) malloc( sizeof(char)*(i))
 
  object_t ** convertToObject(vector_t * a, vector_t * b);

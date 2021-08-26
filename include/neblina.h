@@ -98,23 +98,6 @@ typedef union __data_vector_u {
     void              ** s;
 } data_vector_u;
 
-typedef struct __vector_t {
-    data_vector_u      value;
-    int                len;
-    data_type          type;
-    unsigned char      location;
-    cl_mem             mem;
-} vector_t;
-
-typedef struct __matrix_t {
-    data_vector_u      value;
-    int                ncol;
-    int                nrow;
-    data_type          type;
-    unsigned char    location;
-    cl_mem             mem;
-} matrix_t;
-
 typedef struct __slist {
     int col;
     double re;
@@ -122,29 +105,6 @@ typedef struct __slist {
     struct __slist * next;
 
 } slist;
-
-typedef struct __smatrix_t {
-    int nrow;
-    int ncol;
-    
-
-    int maxcols;
-
-    double * m;
-    int   * idx_col;
-    int * rcount;
-    int * icount;
-    slist ** smat;
-    int isPacked;
-            
-    data_type        type;
-    unsigned char    location;
-    cl_mem           mMem;
-    cl_mem           idxColMem;
-    
-
-} smatrix_t;
-
 
 typedef struct __rmatrix_t {
     int nrow;

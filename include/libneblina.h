@@ -7,6 +7,9 @@ extern "C" {
     
 
 #include "neblina.h"
+#include "neblina_vector.h"
+#include "neblina_matrix.h"
+#include "neblina_smatrix.h"
 //#include "clutils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,17 +34,6 @@ void ** neblina_sparse( void ** i, int * status );
 slist * slist_add( slist * l, int col, double re, double im );
 
 void slist_clear( slist * l );
-smatrix_t * smatrix_new( int nrow, int ncol, data_type type );
-void smatrix_t_clear( smatrix_t * m );
-void smatrix_load_double( smatrix_t * m, FILE * f );
-void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
-void smatrix_pack(smatrix_t * m);
-void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im);
-void smatrix_pack_complex(smatrix_t * m);
-
-void smatrix_load_complex( smatrix_t * m, FILE * f );
-vector_t * vector_new( int len, data_type type ) ;
-matrix_t * matrix_new( int nrow, int ncol, data_type type );
 matrix_t * matrix_multiply( matrix_t * a, matrix_t * b );
 vector_t * smatvec_multiply( smatrix_t * a, vector_t * b );
 vector_t * matvec_multiply( matrix_t * a, vector_t * b );
@@ -49,15 +41,6 @@ vector_t * matvec_multiply( matrix_t * a, vector_t * b );
 void clear_input( void ** i, int nparams );
 
 void neblina_strtype( data_type type, char out[256] );
-
-
-
-void vecreqhost( vector_t * v );
-void vecreqdev ( vector_t * v );
-void matreqhost( matrix_t * v );
-void matreqdev ( matrix_t * v );
-void smatreqhost( smatrix_t * v ) ;
-void smatreqdev ( smatrix_t * v );
 
 
 #ifdef	__cplusplus
