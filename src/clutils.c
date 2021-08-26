@@ -313,7 +313,7 @@ cl_info GetCLInfo( char * filename ) {
     int i;
     cl_program program = clCreateProgramWithSource (context, 1, &source, NULL, &status);
     CLERR
-    
+    free( source );
     const char options[] = "-Werror -cl-std=CL1.1";
     status = clBuildProgram (program, 1, &currentDevice, options, NULL, NULL);
     if (status == CL_BUILD_PROGRAM_FAILURE) {
@@ -368,6 +368,7 @@ void rebuildProgram(char * filename) {
         status = CL_BUILD_PROGRAM_FAILURE;
     }
     clinfo.p = program;
+    free( source );
 }
 
 void ReleaseCLInfo( cl_info info ) {
