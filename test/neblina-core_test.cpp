@@ -59,7 +59,7 @@ public:
 };
 
 TEST_F(NeblinaCoreFixture, showDeviceList) {
-    showDevicesList();
+    //showDevicesList();
 
     EXPECT_EQ(1, 1);
 
@@ -105,7 +105,6 @@ TEST_F(NeblinaCoreFixture, vec_add) {
     vector_t * a = vector_new(n, T_FLOAT);
     vector_t * b = vector_new(n, T_FLOAT);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 1.;
@@ -116,18 +115,172 @@ TEST_F(NeblinaCoreFixture, vec_add) {
 
     r = (vector_t *) vec_add((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
     for (int i = 0; i < n; ++i) {
-        EXPECT_EQ(2., out->value.f[i]);
+        EXPECT_EQ(2., r->value.f[i]);
     }
     vector_delete(a);
     vector_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
+}
+
+TEST_F(NeblinaCoreFixture, mat_add) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_FLOAT);
+    matrix_t * b = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            a->value.f[i * a->ncol + j] = 3.;
+            b->value.f[i * b->ncol + j] = 3.;
+        }
+    }
+
+    object_t ** in = convertMatMatToObject(a, b);
+    
+    matrix_t * r = (matrix_t *) mat_add((void **) in, NULL);
+    
+    matreqhost(r);
+
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            EXPECT_EQ(6., r->value.f[i * r->ncol + j]);
+        }
+    }
+    matrix_delete(a);
+    matrix_delete(b);
+    matrix_delete(r);
+
+
+}
+
+TEST_F(NeblinaCoreFixture, mat_add_complex) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_COMPLEX);
+    matrix_t * b = matrix_new(n, n, T_COMPLEX);
+
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            int idx = 2 * (i * b->ncol + j);
+            a->value.f[idx] = 3.;
+            a->value.f[idx + 1] = 3.;
+            b->value.f[idx] = 3.;
+            b->value.f[idx + 1] = 3.;
+        }
+    }
+
+    object_t ** in = convertMatMatToObject(a, b);
+    
+    matrix_t * r = (matrix_t *) mat_add((void **) in, NULL);
+    
+    matreqhost(r);
+
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            int idx = 2 * (i * b->ncol + j);
+            EXPECT_EQ(6., r->value.f[idx]);
+            EXPECT_EQ(6., r->value.f[idx + 1]);
+        }
+    }
+    
+    matrix_delete(a);
+    matrix_delete(b);
+    matrix_delete(r);
+
+
+}
+
+TEST_F(NeblinaCoreFixture, scalar_vec) {
+
+    int n = 3;
+    
+    double scalar = 2.0;
+    vector_t * a = vector_new(n, T_FLOAT);
+    
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+    }
+
+    object_t ** in = convertScaVecToObject(scalar, a);
+    
+    vector_t * r = (vector_t *) vec_mulsc((void **) in, NULL);
+    
+    vecreqhost(r);
+    
+    for (int i = 0; i < n; ++i) {
+        EXPECT_EQ(4., r->value.f[i]);
+    }
+
+    vector_delete(a);
+    vector_delete(r);
+}
+
+TEST_F(NeblinaCoreFixture, scalar_mat_float) {
+
+    int n = 3;
+    
+    double scalar = 2.0;
+    matrix_t * a = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            a->value.f[i * a->ncol + j] = 3.;
+        }
+    }
+
+    object_t ** in = convertScaMatToObject(scalar, a);
+    
+    matrix_t * r = (matrix_t *) mat_mulsc((void **) in, NULL);
+    
+    matreqhost(r);
+    
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            EXPECT_EQ(6., r->value.f[i * r->ncol + j]);
+        }
+    }
+
+    matrix_delete(a);
+    matrix_delete(r);
+}
+
+TEST_F(NeblinaCoreFixture, scalar_mat_complex) {
+
+    int n = 3;
+    
+    double scalar = 2.0;
+    matrix_t * a = matrix_new(n, n, T_COMPLEX);
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            int idx = 2 * (i * a->ncol + j);
+            a->value.f[idx] = 3.;
+            a->value.f[idx + 1] = 3.;
+        }
+    }
+
+    object_t ** in = convertScaMatToObject(scalar, a);
+    
+    matrix_t * r = (matrix_t *) mat_mulsc((void **) in, NULL);
+    
+    matreqhost(r);
+    
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            int idx = 2 * (i * r->ncol + j);
+            EXPECT_EQ(6., r->value.f[idx]);
+            EXPECT_EQ(6., r->value.f[idx + 1]);
+        }
+    }
+
+    matrix_delete(a);
+    matrix_delete(r);
 }
 
 TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
@@ -137,7 +290,6 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
     vector_t * a = vector_new(n, T_FLOAT);
     vector_t * b = vector_new(n, T_FLOAT);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 2.;
@@ -148,17 +300,14 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
 
     r = (vector_t *) vec_prod((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
     for (int i = 0; i < n; ++i) {
-        EXPECT_EQ(4., out->value.f[i]);
+        EXPECT_EQ(4., r->value.f[i]);
     }
     vector_delete(a);
     vector_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -169,7 +318,6 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
     vector_t * a = vector_new(n, T_COMPLEX);
     vector_t * b = vector_new(n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < 2 * a->len; i += 2) {
         a->value.f[i] = 2.;
@@ -182,18 +330,15 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
 
     r = (vector_t *) vec_prod((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
     for (int i = 0; i < 2 * a->len; i += 2) {
-        EXPECT_EQ(0., out->value.f[i]);
-        EXPECT_EQ(8., out->value.f[i + 1]);
+        EXPECT_EQ(0., r->value.f[i]);
+        EXPECT_EQ(8., r->value.f[i + 1]);
     }
     vector_delete(a);
     vector_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -204,7 +349,6 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithFloat) {
     vector_t * a = vector_new(n, T_FLOAT);
     matrix_t * b = matrix_new(n, n, T_FLOAT);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 2.;
@@ -220,17 +364,14 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithFloat) {
 
     r = (vector_t *) matvec_mul3((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
-    for (int i = 0; i < a->len; i++) {
-        EXPECT_EQ(18., out->value.f[i]);
+    for (int i = 0; i < r->len; i++) {
+        EXPECT_EQ(18., r->value.f[i]);
     }
     vector_delete(a);
     matrix_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -241,7 +382,6 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithComplex) {
     vector_t * a = vector_new(n, T_COMPLEX);
     matrix_t * b = matrix_new(n, n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < 2 * a->len; i += 2) {
         a->value.f[i] = 2.;
@@ -261,20 +401,17 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithComplex) {
     object_t ** in = convertToObject3(a, b);
     r = (vector_t *) matvec_mul3((void **) in, NULL);
     gettimeofday(&stop, NULL);
-    printf("\n\ntook %lu us\n\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
+    //printf("\n\ntook %lu us\n\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
-    for (int i = 0; i < 2 * a->len; i += 2) {
-        //EXPECT_EQ(0., out->value.f[i]);
-        //EXPECT_EQ(36., out->value.f[i + 1]);
-    }
+    //for (int i = 0; i < 2 * r->len; i += 2) {
+        //EXPECT_EQ(0., r->value.f[i]);
+        //EXPECT_EQ(36., r->value.f[i + 1]);
+    //}
     vector_delete(a);
     matrix_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -285,7 +422,6 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithComplex_reusingResult) {
     vector_t * a = vector_new(n, T_COMPLEX);
     matrix_t * b = matrix_new(n, n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < 2 * a->len; i += 2) {
         a->value.f[i] = 2.;
@@ -310,19 +446,16 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithComplex_reusingResult) {
         
     }
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
+    
+    //for (int i = 0; i < 2 * r->len; i += 2) {
+        //EXPECT_EQ(0., r->value.f[i]);
+        //EXPECT_EQ(36., r->value.f[i + 1]);
+    //}
     vector_delete(r);
     vector_delete(a);
     matrix_delete(b);
-    for (int i = 0; i < 2 * a->len; i += 2) {
-        //EXPECT_EQ(0., out->value.f[i]);
-        //EXPECT_EQ(36., out->value.f[i + 1]);
-    }
     
-    vector_delete(out);
-
 }
 
 TEST_F(NeblinaCoreFixture, large_matvec_mul3_WithComplex) {
@@ -332,7 +465,6 @@ TEST_F(NeblinaCoreFixture, large_matvec_mul3_WithComplex) {
     vector_t * a = vector_new(n, T_COMPLEX);
     matrix_t * b = matrix_new(n, n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
     vector_t * truth = vector_new(n, T_COMPLEX);
 
     int i = 0; 
@@ -408,9 +540,7 @@ TEST_F(NeblinaCoreFixture, large_matvec_mul3_WithComplex) {
     r = (vector_t *) matvec_mul3((void **) in, NULL);
     
     
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
     for (int i = 0; i < 2 * a->len; i += 2) {
         //printf("%d %4.18e %4.18e\n",i,truth->value.f[i],out->value.f[i]);
         //printf("%d %4.18e %4.18e\n",i,truth->value.f[i+1],out->value.f[i+1]);
@@ -420,7 +550,6 @@ TEST_F(NeblinaCoreFixture, large_matvec_mul3_WithComplex) {
     vector_delete(a);
     matrix_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -484,7 +613,6 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixFloat) {
     vector_t * a = vector_new(n, T_FLOAT);
     smatrix_t * b = smatrix_new(n, n, T_FLOAT);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 3.;
@@ -512,25 +640,22 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixFloat) {
 
     r = (vector_t *) matvec_mul3((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
-    EXPECT_EQ(27., out->value.f[0]);
-    EXPECT_EQ(27., out->value.f[1]);
-    EXPECT_EQ(27., out->value.f[2]);
-    EXPECT_EQ(27., out->value.f[3]);
-    EXPECT_EQ(0., out->value.f[4]);
-    EXPECT_EQ(0., out->value.f[5]);
-    EXPECT_EQ(0., out->value.f[6]);
-    EXPECT_EQ(0., out->value.f[7]);
-    EXPECT_EQ(0., out->value.f[8]);
-    EXPECT_EQ(0., out->value.f[9]);
+    EXPECT_EQ(27., r->value.f[0]);
+    EXPECT_EQ(27., r->value.f[1]);
+    EXPECT_EQ(27., r->value.f[2]);
+    EXPECT_EQ(27., r->value.f[3]);
+    EXPECT_EQ(0., r->value.f[4]);
+    EXPECT_EQ(0., r->value.f[5]);
+    EXPECT_EQ(0., r->value.f[6]);
+    EXPECT_EQ(0., r->value.f[7]);
+    EXPECT_EQ(0., r->value.f[8]);
+    EXPECT_EQ(0., r->value.f[9]);
     
     vector_delete(a);
     smatrix_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -541,7 +666,6 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixComplex) {
     vector_t * a = vector_new(n, T_COMPLEX);
     smatrix_t * b = smatrix_new(n, n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[2 * i] = 3.;
@@ -574,35 +698,32 @@ TEST_F(NeblinaCoreFixture, matvec_mul3_WithSparseMatrixComplex) {
 
     r = (vector_t *) matvec_mul3((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
-    EXPECT_EQ(0., out->value.f[0]);
-    EXPECT_EQ(54., out->value.f[1]);
-    EXPECT_EQ(0., out->value.f[2]);
-    EXPECT_EQ(54., out->value.f[3]);
-    EXPECT_EQ(0., out->value.f[4]);
-    EXPECT_EQ(54., out->value.f[5]);
-    EXPECT_EQ(0., out->value.f[6]);
-    EXPECT_EQ(54., out->value.f[7]);
-    EXPECT_EQ(0., out->value.f[8]);
-    EXPECT_EQ(0., out->value.f[9]);
-    EXPECT_EQ(0., out->value.f[10]);
-    EXPECT_EQ(0., out->value.f[11]);
-    EXPECT_EQ(0., out->value.f[12]);
-    EXPECT_EQ(0., out->value.f[13]);
-    EXPECT_EQ(0., out->value.f[14]);
-    EXPECT_EQ(0., out->value.f[15]);
-    EXPECT_EQ(0., out->value.f[16]);
-    EXPECT_EQ(0., out->value.f[17]);
-    EXPECT_EQ(0., out->value.f[18]);
-    EXPECT_EQ(0., out->value.f[19]);
+    EXPECT_EQ(0., r->value.f[0]);
+    EXPECT_EQ(54., r->value.f[1]);
+    EXPECT_EQ(0., r->value.f[2]);
+    EXPECT_EQ(54., r->value.f[3]);
+    EXPECT_EQ(0., r->value.f[4]);
+    EXPECT_EQ(54., r->value.f[5]);
+    EXPECT_EQ(0., r->value.f[6]);
+    EXPECT_EQ(54., r->value.f[7]);
+    EXPECT_EQ(0., r->value.f[8]);
+    EXPECT_EQ(0., r->value.f[9]);
+    EXPECT_EQ(0., r->value.f[10]);
+    EXPECT_EQ(0., r->value.f[11]);
+    EXPECT_EQ(0., r->value.f[12]);
+    EXPECT_EQ(0., r->value.f[13]);
+    EXPECT_EQ(0., r->value.f[14]);
+    EXPECT_EQ(0., r->value.f[15]);
+    EXPECT_EQ(0., r->value.f[16]);
+    EXPECT_EQ(0., r->value.f[17]);
+    EXPECT_EQ(0., r->value.f[18]);
+    EXPECT_EQ(0., r->value.f[19]);
     
     vector_delete(a);
     smatrix_delete(b);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -612,7 +733,6 @@ TEST_F(NeblinaCoreFixture, vec_conj) {
 
     vector_t * a = vector_new(n, T_COMPLEX);
     vector_t * r;
-    vector_t * out = vector_new(n, T_COMPLEX);
 
     for (int i = 0; i < 2 * a->len; i += 2) {
         a->value.f[i] = 2.;
@@ -623,18 +743,15 @@ TEST_F(NeblinaCoreFixture, vec_conj) {
 
     r = (vector_t *) vec_conj((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
     for (int i = 0; i < n; ++i) {
-        EXPECT_EQ(2., out->value.f[2 * i]);
-        EXPECT_EQ(-2., out->value.f[2 * i + 1]);
+        EXPECT_EQ(2., r->value.f[2 * i]);
+        EXPECT_EQ(-2., r->value.f[2 * i + 1]);
     }
     
     vector_delete(a);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
@@ -644,7 +761,6 @@ TEST_F(NeblinaCoreFixture, vec_add_off) {
 
     vector_t * a = vector_new(n, T_FLOAT);
     vector_t * r;
-    vector_t * out = vector_new(n, T_FLOAT);
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 2.;
@@ -654,16 +770,13 @@ TEST_F(NeblinaCoreFixture, vec_add_off) {
 
     r = (vector_t *) vec_add_off((void **) in, NULL);
 
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, offset * sizeof (double), out->value.f, 0, NULL, NULL);
-    CLERR
-    EXPECT_EQ(0, status);
+    vecreqhost(r);
 
     for (int i = 0; i < offset; ++i) {
-        EXPECT_EQ(4., out->value.f[i]);
+        EXPECT_EQ(4., r->value.f[i]);
     }
     vector_delete(a);
     vector_delete(r);
-    vector_delete(out);
 
 }
 
