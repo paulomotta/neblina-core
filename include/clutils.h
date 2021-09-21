@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#include "CL/opencl.h"
+#include <CL/opencl.h>
 
 #define DEBUGCL  0
 #define NKERNELS 27
