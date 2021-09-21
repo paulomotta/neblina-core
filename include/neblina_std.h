@@ -15,6 +15,9 @@ extern "C" {
  object_t ** convertToObject3(vector_t * a, matrix_t * b);
  object_t ** convertToObject4(vector_t * a, smatrix_t * b);
  object_t ** convertToObject2(int n, vector_t * a);
+ object_t ** convertMatMatToObject(matrix_t * a, matrix_t * b);
+ object_t ** convertScaVecToObject(double s, vector_t * a);
+ object_t ** convertScaMatToObject(double s, matrix_t * a);
 
  void ** neblina_type   ( void ** i, int * status );
  void ** vec_len        ( void ** i, int * status );
@@ -28,15 +31,15 @@ extern "C" {
  void ** vec_sub        ( void ** i, int * status );
  void ** vec_sub_cpu    ( void ** i, int * status );
  void ** vec_add_cpu    ( void ** i, int * status );
- void ** mat_add        ( void ** i, int * status );
+ void ** mat_add        ( void ** i, int * status ); 
  void ** vec_add_off    ( void ** i, int * status );
  void ** vec_add_off2   ( void ** i, int * status );
  void ** mat_add_cpu    ( void ** i, int * status );
  void ** mat_sub        ( void ** i, int * status );
  void ** mat_sub_cpu    ( void ** i, int * status );
- void ** vec_mulsc      ( void ** i, int * status );
+ void ** vec_mulsc      ( void ** i, int * status ); 
  void ** vec_mulsc_cpu  ( void ** i, int * status );
- void ** mat_mulsc      ( void ** i, int * status );
+ void ** mat_mulsc      ( void ** i, int * status ); 
  void ** mat_mulscrow   ( void ** i, int * status );
  void ** mat_mulsccol   ( void ** i, int * status );
  void ** mat_mulsc_cpu  ( void ** i, int * status );

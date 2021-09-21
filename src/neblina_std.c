@@ -116,6 +116,45 @@ object_t ** convertToObject3(vector_t * a, matrix_t * b) {
     return in;
  }
 
+object_t ** convertMatMatToObject(matrix_t * a, matrix_t * b) {
+    object_t ** in;
+    in = (object_t **) malloc(2 * sizeof(object_t *));
+    
+    in[0] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[0] ) = a; in[0]->type = T_MATRIX;
+    
+    in[1] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[1] ) = b; in[1]->type = T_MATRIX;
+    
+    return in;
+ }
+
+object_t ** convertScaVecToObject(double s, vector_t * a) {
+    object_t ** in;
+    in = (object_t **) malloc(2 * sizeof(object_t *));
+    
+    in[0] = (object_t *) malloc(sizeof(object_t *));
+    fvalue( *in[0] ) = s; in[0]->type = T_FLOAT;
+    
+    in[1] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[1] ) = a; in[1]->type = T_VECTOR;
+    
+    return in;
+ }
+
+object_t ** convertScaMatToObject(double s, matrix_t * a) {
+    object_t ** in;
+    in = (object_t **) malloc(2 * sizeof(object_t *));
+    
+    in[0] = (object_t *) malloc(sizeof(object_t *));
+    fvalue( *in[0] ) = s; in[0]->type = T_FLOAT;
+    
+    in[1] = (object_t *) malloc(sizeof(object_t *));
+    vvalue( *in[1] ) = a; in[1]->type = T_MATRIX;
+    
+    return in;
+ }
+
 object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     object_t ** in;
      if (b != NULL) {
@@ -394,25 +433,15 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     matrix_t * b = (matrix_t *) vvalue( *in[1] );
     matreqdev( a );matreqdev( b );
     object_t out;// = (object_t *) malloc( sizeof( object_t ) );
-    matrix_t * r = (matrix_t *) malloc( sizeof(matrix_t) );
+    matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) { 
-        r->ncol = b->ncol;
-        r->nrow = b->nrow;
-        r->type = T_FLOAT;
+        r = matrix_new(b->ncol,b->nrow,T_FLOAT);
         r->mem = addVectorF( a->mem, b->mem, b->nrow * b->ncol );
         r->location = LOCDEV;
-        r->value.f = NULL;
-        type( out ) = T_MATRIX;
-        vvalue( out ) = (void *) r;
-    }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) { 
-        r->ncol = b->ncol;
-        r->nrow = b->nrow;
-        r->type = T_COMPLEX;
+    }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) {
+        r = matrix_new(b->ncol,b->nrow,T_COMPLEX);
         r->mem = addVectorF( a->mem, b->mem, 2 * b->nrow * b->ncol );
         r->location = LOCDEV;
-        r->value.f = NULL;
-        type( out ) = T_MATRIX;
-        vvalue( out ) = (void *) r;
     } else if((a->type == T_FLOAT && b->type == T_COMPLEX) ||
               (a->type == T_COMPLEX && b->type == T_FLOAT)) { 
      
@@ -429,10 +458,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vvalue( out ) = (void *) r;
     }
     
-    static void * ret[1];
-    ret[0] = (void *) &out;
-    clear_input(i, 2);
-    return ret;
+    return (void *) r;
 }
  void ** mat_sub( void ** i, int * status ) {
     object_t ** in = (object_t **) i;
@@ -646,27 +672,22 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         int k;
         double scalar = 1.0;  
-        if( type( *in[0] ) == T_FLOAT )
+        if( type( *in[0] ) == T_FLOAT ) {
             scalar = fvalue( *in[0] );
-        else if( type( *in[0] ) == T_INT )
+        } else if( type( *in[0] ) == T_INT )
             scalar = (double) ivalue( *in[0] );
         else {
             // RUNTIME ERROR
         }
         vector_t * v = (vector_t *) vvalue( *in[1] );
         vecreqdev( v );
-        object_t out;// = (object_t *) malloc( sizeof( object_t ) );
-        vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        r->mem = mulScalarVector( v->mem, scalar, v->len ); 
-        r->len = v->len;
-        r->type = T_FLOAT;
+        
+        vector_t * r = vector_new(v->len, T_FLOAT); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
-        r->value.f = NULL;
-        type( out ) = T_VECTOR;
-        vvalue( out ) = (void *) r;
-        static void * ret[1];
-        ret[0] = (void *) &out;
-        return ret;
+        
+        r->mem = mulScalarVector( v->mem, scalar, v->len ); 
+        
+        return (void *) r;
 }
 
  void ** vec_mulsc_cpu( void ** i, int * status ) {
@@ -772,34 +793,23 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         else {
             // RUNTIME ERROR
         }
-
+        
         matrix_t * m = (matrix_t *) vvalue( *in[1] );
         matreqdev( m );
-        object_t  out;
-        matrix_t * r = (matrix_t *) malloc( sizeof( matrix_t ) );
+
+        matrix_t * r = NULL;
         if( m->type == T_FLOAT ) {
+            r = matrix_new(m->nrow, m->ncol, T_FLOAT);
             r->mem = mulScalarVector( m->mem, scalar, m->nrow * m->ncol ); 
-            r->nrow = m->nrow;
-            r->ncol = m->ncol;
-            r->type = T_FLOAT;
             r->location = LOCDEV;
-            r->value.f = NULL;
-            type( out ) = T_MATRIX;
-            vvalue( out ) = (void *) r;
         } else if( m->type == T_COMPLEX ) {
+            r = matrix_new(m->nrow, m->ncol, T_COMPLEX);
             r->mem = mulScalarVector( m->mem, scalar, 2 * m->nrow * m->ncol ); 
-            r->nrow = m->nrow;
-            r->ncol = m->ncol;
-            r->type = T_COMPLEX;
             r->location = LOCDEV;
-            r->value.f = NULL;
-            type( out ) = T_MATRIX;
-            vvalue( out ) = (void *) r;
-        } 
-        static void * ret[1];
-        ret[0] = (void *) &out;
+        }
+        
         clear_input(i, 2);
-        return ret;
+        return (void *) r;
 }
 
  void ** mat_mulsc_cpu( void ** i, int * status ) {
