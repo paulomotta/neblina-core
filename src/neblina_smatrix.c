@@ -257,12 +257,33 @@ void smatrix_load_complex( smatrix_t * m, FILE * f ) {
     fclose( f );
 }
 
-void smatreqhost( smatrix_t * v ) {
-    if( v->location != LOCHOS ) {
-        object_t * in[1]; 
-        object_t o; vvalue( o ) = v; o.type = T_SMATRIX;
-        in[0] = &o; 
-        movetohost( (void **) in, NULL );
+void smatreqhost( smatrix_t * m ) {
+    cl_int status;
+    if( m->location != LOCHOS ) {
+        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
+        m->location = LOCHOS;
+        int len = (m->type == T_COMPLEX) ? (2*m->maxcols * m->nrow  ) : ( m->maxcols * m->nrow );
+        status = clEnqueueReadBuffer (clinfo.q, m->idxColMem, CL_TRUE, 0, m->maxcols * m->nrow * sizeof(int), m->idx_col, 0, NULL, NULL);
+        CLERR            
+        if( clinfo.fp64 ) {
+
+            status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
+            CLERR
+        } else {
+            int i;
+            float * tmp = (float *) malloc( sizeof(float) * len );
+            status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+            CLERR
+            #pragma omp parallel for
+            for( i = 0; i < len; i++) m->m[i] = tmp[i];
+            free( tmp );
+        }              
+        clReleaseMemObject( m->idxColMem );
+        CLERR                             
+        clReleaseMemObject( m->mMem );
+        CLERR
+        m->mMem = NULL;
+        m->idxColMem = NULL;
     }
 }
 void smatreqdev ( smatrix_t * v ) {

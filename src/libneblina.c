@@ -385,66 +385,66 @@ void neblina_strtype( data_type type, char out[256] ) {
         object_t ** in = (object_t **) i;
         size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
         if( type( *in[0] ) == T_VECTOR ) {
-            vector_t * v = (vector_t *) vvalue( *in[0] );
-           
-            v->location = LOCHOS;
-            int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
-            if(clinfo.fp64) {   
-                status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type, v->value.f, 0, NULL, NULL);
-                CLERR
-            } else {
-                int i;
-                float * tmp = (float *) malloc( sizeof(float) * len );               
-                status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type,tmp, 0, NULL, NULL);
-                CLERR
-                #pragma omp parallel for
-                for( i = 0; i < len; i++){ v->value.f[i] = tmp[i]; /*printf("V -> %f\n", tmp[i]);*/ }
-                free( tmp );
-            }
-            clReleaseMemObject( v->mem );
-            CLERR                                
+//            vector_t * v = (vector_t *) vvalue( *in[0] );
+//           
+//            v->location = LOCHOS;
+//            int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
+//            if(clinfo.fp64) {   
+//                status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type, v->value.f, 0, NULL, NULL);
+//                CLERR
+//            } else {
+//                int i;
+//                float * tmp = (float *) malloc( sizeof(float) * len );               
+//                status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type,tmp, 0, NULL, NULL);
+//                CLERR
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++){ v->value.f[i] = tmp[i]; /*printf("V -> %f\n", tmp[i]);*/ }
+//                free( tmp );
+//            }
+//            clReleaseMemObject( v->mem );
+//            CLERR                                
         } else if ( type( *in[0] ) == T_MATRIX ) {
-            matrix_t * m = (matrix_t *) vvalue( *in[0] );
-            int len = (m->type == T_COMPLEX) ? (2*m->ncol * m->nrow ) : (m->ncol * m->nrow);
-            m->location = LOCHOS;
-            if( clinfo.fp64 ) {
-                status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
-                CLERR
-            } else {
-                int i;
-                // OpenMP
-                float * tmp = (float *) malloc( sizeof(float) * len );
-                status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
-                CLERR 
-                #pragma omp parallel for
-                for( i = 0; i < len; i++) m->value.f[i] = tmp[i];
-                free( tmp );
-            }    
-            clReleaseMemObject( m->mem );
-            CLERR                           
+//            matrix_t * m = (matrix_t *) vvalue( *in[0] );
+//            int len = (m->type == T_COMPLEX) ? (2*m->ncol * m->nrow ) : (m->ncol * m->nrow);
+//            m->location = LOCHOS;
+//            if( clinfo.fp64 ) {
+//                status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
+//                CLERR
+//            } else {
+//                int i;
+//                // OpenMP
+//                float * tmp = (float *) malloc( sizeof(float) * len );
+//                status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+//                CLERR 
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++) m->value.f[i] = tmp[i];
+//                free( tmp );
+//            }    
+//            clReleaseMemObject( m->mem );
+//            CLERR                           
         } else if ( type( *in[0] ) == T_SMATRIX ) {
-            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
-            m->location = LOCHOS;
-            int len = (m->type == T_COMPLEX) ? (2*m->maxcols * m->nrow  ) : ( m->maxcols * m->nrow );
-            status = clEnqueueReadBuffer (clinfo.q, m->idxColMem, CL_TRUE, 0, m->maxcols * m->nrow * sizeof(int), m->idx_col, 0, NULL, NULL);
-            CLERR            
-            if( clinfo.fp64 ) {
-            
-                status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
-                CLERR
-            } else {
-                int i;
-                float * tmp = (float *) malloc( sizeof(float) * len );
-                status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
-                CLERR
-                #pragma omp parallel for
-                for( i = 0; i < len; i++) m->m[i] = tmp[i];
-                free( tmp );
-            }              
-            clReleaseMemObject( m->idxColMem );
-            CLERR                             
-            clReleaseMemObject( m->mMem );
-            CLERR                 
+//            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
+//            m->location = LOCHOS;
+//            int len = (m->type == T_COMPLEX) ? (2*m->maxcols * m->nrow  ) : ( m->maxcols * m->nrow );
+//            status = clEnqueueReadBuffer (clinfo.q, m->idxColMem, CL_TRUE, 0, m->maxcols * m->nrow * sizeof(int), m->idx_col, 0, NULL, NULL);
+//            CLERR            
+//            if( clinfo.fp64 ) {
+//            
+//                status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
+//                CLERR
+//            } else {
+//                int i;
+//                float * tmp = (float *) malloc( sizeof(float) * len );
+//                status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+//                CLERR
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++) m->m[i] = tmp[i];
+//                free( tmp );
+//            }              
+//            clReleaseMemObject( m->idxColMem );
+//            CLERR                             
+//            clReleaseMemObject( m->mMem );
+//            CLERR                 
         }
         return (void *) NULL;
 }

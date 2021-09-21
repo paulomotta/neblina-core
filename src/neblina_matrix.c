@@ -33,14 +33,31 @@ void matrix_delete( matrix_t * m ) {
     free (m);
 }
 
-void matreqhost( matrix_t * v ) {
-    if( v->location != LOCHOS ) {
-        object_t * in[1]; 
-        object_t o; vvalue( o ) = v; o.type = T_MATRIX;
-        in[0] = &o; 
-        movetohost( (void **) in, NULL );
+void matreqhost( matrix_t * m ) {
+    cl_int status;
+    if( m->location != LOCHOS ) {
+        int len = (m->type == T_COMPLEX) ? (2*m->ncol * m->nrow ) : (m->ncol * m->nrow);
+        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
+        m->location = LOCHOS;
+        if( clinfo.fp64 ) {
+            status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
+            CLERR
+        } else {
+            int i;
+            // OpenMP
+            float * tmp = (float *) malloc( sizeof(float) * len );
+            status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+            CLERR 
+            #pragma omp parallel for
+            for( i = 0; i < len; i++) m->value.f[i] = tmp[i];
+            free( tmp );
+        }    
+        clReleaseMemObject( m->mem );
+        CLERR
+        m->mem = NULL;
     }
 }
+
 void matreqdev ( matrix_t * v ) {
     if( v->location != LOCDEV ) {
         object_t * in[1]; 

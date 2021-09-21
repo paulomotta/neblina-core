@@ -41,10 +41,9 @@ void vector_delete( vector_t * v ) {
 }
 
 void vecreqhost( vector_t * v ) {
+    cl_int status;
     if( v->location != LOCHOS ) {
-        object_t * in[1]; 
-        object_t o; vvalue( o ) = v; o.type = T_VECTOR;
-        in[0] = &o;
+        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
         if (v->value.f == NULL) {
             if( v->type == T_FLOAT ) {
                 v->value.f = (double *) malloc( v->len * sizeof(double) );
@@ -52,7 +51,24 @@ void vecreqhost( vector_t * v ) {
                 v->value.f = (double *) malloc( v->len * COMPLEX_SIZE );
             }
         }
-        movetohost( (void **) in, NULL );
+                    
+        v->location = LOCHOS;
+        int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
+        if(clinfo.fp64) {   
+            status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type, v->value.f, 0, NULL, NULL);
+            CLERR
+        } else {
+            int i;
+            float * tmp = (float *) malloc( sizeof(float) * len );               
+            status = clEnqueueReadBuffer (clinfo.q, v->mem, CL_TRUE, 0, len*size_type,tmp, 0, NULL, NULL);
+            CLERR
+            #pragma omp parallel for
+            for( i = 0; i < len; i++){ v->value.f[i] = tmp[i]; /*printf("V -> %f\n", tmp[i]);*/ }
+            free( tmp );
+        }
+        clReleaseMemObject( v->mem );
+        CLERR  
+        v->mem = NULL;
     }
 }
 
