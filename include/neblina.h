@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "CL/opencl.h"
+#include <CL/opencl.h>
 #include "clutils.h"
 #define SYM_NO_ERROR             0x000000
 #define SYM_ALREADY_IN_TABLE     0x000001
