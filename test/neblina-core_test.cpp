@@ -126,6 +126,41 @@ TEST_F(NeblinaCoreFixture, vec_add) {
 
 }
 
+TEST_F(NeblinaCoreFixture, vec_add_complex) {
+
+    int n = 3;
+
+    vector_t * a = vector_new(n, T_COMPLEX);
+    vector_t * b = vector_new(n, T_COMPLEX);
+    vector_t * r;
+
+    for (int i = 0; i < a->len; i++) {
+        int idx = 2 * (i);
+        a->value.f[idx] = 1.;
+        a->value.f[idx + 1] = 1.;
+        
+        b->value.f[idx] = 1.;
+        b->value.f[idx + 1] = 1.;
+    }
+
+    object_t ** in = convertToObject(a, b);
+
+    r = (vector_t *) vec_add((void **) in, NULL);
+
+    vecreqhost(r);
+
+    for (int i = 0; i < n; ++i) {
+        int idx = 2 * (i);
+        EXPECT_EQ(2., r->value.f[idx]);
+        EXPECT_EQ(2., r->value.f[idx + 1]);
+    }
+    
+    vector_delete(a);
+    vector_delete(b);
+    vector_delete(r);
+
+}
+
 TEST_F(NeblinaCoreFixture, mat_add) {
 
     int n = 3;
