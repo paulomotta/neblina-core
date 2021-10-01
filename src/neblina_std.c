@@ -176,11 +176,14 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vector_t * r = vector_new(b->len, T_FLOAT);
+        vector_t * r = vector_new(b->len, b->type);
         vecreqdev( a ); vecreqdev( b ); vecreqdev( r ); 
        
-        r->mem = addVectorF( a->mem, b->mem, b->len ); 
-        
+        if (b->type == T_FLOAT) {
+            r->mem = addVectorF( a->mem, b->mem, b->len ); 
+        } else if (b->type == T_COMPLEX) {
+            r->mem = addVectorFC( a->mem, b->mem, b->len ); 
+        }
         return (void *) r;
 }
 
