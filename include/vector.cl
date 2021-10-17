@@ -59,6 +59,12 @@ __kernel void mulComplexScalarFloatVet( __global real * out, __global real * v, 
     out[2*i] = re * v[i];
     out[2*i+1] = im; //there was no original imaginary part
 }
+
+__kernel void mulComplexScalarComplexVet( __global real * out, __global real * v, real re, real im ) {
+    int i = get_global_id(0); 
+    out[2*i] = re * v[2*i];
+    out[2*i+1] = im * v[2*i+1];
+}
  
 #define  BLOCK_DIM 16
 __kernel void matTranspose(__global real *out, __global real * m, int ncols, int nrows, __local real * block) {    

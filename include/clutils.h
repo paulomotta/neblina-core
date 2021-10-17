@@ -37,6 +37,7 @@ extern "C" {
 #define KERMATMULSCROW 25
 #define KERMATMULSCCOL 26
 #define KER_MUL_COMPLEX_SCALAR_FLOAT_VET        27
+#define KER_MUL_COMPLEX_SCALAR_COMPLEX_VET        28
 
 #if DEBUGCL
     #define CLERR checkErrors (status, __FILE__, __LINE__); 

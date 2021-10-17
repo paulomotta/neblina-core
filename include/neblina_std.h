@@ -40,6 +40,7 @@ extern "C" {
  void ** mat_sub_cpu    ( void ** i, int * status );
  void ** vec_mulsc      ( void ** i, int * status ); 
  vector_t * vec_mul_complex_scalar ( complex_t * s, vector_t * a); 
+ vector_t * mul_complex_scalar_complex_vec( complex_t * s, vector_t * a); 
  void ** vec_mulsc_cpu  ( void ** i, int * status );
  void ** mat_mulsc      ( void ** i, int * status ); 
  void ** mat_mulscrow   ( void ** i, int * status );
