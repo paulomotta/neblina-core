@@ -312,6 +312,34 @@ TEST_F(NeblinaCoreFixture, complex_scalar_complex_vec) {
     vector_delete(r);
 }
 
+TEST_F(NeblinaCoreFixture, float_scalar_complex_vec) {
+
+    int n = 3;
+    
+    double scalar = 2.0;
+    vector_t * a = vector_new(n, T_COMPLEX);
+    
+    for (int i = 0; i < a->len; i++) {
+        int idx = 2 * (i);
+        a->value.f[idx] = 2.;
+        a->value.f[idx+1] = 2.;
+    }
+
+    vector_t * r = (vector_t *) mul_float_scalar_complex_vec(scalar, a);
+    
+    vecreqhost(r);
+    
+    for (int i = 0; i < r->len; i++) {
+        int idx = 2 * (i);
+
+        EXPECT_EQ(4., r->value.f[idx]);
+        EXPECT_EQ(2., r->value.f[idx + 1]);
+    }
+
+    vector_delete(a);
+    vector_delete(r);
+}
+
 TEST_F(NeblinaCoreFixture, scalar_mat_float) {
 
     int n = 3;

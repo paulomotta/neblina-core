@@ -717,6 +717,18 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         return (void *) r;
 }
 
+ vector_t * mul_float_scalar_complex_vec( double d, vector_t * a){
+         
+        vecreqdev( a );
+        
+        vector_t * r = vector_new(a->len, T_COMPLEX); //(vector_t *) malloc( sizeof( vector_t ) );
+        r->location = LOCDEV;
+        
+        r->mem = mulFloatScalarComplexVector( a->mem, d, a->len ); 
+        
+        return (void *) r;
+}
+
  void ** vec_mulsc_cpu( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         int k;

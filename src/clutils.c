@@ -454,6 +454,8 @@ void InitCLEngine(int device) {
     CLERR
     clkernels[KER_MUL_COMPLEX_SCALAR_COMPLEX_VET] = clCreateKernel (clinfo.p, "mulComplexScalarComplexVet", &status);
     CLERR
+    clkernels[KER_MUL_FLOAT_SCALAR_COMPLEX_VET] = clCreateKernel (clinfo.p, "mulFloatScalarComplexVet", &status);
+    CLERR
     
 }
 
