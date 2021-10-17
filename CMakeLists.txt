@@ -38,6 +38,7 @@ add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c
                                 ${SOURCE_PATH}/neblina_vector.c 
                                 ${SOURCE_PATH}/neblina_matrix.c 
                                 ${SOURCE_PATH}/neblina_smatrix.c 
+                                ${SOURCE_PATH}/neblina_complex.c 
                                  )
 target_link_libraries(neblina-core PRIVATE Threads::Threads ${OpenCL_LIBRARY})
 
