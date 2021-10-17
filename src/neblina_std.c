@@ -851,6 +851,16 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         return (void *) r;
 }
 
+ matrix_t * mul_complex_scalar_complex_mat( complex_t * s, matrix_t * m){
+    matrix_t * r = NULL;
+    matreqdev( m );
+    r = matrix_new(m->nrow, m->ncol, T_COMPLEX);
+    r->mem = mulComplexScalarComplexVector( m->mem, s->re, s->im, 2 * m->nrow * m->ncol ); 
+    r->location = LOCDEV;
+
+    return (void *) r;
+ }
+ 
  void ** mat_mulsc_cpu( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         int k;
