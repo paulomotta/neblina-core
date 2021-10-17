@@ -267,6 +267,28 @@ cl_mem mulScalarVector( cl_mem v1Dev, double scalar, int n ) {
     return outDev;
 }
 
+cl_mem mulComplexScalarVector( cl_mem v1Dev, double real, double imaginary, int n ) {
+    cl_int status;
+    cl_mem outDev;
+    cl_kernel kernel = clkernels[KER_MUL_COMPLEX_SCALAR_FLOAT_VET];
+    outDev = clCreateBuffer (clinfo.c, CL_MEM_WRITE_ONLY, 2*n*sizeof(double), NULL, &status);
+    CLERR   
+    status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);
+    CLERR
+    status = clSetKernelArg (kernel, 1, sizeof(v1Dev), &v1Dev);
+    CLERR
+    status = clSetKernelArg (kernel, 2, sizeof(double), (void *)&real);
+    CLERR
+    status = clSetKernelArg (kernel, 3, sizeof(double), (void *)&imaginary);
+    CLERR
+    size_t globalWorkSize = n;
+    status = clEnqueueNDRangeKernel(clinfo.q, kernel, 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+    CLERR
+    status = clFinish(clinfo.q);
+    CLERR
+    return outDev;
+}
+
 void mulScalarMatRow( cl_mem m, double scalar, int nrow, int ncols, int row) {
     cl_int status;
     cl_kernel kernel = clkernels[KERMATMULSCROW];
