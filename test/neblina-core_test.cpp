@@ -435,6 +435,39 @@ TEST_F(NeblinaCoreFixture, complex_scalar_complex_mat) {
     complex_delete(scalar);
 }
 
+TEST_F(NeblinaCoreFixture, complex_scalar_float_mat) {
+
+    int n = 3;
+    
+    complex_t * scalar = complex_new(2.0, 2.0);
+    matrix_t * a = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            int idx = (i * a->ncol + j);
+            a->value.f[idx] = 3.;
+
+        }
+    }
+    
+    matrix_t * r = (matrix_t *) mul_complex_scalar_float_mat(scalar, a);
+    
+    matreqhost(r);
+    
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            int idx = 2 * (i * r->ncol + j);
+            EXPECT_EQ(6., r->value.f[idx]);
+            EXPECT_EQ(2., r->value.f[idx + 1]);
+        }
+    }
+
+    matrix_delete(a);
+    matrix_delete(r);
+
+    complex_delete(scalar);
+}
+
 TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
 
     int n = 3;
