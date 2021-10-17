@@ -10,6 +10,7 @@ extern "C" {
 #include "neblina_vector.h"
 #include "neblina_matrix.h"
 #include "neblina_smatrix.h"
+#include "neblina_complex.h"
 //#include "clutils.h"
 #include <stdio.h>
 #include <stdlib.h>

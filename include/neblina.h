@@ -85,12 +85,6 @@ typedef struct __object_t {
     data_u            value;
 } object_t;
 
-
-typedef struct __complex_t {
-    double re;
-    double im;
-}complex_t;
-
 typedef union __data_vector_u {
     void               * v;
     int                * i;

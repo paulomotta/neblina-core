@@ -8,6 +8,7 @@ extern "C" {
 #include "neblina_vector.h"
 #include "neblina_matrix.h"
 #include "neblina_smatrix.h"
+#include "neblina_complex.h"
     
 #define new_str(i) (char *) malloc( sizeof(char)*(i))
 
@@ -38,6 +39,7 @@ extern "C" {
  void ** mat_sub        ( void ** i, int * status );
  void ** mat_sub_cpu    ( void ** i, int * status );
  void ** vec_mulsc      ( void ** i, int * status ); 
+ vector_t * vec_mul_complex_scalar ( complex_t * s, vector_t * a); 
  void ** vec_mulsc_cpu  ( void ** i, int * status );
  void ** mat_mulsc      ( void ** i, int * status ); 
  void ** mat_mulscrow   ( void ** i, int * status );
@@ -64,7 +66,7 @@ extern "C" {
  void ** neblina_upper  ( void ** i, int * status );
  void ** neblina_lower  ( void ** i, int * status );
  void ** todouble       ( void ** i, int * status );
- void ** complex_new    ( void ** i, int * status );
+ //void ** complex_new    ( void ** i, int * status );
  void ** complex_real   ( void ** i, int * status );
  void ** complex_imag   ( void ** i, int * status );
  void ** complex_conj   ( void ** i, int * status );

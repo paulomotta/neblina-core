@@ -692,6 +692,18 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         
         return (void *) r;
 }
+ 
+ vector_t * vec_mul_complex_scalar ( complex_t * s, vector_t * a) {
+        
+        vecreqdev( a );
+        
+        vector_t * r = vector_new(a->len, T_COMPLEX); //(vector_t *) malloc( sizeof( vector_t ) );
+        r->location = LOCDEV;
+        
+        r->mem = mulComplexScalarVector( a->mem, s->re, s->im, a->len ); 
+        
+        return (void *) r;
+}
 
  void ** vec_mulsc_cpu( void ** i, int * status ) {
         object_t ** in = (object_t **) i;
@@ -1065,46 +1077,46 @@ void ** init ( void ** i, int * status ) {
     return ret;
 }
 
- void ** complex_new ( void ** i, int * status ) {
-    object_t ** in = (object_t **) i;
-    object_t  out;// = (object_t *) malloc( sizeof( object_t ) );
-    
-    double re = 0;
-    double im = 0;
-    
-    if( type( *in[1] ) == T_INT )
-        re = ivalue( *in[1] );
-    else if( type( *in[1] ) == T_FLOAT )
-        re = fvalue( *in[1] );
-    else {
-        // runerror("invalid use of 'int' function");
-        fprintf(stderr, "invalid use of 'complex' function\n");
-        exit( 1 );
-    }
-    
-    if( type( *in[0] ) == T_INT )
-        im = ivalue( *in[0] );
-    else if( type( *in[0] ) == T_FLOAT )
-        im = fvalue( *in[0] );
-    else {
-        // runerror("invalid use of 'int' function");
-        fprintf(stderr, "invalid use of 'complex' function\n");
-        exit( 1 );
-    }
-    
-    complex_t * res = (complex_t *) malloc( sizeof(complex_t) );
-    res->im = im;
-    res->re = re;
-    
-    type( out ) = T_COMPLEX;
-    vvalue( out ) = (void *) res;
-    
-    //printf("Complex NEW\n");
-    clear_input( i, 2);
-    static void * ret[1];
-    ret[0] = (void *) &out;
-    return ret;
-}
+// void ** complex_new ( void ** i, int * status ) {
+//    object_t ** in = (object_t **) i;
+//    object_t  out;// = (object_t *) malloc( sizeof( object_t ) );
+//    
+//    double re = 0;
+//    double im = 0;
+//    
+//    if( type( *in[1] ) == T_INT )
+//        re = ivalue( *in[1] );
+//    else if( type( *in[1] ) == T_FLOAT )
+//        re = fvalue( *in[1] );
+//    else {
+//        // runerror("invalid use of 'int' function");
+//        fprintf(stderr, "invalid use of 'complex' function\n");
+//        exit( 1 );
+//    }
+//    
+//    if( type( *in[0] ) == T_INT )
+//        im = ivalue( *in[0] );
+//    else if( type( *in[0] ) == T_FLOAT )
+//        im = fvalue( *in[0] );
+//    else {
+//        // runerror("invalid use of 'int' function");
+//        fprintf(stderr, "invalid use of 'complex' function\n");
+//        exit( 1 );
+//    }
+//    
+//    complex_t * res = (complex_t *) malloc( sizeof(complex_t) );
+//    res->im = im;
+//    res->re = re;
+//    
+//    type( out ) = T_COMPLEX;
+//    vvalue( out ) = (void *) res;
+//    
+//    //printf("Complex NEW\n");
+//    clear_input( i, 2);
+//    static void * ret[1];
+//    ret[0] = (void *) &out;
+//    return ret;
+//}
 
  void ** complex_real( void ** i, int * status ) {
     object_t ** in = (object_t **) i;
