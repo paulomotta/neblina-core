@@ -204,7 +204,7 @@ vector_t * smatvec_multiply( smatrix_t * a, vector_t * b ) {
     }
     ret->type       = T_FLOAT;
     ret->len        = a->nrow;
-    ret->mem        = NULL;
+    ret->extra        = NULL;
     ret->location   = LOCHOS;
     return ret;
 }
@@ -318,7 +318,7 @@ void neblina_strtype( data_type type, char out[256] ) {
                 return (void **) NULL;
             v->location = LOCDEV;
             if( clinfo.fp64 ) {
-                v->mem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, v->value.f, &status);
+                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, v->value.f, &status);
                 CLERR
             } else {
                 int i;
@@ -326,7 +326,7 @@ void neblina_strtype( data_type type, char out[256] ) {
                 #pragma omp parallel for
                 for( i = 0; i < len; i++){ tmp[i] = v->value.f[i]; /*printf("VV-> %f\n", tmp[i] );*/ }
                 
-                v->mem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
+                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
                 CLERR
                 free( tmp );
             }

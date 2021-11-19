@@ -180,9 +180,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vecreqdev( a ); vecreqdev( b ); vecreqdev( r ); 
        
         if (b->type == T_FLOAT) {
-            r->mem = addVectorF( a->mem, b->mem, b->len ); 
+            r->extra = (void*)addVectorF( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         } else if (b->type == T_COMPLEX) {
-            r->mem = addVectorFC( a->mem, b->mem, b->len ); 
+            r->extra = (void*)addVectorFC( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         }
         return (void *) r;
 }
@@ -193,7 +193,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = vector_new(a->len, T_COMPLEX);
         vecreqdev( a ); vecreqdev( r );
 
-        r->mem = vecConjugate( a->mem, a->len ); 
+        r->extra = (void*)vecConjugate( (cl_mem)a->extra, a->len ); 
     
         clear_input( i, 1 );
         return (void *) r;
@@ -205,7 +205,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
         vecreqdev( a );
 
-        r->mem = vecConjugate( a->mem, a->len ); 
+        r->extra = (void*)vecConjugate( (cl_mem)a->extra, a->len ); 
     
         r->len = a->len;
         r->type = T_COMPLEX;
@@ -228,9 +228,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t out;
         vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
         if( a->type == T_FLOAT ) {
-            r->mem = prodVector( a->mem, b->mem, b->len ); 
+            r->extra = (void*)prodVector( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         } else {
-            r->mem = prodComplexVector( a->mem, b->mem, b->len ); 
+            r->extra = (void*)prodComplexVector( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         }
 
         r->len = b->len;
@@ -248,7 +248,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t * out = (object_t *) malloc(sizeof(object_t *));
         
         vecreqdev( a );
-        out->value.f = sumVector( a->mem, a->len );
+        out->value.f = sumVector( (cl_mem)a->extra, a->len );
         out->type  = T_FLOAT;
         clear_input( i, 1 );        
         return (void *) out;
@@ -259,7 +259,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * a = (vector_t *) vvalue( *in[0] );
         object_t * out = (object_t *) malloc( sizeof( object_t ) );
         vecreqdev( a );
-        fvalue( *out ) = normVector( a->mem, a->len ); 
+        fvalue( *out ) = normVector( (cl_mem)a->extra, a->len ); 
         type( *out ) = T_FLOAT;
         static void * ret[1];
         ret[0] = (void *) out;
@@ -273,12 +273,12 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t * out;
         if( type( *v1 ) == T_FLOAT && type( *v2 ) == T_FLOAT ) {
             out = (object_t *) malloc( sizeof( object_t ) );
-            fvalue( *out ) = dotVector(v1->mem, v2->mem, v1->len); 
+            fvalue( *out ) = dotVector((cl_mem)v1->extra, (cl_mem)v2->extra, v1->len); 
             type( *out ) = T_FLOAT;
         } else {
             out = (object_t *) malloc( sizeof( object_t ) );
             double re, im;
-            dotVectorComplex(&re, &im, v1->mem, v2->mem, v1->len); 
+            dotVectorComplex(&re, &im, (cl_mem)v1->extra, (cl_mem)v2->extra, v1->len); 
             complex_t * res = (complex_t *) malloc( sizeof(complex_t) );
             res->im = im;
             res->re = re;
@@ -349,7 +349,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vecreqdev( a ); vecreqdev( b );
         object_t * out = (object_t *) malloc( sizeof( object_t ) );
         vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        r->mem = subVector( a->mem, b->mem, b->len ); 
+        r->extra = (void*)subVector( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         r->location = LOCDEV;
         r->value.f = NULL;
         r->len = b->len;
@@ -688,7 +688,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = vector_new(v->len, T_FLOAT); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         
-        r->mem = mulScalarVector( v->mem, scalar, v->len ); 
+        r->extra = (void*)mulScalarVector( (cl_mem)v->extra, scalar, v->len ); 
         
         return (void *) r;
 }
@@ -700,7 +700,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = vector_new(a->len, T_COMPLEX); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         
-        r->mem = mulComplexScalarVector( a->mem, s->re, s->im, a->len ); 
+        r->extra = (void*)mulComplexScalarVector( (cl_mem)a->extra, s->re, s->im, a->len ); 
         
         return (void *) r;
 }
@@ -712,7 +712,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = vector_new(a->len, T_COMPLEX); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         
-        r->mem = mulComplexScalarComplexVector( a->mem, s->re, s->im, a->len ); 
+        r->extra = (void*)mulComplexScalarComplexVector( (cl_mem)a->extra, s->re, s->im, a->len ); 
         
         return (void *) r;
 }
@@ -724,7 +724,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * r = vector_new(a->len, T_COMPLEX); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         
-        r->mem = mulFloatScalarComplexVector( a->mem, d, a->len ); 
+        r->extra = (void*)mulFloatScalarComplexVector( (cl_mem)a->extra, d, a->len ); 
         
         return (void *) r;
 }
@@ -917,13 +917,13 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
             matreqdev( m );
             
             if( m->type == T_FLOAT && v->type == T_FLOAT ) {
-                r->mem = matVecMul3( m->mem, v->mem, m->ncol, m->nrow );
+                r->extra = (void*)matVecMul3( m->mem, (cl_mem)v->extra, m->ncol, m->nrow );
                 r->location = LOCDEV;
                 r->value.f = NULL;
                 r->len = m->nrow;
                 r->type = T_FLOAT;
             } else if( m->type == T_COMPLEX && v->type == T_COMPLEX ) {
-                r->mem = matVecMul3Complex( m->mem, v->mem, m->ncol, m->nrow );
+                r->extra = (void*)matVecMul3Complex( m->mem, (cl_mem)v->extra, m->ncol, m->nrow );
                 r->location = LOCDEV;
                 r->value.f = NULL;
                 r->len = m->nrow;
@@ -937,14 +937,14 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
                 smatreqdev( m );
                 if( m->type == T_FLOAT && v->type == T_FLOAT ) {
                         
-                    r->mem = sparseVecMul( m->mMem, m->idxColMem, v->mem, m->nrow, m->maxcols );
+                    r->extra = (void*)sparseVecMul( m->mMem, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
                     r->location = LOCDEV;
                     r->value.f = NULL;
                     r->len = m->nrow;
                     r->type = T_FLOAT;
                     
                 } else if( m->type == T_COMPLEX && v->type == T_COMPLEX ) {
-                    r->mem = sparseComplexVecMul( m->mMem, m->idxColMem, v->mem, m->nrow, m->maxcols );
+                    r->extra = (void*)sparseComplexVecMul( m->mMem, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
                     r->location = LOCDEV;
                     r->value.f = NULL;
                     r->len = m->nrow;
@@ -954,7 +954,7 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
 
         } else if(  type( *in[1] ) == T_RMATRIX ) {
                 rmatrix_t * m = (rmatrix_t *) vvalue( *in[1] );
-                r->mem = rmatVecMul3Complex( m, v->mem, m->ncol, m->nrow );
+                r->extra = (void*)rmatVecMul3Complex( m, (cl_mem)v->extra, m->ncol, m->nrow );
                 r->location = LOCDEV;
                 r->value.f = NULL;
                 r->len = m->nrow;
@@ -1357,7 +1357,7 @@ void ** init ( void ** i, int * status ) {
         vector_t * r = vector_new(offset, T_FLOAT);
         vecreqdev( a ); vecreqdev( r );
 
-        r->mem = vecAddOff( a->mem, offset, parts ); 
+        r->extra = (void*)vecAddOff( (cl_mem)a->extra, offset, parts ); 
 
         clear_input( i, 2 );
         return (void *) r;
@@ -1371,7 +1371,7 @@ void ** init ( void ** i, int * status ) {
         object_t out; 
         vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
        
-        r->mem = vecAddOff2( a->mem, a->len ); 
+        r->extra = (void*)vecAddOff2( (cl_mem)a->extra, a->len ); 
         
         r->len = a->len/2;
         r->type = T_FLOAT;

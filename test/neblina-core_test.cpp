@@ -82,10 +82,10 @@ TEST_F(NeblinaCoreFixture, addVectorF) {
     vecreqdev(b);
     vecreqdev(r);
 
-    r->mem = addVectorF(a->mem, b->mem, b->len);
+    r->extra = addVectorF((cl_mem)a->extra, (cl_mem)b->extra, b->len);
 
     double * out = (double *) malloc(n * sizeof (double));
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out, 0, NULL, NULL);
+    status = clEnqueueReadBuffer(clinfo.q, (cl_mem)r->extra, CL_TRUE, 0, n * sizeof (double), out, 0, NULL, NULL);
     CLERR
     EXPECT_EQ(0, status);
 
@@ -1008,10 +1008,10 @@ TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     vecreqdev(r);
 
-    r->mem = addVectorFC(a->mem, b->mem, b->len);
+    r->extra = addVectorFC((cl_mem)a->extra, (cl_mem)b->extra, b->len);
 
     double * out = (double *) malloc(n * COMPLEX_SIZE);
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * COMPLEX_SIZE, out, 0, NULL, NULL);
+    status = clEnqueueReadBuffer(clinfo.q, (cl_mem)r->extra, CL_TRUE, 0, n * COMPLEX_SIZE, out, 0, NULL, NULL);
     CLERR
     EXPECT_EQ(0, status);
 
@@ -1046,10 +1046,10 @@ TEST_F(NeblinaCoreFixture, subVector) {
 
     vecreqdev(r);
 
-    r->mem = subVector(a->mem, b->mem, b->len);
+    r->extra = subVector((cl_mem)a->extra, (cl_mem)b->extra, b->len);
 
     double * out = (double *) malloc(n * sizeof (double));
-    status = clEnqueueReadBuffer(clinfo.q, r->mem, CL_TRUE, 0, n * sizeof (double), out, 0, NULL, NULL);
+    status = clEnqueueReadBuffer(clinfo.q, (cl_mem)r->extra, CL_TRUE, 0, n * sizeof (double), out, 0, NULL, NULL);
     CLERR
     EXPECT_EQ(0, status);
 

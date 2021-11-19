@@ -18,7 +18,7 @@ typedef struct __vector_t {
     int                len;
     data_type          type;
     unsigned char      location;
-    cl_mem             mem;
+    void*              extra;
 } vector_t;
 
 vector_t * vector_new( int len, data_type type ) ;
