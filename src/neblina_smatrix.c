@@ -126,6 +126,8 @@ smatrix_t * smatrix_new( int nrow, int ncol, data_type type ) {
     memset( smatrix->icount, 0,smatrix->nrow * sizeof(int));    
 
     smatrix->smat = NULL;
+    smatrix->mMem = NULL;
+    smatrix->idxColMem = NULL;
     smatrix->m = NULL;
     smatrix->isPacked = 0;
     smatrix->maxcols = 0;
