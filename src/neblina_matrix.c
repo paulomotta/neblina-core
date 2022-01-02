@@ -18,13 +18,13 @@ matrix_t * matrix_new( int nrow, int ncol, data_type type ) {
     ret->nrow       = nrow;
     ret->ncol       = ncol;
     ret->location   = LOCHOS;   
-    ret->mem        = NULL;   
+    ret->extra      = NULL;   
     return ret;
 }
 
 void matrix_delete( matrix_t * m ) {
-    if (m->mem != NULL) {
-        cl_int status = clReleaseMemObject( m->mem );
+    if (m->extra != NULL) {
+        cl_int status = clReleaseMemObject( (cl_mem) m->extra );
         CLERR
     }
     if (m->value.f != NULL) {
@@ -40,21 +40,21 @@ void matreqhost( matrix_t * m ) {
         size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
         m->location = LOCHOS;
         if( clinfo.fp64 ) {
-            status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
+            status = clEnqueueReadBuffer (clinfo.q, (cl_mem) m->extra, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
             CLERR
         } else {
             int i;
             // OpenMP
             float * tmp = (float *) malloc( sizeof(float) * len );
-            status = clEnqueueReadBuffer (clinfo.q, m->mem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+            status = clEnqueueReadBuffer (clinfo.q, (cl_mem) m->extra, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
             CLERR 
             #pragma omp parallel for
             for( i = 0; i < len; i++) m->value.f[i] = tmp[i];
             free( tmp );
         }    
-        clReleaseMemObject( m->mem );
+        clReleaseMemObject( (cl_mem) m->extra );
         CLERR
-        m->mem = NULL;
+        m->extra = NULL;
     }
 }
 

@@ -439,11 +439,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) { 
         r = matrix_new(b->ncol,b->nrow,T_FLOAT);
-        r->mem = addVectorF( a->mem, b->mem, b->nrow * b->ncol );
+        r->extra = addVectorF( a->extra, b->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
     }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) {
         r = matrix_new(b->ncol,b->nrow,T_COMPLEX);
-        r->mem = addVectorF( a->mem, b->mem, 2 * b->nrow * b->ncol );
+        r->extra = addVectorF( a->extra, b->extra, 2 * b->nrow * b->ncol );
         r->location = LOCDEV;
     } else if((a->type == T_FLOAT && b->type == T_COMPLEX) ||
               (a->type == T_COMPLEX && b->type == T_FLOAT)) { 
@@ -452,9 +452,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         r->nrow = b->nrow;
         r->type = T_COMPLEX;
         if( a->type == T_FLOAT )
-            r->mem = addVectorFC( a->mem, b->mem, b->nrow * b->ncol );
+            r->extra = addVectorFC( a->extra, b->extra, b->nrow * b->ncol );
         else
-            r->mem = addVectorFC( b->mem, a->mem, b->nrow * b->ncol );
+            r->extra = addVectorFC( b->extra, a->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
         r->value.f = NULL;
         type( out ) = T_MATRIX;
@@ -473,7 +473,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     r->ncol = a->ncol;
     r->nrow = a->nrow;
     r->type = T_FLOAT;
-    r->mem = subVector( a->mem, b->mem, b->nrow * b->ncol );
+    r->extra = subVector( a->extra, b->extra, b->nrow * b->ncol );
     r->location = LOCDEV;
     r->value.f = NULL;
     type( out ) = T_MATRIX;
@@ -502,7 +502,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     r->ncol = b->ncol;
     r->nrow = a->nrow;
     
-    r->mem = matMul( a->mem, b->mem, a->nrow, b->ncol, a->ncol, a->type, b->type );
+    r->extra = matMul( a->extra, b->extra, a->nrow, b->ncol, a->ncol, a->type, b->type );
     r->location = LOCDEV;
     r->value.f = NULL;
     type( out ) = T_MATRIX;
@@ -589,7 +589,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     r->ncol = a->nrow;
     r->nrow = a->ncol;
     r->type = T_FLOAT;
-    r->mem = matTranspose( a->mem, a->ncol , a->nrow );
+    r->extra = matTranspose( a->extra, a->ncol , a->nrow );
     r->location = LOCDEV;
     r->value.f = NULL;
     type( *out ) = T_MATRIX;
@@ -781,7 +781,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     
     matreqdev( m );
     line--;
-    mulScalarMatRow( m->mem, scalar, m->nrow, m->ncol, line );        
+    mulScalarMatRow( m->extra, scalar, m->nrow, m->ncol, line );        
     
     void * itoclear[2];
     itoclear[0] = i[0];
@@ -812,7 +812,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     }
     matreqdev( m );
     col--;
-    mulScalarMatCol( m->mem, scalar, m->nrow, m->ncol, col );        
+    mulScalarMatCol( m->extra, scalar, m->nrow, m->ncol, col );        
     
     void * itoclear[2];
     itoclear[0] = i[0];
@@ -839,11 +839,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         matrix_t * r = NULL;
         if( m->type == T_FLOAT ) {
             r = matrix_new(m->nrow, m->ncol, T_FLOAT);
-            r->mem = mulScalarVector( m->mem, scalar, m->nrow * m->ncol ); 
+            r->extra = mulScalarVector( m->extra, scalar, m->nrow * m->ncol ); 
             r->location = LOCDEV;
         } else if( m->type == T_COMPLEX ) {
             r = matrix_new(m->nrow, m->ncol, T_COMPLEX);
-            r->mem = mulScalarVector( m->mem, scalar, 2 * m->nrow * m->ncol ); 
+            r->extra = mulScalarVector( m->extra, scalar, 2 * m->nrow * m->ncol ); 
             r->location = LOCDEV;
         }
         
@@ -855,7 +855,7 @@ matrix_t * mul_complex_scalar_complex_mat( complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     matreqdev( m );
     r = matrix_new(m->nrow, m->ncol, T_COMPLEX);
-    r->mem = mulComplexScalarComplexVector( m->mem, s->re, s->im, 2 * m->nrow * m->ncol ); 
+    r->extra = mulComplexScalarComplexVector( m->extra, s->re, s->im, 2 * m->nrow * m->ncol ); 
     r->location = LOCDEV;
 
     return (void *) r;
@@ -865,7 +865,7 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     matreqdev( m );
     r = matrix_new(m->nrow, m->ncol, T_COMPLEX);
-    r->mem = mulComplexScalarVector( m->mem, s->re, s->im, 2 * m->nrow * m->ncol ); 
+    r->extra = mulComplexScalarVector( m->extra, s->re, s->im, 2 * m->nrow * m->ncol ); 
     r->location = LOCDEV;
 
     return (void *) r;
@@ -917,13 +917,13 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
             matreqdev( m );
             
             if( m->type == T_FLOAT && v->type == T_FLOAT ) {
-                r->extra = (void*)matVecMul3( m->mem, (cl_mem)v->extra, m->ncol, m->nrow );
+                r->extra = (void*)matVecMul3( m->extra, (cl_mem)v->extra, m->ncol, m->nrow );
                 r->location = LOCDEV;
                 r->value.f = NULL;
                 r->len = m->nrow;
                 r->type = T_FLOAT;
             } else if( m->type == T_COMPLEX && v->type == T_COMPLEX ) {
-                r->extra = (void*)matVecMul3Complex( m->mem, (cl_mem)v->extra, m->ncol, m->nrow );
+                r->extra = (void*)matVecMul3Complex( m->extra, (cl_mem)v->extra, m->ncol, m->nrow );
                 r->location = LOCDEV;
                 r->value.f = NULL;
                 r->len = m->nrow;
@@ -1391,7 +1391,7 @@ void ** init ( void ** i, int * status ) {
     
     matrix_t * m = (matrix_t *) vvalue( *in[0] );
     matreqdev( m );
-    luDecomp( m->mem, m->nrow );  
+    luDecomp( m->extra, m->nrow );  
     vvalue( out ) = (void *) m;
     m->location = LOCDEV;
     m->type = T_FLOAT;
@@ -1419,7 +1419,7 @@ void ** init ( void ** i, int * status ) {
     M->ncol = A->ncol;
     M->location = LOCHOS; 
     matreqdev( M ); vecreqhost( b );
-    luDecomp( M->mem, M->nrow );  
+    luDecomp( M->extra, M->nrow );  
     matreqhost( M );
     
     double * x = (double *) malloc(A->nrow  * sizeof(double));

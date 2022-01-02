@@ -21,7 +21,7 @@ extern "C" {
     int                nrow;
     data_type          type;
     unsigned char    location;
-    cl_mem             mem;
+    void*             extra;
 } matrix_t;
 
 matrix_t * matrix_new( int nrow, int ncol, data_type type );
