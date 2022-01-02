@@ -34,8 +34,8 @@ typedef struct __smatrix_t {
             
     data_type        type;
     unsigned char    location;
-    cl_mem           mMem;
-    cl_mem           idxColMem;
+    void*           extra;
+    void*           idxColMem;
     
 
 } smatrix_t;

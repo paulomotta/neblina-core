@@ -365,14 +365,14 @@ void neblina_strtype( data_type type, char out[256] ) {
                 for(ii = 0;ii < len; ii++ )
                     printf("%lf\n", m->m[ii] );
                 */
-                m->mMem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->m, &status);
+                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->m, &status);
                 CLERR            
             } else {
                 int i;
                 float * tmp = (float *) malloc( sizeof(float) * len );
                 #pragma omp parallel for
                 for( i = 0; i < len; i++) tmp[i] = (float) m->m[i];
-                m->mMem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
+                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
                 CLERR
                 free( tmp );
             }

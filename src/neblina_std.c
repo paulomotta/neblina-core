@@ -555,7 +555,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     smatreqdev( a );
     matSquare( &outLin, &idxOutLin, 
                &outCol, &idxOutCol, 
-               a->mMem, a->idxColMem, 
+               a->extra, a->idxColMem, 
                mCol, idxCol, 
                maxcols, N );
     smatrix_t * ret = (smatrix_t *) malloc( sizeof(smatrix_t) );
@@ -564,7 +564,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     ret->maxcols = a->maxcols;
     ret->type = T_COMPLEX;
     ret->location = LOCDEV;
-    ret->mMem = outLin;
+    ret->extra = outLin;
     ret->idxColMem = idxOutLin;
     ret->idx_col = (int *) malloc(N * maxcols * sizeof(int));
     ret->m = (double *) malloc(2 * N * maxcols * sizeof(double));
@@ -937,14 +937,14 @@ matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * m){
                 smatreqdev( m );
                 if( m->type == T_FLOAT && v->type == T_FLOAT ) {
                         
-                    r->extra = (void*)sparseVecMul( m->mMem, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
+                    r->extra = (void*)sparseVecMul( m->extra, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
                     r->location = LOCDEV;
                     r->value.f = NULL;
                     r->len = m->nrow;
                     r->type = T_FLOAT;
                     
                 } else if( m->type == T_COMPLEX && v->type == T_COMPLEX ) {
-                    r->extra = (void*)sparseComplexVecMul( m->mMem, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
+                    r->extra = (void*)sparseComplexVecMul( m->extra, m->idxColMem, (cl_mem)v->extra, m->nrow, m->maxcols );
                     r->location = LOCDEV;
                     r->value.f = NULL;
                     r->len = m->nrow;

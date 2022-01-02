@@ -126,7 +126,7 @@ smatrix_t * smatrix_new( int nrow, int ncol, data_type type ) {
     memset( smatrix->icount, 0,smatrix->nrow * sizeof(int));    
 
     smatrix->smat = NULL;
-    smatrix->mMem = NULL;
+    smatrix->extra = NULL;
     smatrix->idxColMem = NULL;
     smatrix->m = NULL;
     smatrix->isPacked = 0;
@@ -269,12 +269,12 @@ void smatreqhost( smatrix_t * m ) {
         CLERR            
         if( clinfo.fp64 ) {
 
-            status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
+            status = clEnqueueReadBuffer (clinfo.q, m->extra, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
             CLERR
         } else {
             int i;
             float * tmp = (float *) malloc( sizeof(float) * len );
-            status = clEnqueueReadBuffer (clinfo.q, m->mMem, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
+            status = clEnqueueReadBuffer (clinfo.q, m->extra, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
             CLERR
             #pragma omp parallel for
             for( i = 0; i < len; i++) m->m[i] = tmp[i];
@@ -282,9 +282,9 @@ void smatreqhost( smatrix_t * m ) {
         }              
         clReleaseMemObject( m->idxColMem );
         CLERR                             
-        clReleaseMemObject( m->mMem );
+        clReleaseMemObject( m->extra );
         CLERR
-        m->mMem = NULL;
+        m->extra = NULL;
         m->idxColMem = NULL;
     }
 }
@@ -320,8 +320,8 @@ void smatrix_delete( smatrix_t * smatrix ) {
         free(smatrix->icount);
     }
 
-    if (smatrix->mMem != NULL) {
-        cl_int status = clReleaseMemObject( smatrix->mMem );
+    if (smatrix->extra != NULL) {
+        cl_int status = clReleaseMemObject( smatrix->extra );
         CLERR
     }
 
