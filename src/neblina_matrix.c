@@ -39,6 +39,15 @@ void matreqhost( matrix_t * m ) {
         int len = (m->type == T_COMPLEX) ? (2*m->ncol * m->nrow ) : (m->ncol * m->nrow);
         size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
         m->location = LOCHOS;
+        
+        if (m->value.f == NULL) {
+            if( m->type == T_FLOAT ) {
+                m->value.f = (double *) malloc( len * sizeof(double) );
+            } else {
+                m->value.f = (double *) malloc( len * COMPLEX_SIZE );
+            }
+        }
+        
         if( clinfo.fp64 ) {
             status = clEnqueueReadBuffer (clinfo.q, (cl_mem) m->extra, CL_TRUE, 0, len * size_type, m->value.f, 0, NULL, NULL);
             CLERR

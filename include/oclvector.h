@@ -80,11 +80,11 @@ cl_mem addVectorF(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     return outDev;
 }
 
-cl_mem addVectorFC(cl_mem v1Dev, cl_mem v2Dev, int n ) {
+cl_mem addVectorC(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     
     cl_int status;
     cl_mem outDev;
-    cl_kernel kernel = clkernels[KERMATADDFLOATCOMPLEX];
+    cl_kernel kernel = clkernels[KERMATADDCOMPLEX];
     outDev = clCreateBuffer(clinfo.c, CL_MEM_WRITE_ONLY, 2 * n*sizeof(double), NULL, &status);
     CLERR    
     status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);
@@ -101,6 +101,29 @@ cl_mem addVectorFC(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     CLERR 
     return outDev;
 }
+
+cl_mem addVectorFC(cl_mem v1Dev, cl_mem v2Dev, int n ) {
+    
+    cl_int status;
+    cl_mem outDev;
+    cl_kernel kernel = clkernels[KER_MAT_ADD_FLOAT_COMPLEX];
+    outDev = clCreateBuffer(clinfo.c, CL_MEM_WRITE_ONLY, 2 * n*sizeof(double), NULL, &status);
+    CLERR    
+    status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);
+    CLERR
+    status = clSetKernelArg (kernel, 1, sizeof(v1Dev), &v1Dev);
+    CLERR
+    
+    status = clSetKernelArg (kernel, 2, sizeof(v2Dev), &v2Dev);
+    CLERR
+    size_t globalWorkSize = n;
+    status = clEnqueueNDRangeKernel(clinfo.q, kernel, 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+    CLERR 
+    status = clFinish(clinfo.q);
+    CLERR 
+    return outDev;
+}
+
 cl_mem prodVector(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     
     cl_int status;
@@ -432,7 +455,7 @@ cl_mem matMul(  cl_mem m1Dev, cl_mem m2Dev, int nrows, int ncols, int qq, int at
         kernel = clkernels[KERMATMULCOMPLEX];
         ss = 2 * nrows*ncols*sizeof(double);    
     } else if( atype == T_FLOAT && btype == T_COMPLEX ) {
-        kernel = clkernels[KETMATMULFLOATCOMPLEX];
+        kernel = clkernels[KETMATMULCOMPLEX];
         ss = 2 * nrows*ncols*sizeof(double); 
     }
         

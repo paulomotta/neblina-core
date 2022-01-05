@@ -182,7 +182,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         if (b->type == T_FLOAT) {
             r->extra = (void*)addVectorF( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         } else if (b->type == T_COMPLEX) {
-            r->extra = (void*)addVectorFC( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
+            r->extra = (void*)addVectorC( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
         }
         return (void *) r;
 }
@@ -443,11 +443,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         r->location = LOCDEV;
     }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) {
         r = matrix_new(b->ncol,b->nrow,T_COMPLEX);
-        r->extra = addVectorF( a->extra, b->extra, 2 * b->nrow * b->ncol );
+        r->extra = addVectorC( a->extra, b->extra, 2 * b->nrow * b->ncol );
         r->location = LOCDEV;
     } else if((a->type == T_FLOAT && b->type == T_COMPLEX) ||
-              (a->type == T_COMPLEX && b->type == T_FLOAT)) { 
-     
+              (a->type == T_COMPLEX && b->type == T_FLOAT)) {
+        r = matrix_new(b->ncol,b->nrow,T_COMPLEX);
         r->ncol = b->ncol;
         r->nrow = b->nrow;
         r->type = T_COMPLEX;
@@ -489,11 +489,13 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     matrix_t * b = (matrix_t *) vvalue( *in[0] );
     matreqdev( a );matreqdev( b );
     object_t out;// = (object_t *) malloc( sizeof( object_t ) );
-    matrix_t * r = (matrix_t *) malloc( sizeof(matrix_t) );
+    matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) {
+        r = matrix_new(b->ncol,b->nrow,T_FLOAT);
         r->type = T_FLOAT; 
     } else if( (a->type == T_COMPLEX && b->type == T_COMPLEX) || 
              (a->type == T_FLOAT && b->type == T_COMPLEX) ) {
+        r = matrix_new(b->ncol,b->nrow,T_COMPLEX);
         r->type = T_COMPLEX;
     } else {
         runerror( "Invalid types for mat_mul\n" );
@@ -502,15 +504,12 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     r->ncol = b->ncol;
     r->nrow = a->nrow;
     
-    r->extra = matMul( a->extra, b->extra, a->nrow, b->ncol, a->ncol, a->type, b->type );
+    r->extra = (void *)matMul( (cl_mem)a->extra, (cl_mem)b->extra, a->nrow, b->ncol, a->ncol, a->type, b->type );
     r->location = LOCDEV;
     r->value.f = NULL;
-    type( out ) = T_MATRIX;
-    vvalue( out ) = (void *) r;
-    static void * ret[1];
-    ret[0] = (void *) &out;
-    clear_input(i, 2);
-    return ret;
+    
+    //clear_input(i, 2);
+    return (void *)r;
 }
 
  void ** neblina_mat_sqr( void ** i, int * s ) {

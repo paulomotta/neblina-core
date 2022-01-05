@@ -30,6 +30,12 @@ __kernel void addVectorComplex( __global real * out, __global const real * v1, _
     out[2*i+1] = v1[2*i+1] + v2[2*i+1];
 }
 
+__kernel void addVectorFloatComplex( __global real * out, __global const real * v1, __global const real * v2 ) {
+    int i = get_global_id(0);
+    out[2*i] = v1[i] + v2[2*i];
+    out[2*i+1] = v2[2*i+1];
+}
+
 __kernel void subVector( __global real * out, __global const real * v1, __global const real * v2 ) {
     int i = get_global_id(0); 
     out[i] = v1[i] - v2[i];

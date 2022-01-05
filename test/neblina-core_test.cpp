@@ -403,7 +403,7 @@ TEST_F(NeblinaCoreFixture, vec_sum) {
 
 }
 
-TEST_F(NeblinaCoreFixture, addVectorFC) {
+TEST_F(NeblinaCoreFixture, addVectorC) {
 
     int n = 3;
 
@@ -425,7 +425,7 @@ TEST_F(NeblinaCoreFixture, addVectorFC) {
 
     vecreqdev(r);
 
-    r->extra = addVectorFC((cl_mem)a->extra, (cl_mem)b->extra, b->len);
+    r->extra = addVectorC((cl_mem)a->extra, (cl_mem)b->extra, b->len);
 
     double * out = (double *) malloc(n * COMPLEX_SIZE);
     status = clEnqueueReadBuffer(clinfo.q, (cl_mem)r->extra, CL_TRUE, 0, n * COMPLEX_SIZE, out, 0, NULL, NULL);

@@ -125,6 +125,75 @@ TEST_F(MatrixFixture, mat_add_complex) {
     matrix_delete(b);
     matrix_delete(r);
 
+    
+}
+
+TEST_F(MatrixFixture, mat_add_complex_float) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_COMPLEX);
+    matrix_t * b = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            int idx = 2 * (i * b->ncol + j);
+            a->value.f[idx] = 3.;
+            a->value.f[idx + 1] = 3.;
+            b->value.f[i * b->ncol + j] = 2.;
+        }
+    }
+
+    object_t ** in = convertMatMatToObject(a, b);
+    
+    matrix_t * r = (matrix_t *) mat_add((void **) in, NULL);
+    
+    matreqhost(r);
+
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            int idx = 2 * (i * r->ncol + j);
+            EXPECT_EQ(5., r->value.f[idx]);
+            EXPECT_EQ(3., r->value.f[idx + 1]);
+        }
+    }
+    
+    matrix_delete(a);
+    matrix_delete(b);
+    matrix_delete(r);
+
+
+}
+
+TEST_F(MatrixFixture, mat_mul) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_FLOAT);
+    matrix_t * b = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            a->value.f[i * a->ncol + j] = 3.;
+            b->value.f[i * b->ncol + j] = 3.;
+        }
+    }
+
+    object_t ** in = convertMatMatToObject(a, b);
+    
+    matrix_t * r = (matrix_t *) mat_mul((void **) in, NULL);
+    
+    matreqhost(r);
+
+    for (int i = 0; i < r->ncol; i++) {
+        for (int j = 0; j < r->nrow; j++) {
+            EXPECT_EQ(27., r->value.f[i * r->ncol + j]);
+        }
+    }
+    matrix_delete(a);
+    matrix_delete(b);
+    matrix_delete(r);
+
 
 }
 

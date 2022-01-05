@@ -16,3 +16,8 @@ Makefile
 *.txt
 *.zip
 *.xml
+/nbproject/*.xml
+/include/CL_old
+matrix_test
+sparse_matrix_test
+/test1/
