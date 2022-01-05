@@ -16,24 +16,22 @@ void runerror( char * strerr ) {
     exit( 1 );
 }
 
-void ** vec_len( void ** i, int * status ) {
+int vec_len( void ** i, int * status ) {
     object_t out;
     object_t ** in = (object_t **) i;
-    type( out ) = T_INT;
+    int len = 0;
     if( type( *in[0] ) == T_VECTOR ) {
         vector_t * vec = (vector_t *)vvalue( *in[0] );
-        ivalue( out ) = vec->len;  
+        len = vec->len;  
     } else if( type( *in[0] ) == T_STRING ) {
-        ivalue( out ) = strlen( svalue( *in[0] ) );
+        len = strlen( svalue( *in[0] ) );
     } else if( type( *in[0] ) == T_LIST ) {
-        ivalue( out ) = list_len(  (list_t *) vvalue( *in[0] ) );
+        len = list_len(  (list_t *) vvalue( *in[0] ) );
     } else {
         runerror("invalid type input for function len()");      
     }
-    static void * ret[1];
-    clear_input(i, 1);
-    ret[0] = (void *) &out;
-    return ret;
+
+    return len;
 }
 
 

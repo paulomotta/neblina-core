@@ -21,7 +21,7 @@ extern "C" {
  object_t ** convertScaMatToObject(double s, matrix_t * a);
 
  void ** neblina_type   ( void ** i, int * status );
- void ** vec_len        ( void ** i, int * status );
+ int     vec_len        ( void ** i, int * status );
  void ** mat_len_col    ( void ** i, int * status );
  void ** mat_len_row    ( void ** i, int * status );
  void ** mat_mul_cpu    ( void ** i, int * status );
