@@ -40,6 +40,7 @@ extern "C" {
 #define KER_MUL_COMPLEX_SCALAR_COMPLEX_VET        28
 #define KER_MUL_FLOAT_SCALAR_COMPLEX_VET        29
 #define KER_MAT_ADD_FLOAT_COMPLEX 30
+#define KER_VET_SUB_COMPLEX        31
 
 #if DEBUGCL
     #define CLERR checkErrors (status, __FILE__, __LINE__); 

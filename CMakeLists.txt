@@ -42,8 +42,8 @@ add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c
                                  )
 target_link_libraries(neblina-core PRIVATE Threads::Threads ${OpenCL_LIBRARY})
 
-add_executable(neblina-core_test ${PROJECT_TEST_DIR}/neblina-core_test.cpp)
-target_link_libraries(neblina-core_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
+add_executable(vector_test ${PROJECT_TEST_DIR}/vector_test.cpp)
+target_link_libraries(vector_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
 
 add_executable(matrix_test ${PROJECT_TEST_DIR}/matrix_test.cpp)
 target_link_libraries(matrix_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
@@ -51,7 +51,7 @@ target_link_libraries(matrix_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${G
 add_executable(sparse_matrix_test ${PROJECT_TEST_DIR}/sparse_matrix_test.cpp)
 target_link_libraries(sparse_matrix_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
 
-add_test( neblina-core_test neblina-core_test )
+add_test( vector_test vector_test )
 add_test( matrix_test matrix_test )
 add_test( sparse_matrix_test sparse_matrix_test )
 

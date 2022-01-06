@@ -344,19 +344,16 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vecreqdev( a ); vecreqdev( b );
-        object_t * out = (object_t *) malloc( sizeof( object_t ) );
-        vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
-        r->extra = (void*)subVector( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
-        r->location = LOCDEV;
-        r->value.f = NULL;
-        r->len = b->len;
-        r->type = T_FLOAT;
-        type( *out ) = T_VECTOR;
-        vvalue( *out ) = (void *) r;
-        static void * ret[1];
-        ret[0] = (void *) out;
-        return ret;
+        vector_t * r = vector_new(b->len, b->type);
+        
+        vecreqdev( a ); vecreqdev( b ); vecreqdev( r );
+        
+        if (b->type == T_FLOAT) {
+            r->extra = (void*)subVector( (cl_mem)a->extra, (cl_mem)b->extra, b->len );
+        } else if (b->type == T_COMPLEX) {
+            r->extra = (void*)subVectorC( (cl_mem)a->extra, (cl_mem)b->extra, b->len ); 
+        }
+        return (void *) r;
 }
 
  void ** vec_add_cpu( void ** i, int * status ) {

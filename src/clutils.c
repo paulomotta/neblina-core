@@ -458,6 +458,8 @@ void InitCLEngine(int device) {
     CLERR
     clkernels[KER_MAT_ADD_FLOAT_COMPLEX] = clCreateKernel (clinfo.p, "addVectorFloatComplex", &status);
     CLERR
+    clkernels[KER_VET_SUB_COMPLEX] = clCreateKernel (clinfo.p, "subVectorComplex", &status);
+    CLERR
     
 }
 

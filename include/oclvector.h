@@ -270,6 +270,29 @@ cl_mem subVector(cl_mem v1Dev, cl_mem v2Dev, int n ) {
     return outDev;
 }
 
+cl_mem subVectorC(cl_mem v1Dev, cl_mem v2Dev, int n ) {
+    
+    cl_int status;
+    cl_mem outDev;
+    cl_kernel kernel = clkernels[KER_VET_SUB_COMPLEX];
+    outDev = clCreateBuffer(clinfo.c, CL_MEM_WRITE_ONLY, 2 * n*sizeof(double), NULL, &status);
+    CLERR    
+    status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);
+    CLERR
+    status = clSetKernelArg (kernel, 1, sizeof(v1Dev), &v1Dev);
+    CLERR
+    
+    status = clSetKernelArg (kernel, 2, sizeof(v2Dev), &v2Dev);
+    CLERR
+    size_t globalWorkSize = n;
+    status = clEnqueueNDRangeKernel(clinfo.q, kernel, 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+    CLERR 
+    status = clFinish(clinfo.q);
+    CLERR 
+    return outDev;
+}
+
+
 cl_mem mulScalarVector( cl_mem v1Dev, double scalar, int n ) {
     cl_int status;
     cl_mem outDev;
