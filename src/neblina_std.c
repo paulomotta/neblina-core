@@ -480,8 +480,8 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 }
  void ** mat_mul( void ** i, int * status ) {
     object_t ** in = (object_t **) i;
-    matrix_t * a = (matrix_t *) vvalue( *in[1] );
-    matrix_t * b = (matrix_t *) vvalue( *in[0] );
+    matrix_t * a = (matrix_t *) vvalue( *in[0] );
+    matrix_t * b = (matrix_t *) vvalue( *in[1] );
     matreqdev( a );matreqdev( b );
     object_t out;// = (object_t *) malloc( sizeof( object_t ) );
     matrix_t * r;

@@ -483,6 +483,7 @@ cl_mem matMul(  cl_mem m1Dev, cl_mem m2Dev, int nrows, int ncols, int qq, int at
     }
         
     size_t globalWorkSize [] = { nrows, ncols };
+    
     outDev = clCreateBuffer (clinfo.c, CL_MEM_WRITE_ONLY, ss, NULL, &status);
     CLERR    
     status = clSetKernelArg (kernel, 0, sizeof(outDev), &outDev);

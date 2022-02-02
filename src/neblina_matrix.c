@@ -75,3 +75,27 @@ void matreqdev ( matrix_t * v ) {
         movetodev( (void **) in, NULL );
     }
 }
+
+void matrix_set_real_value(matrix_t *  m, int i, int j, double r) {
+    m->value.f[i * m->ncol + j] = r;
+}
+
+double matrix_get_real_value(matrix_t *  m, int i, int j) {
+    return m->value.f[i * m->ncol + j];
+}
+
+void matrix_set_complex_value(matrix_t *  m, int i, int j, double r, double im) {
+    int idx = 2 * (i * m->ncol + j);
+    m->value.f[idx] = r;
+    m->value.f[idx + 1] = im;
+}
+
+double matrix_get_complex_real_value(matrix_t *  m, int i, int j){
+    int idx = 2 * (i * m->ncol + j);
+    return m->value.f[idx];
+}
+
+double matrix_get_complex_imaginary_value(matrix_t *  m, int i, int j){
+    int idx = 2 * (i * m->ncol + j);
+    return m->value.f[idx + 1];
+}

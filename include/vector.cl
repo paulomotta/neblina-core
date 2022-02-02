@@ -291,26 +291,33 @@ __kernel void matMul1(__global real * out, __global const real * m1, __global co
     out[i*ncol+j] = sum;    
 }
 
+int matrix_get_complex_real_index(int ncol, int i, int j){
+    return 2 * (i * ncol + j);
+}
+
 __kernel void matMulComplex(__global real * out, __global const real * m1, __global const real * m2, int ncol_m1) {
     int i = get_global_id(0);
     int j = get_global_id(1);
     int nrow = get_global_size(0);
     int ncol = get_global_size(1);
-    
+
     int k;
     real sumre = 0, sumim = 0;
     real re1, im1, re2, im2;
     for(k=0; k < ncol_m1; k++) {
-        re1 = m1[2*(i*ncol_m1+k)];
-        im1 = m1[2*(i*ncol_m1+k)+1];
+        int idx = matrix_get_complex_real_index(ncol,i,k);
+        re1 = m1[idx];
+        im1 = m1[idx+1];
         
-        re2 = m2[2*(k*ncol+j)];
-        im2 = m2[2*(k*ncol+j)+1];
+        idx = matrix_get_complex_real_index(ncol,k,j);
+        re2 = m2[idx];
+        im2 = m2[idx+1];
+
         sumre += re1*re2 - im1*im2;
         sumim += re1*im2 + re2*im1;
     }
-    out[2*(i*ncol+j)] = sumre;
-    out[2*(i*ncol+j)+1] = sumim;  
+    out[2*(i*ncol+j)] = sumre; 
+    out[2*(i*ncol+j)+1] = sumim; 
 }
 
 __kernel void matMulFloatComplex(__global real * out, __global const real * m1, __global const real * m2, int ncol_m1) {

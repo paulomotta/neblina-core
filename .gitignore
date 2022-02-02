@@ -20,4 +20,6 @@ Makefile
 /include/CL_old
 matrix_test
 sparse_matrix_test
+vector_test
 /test1/
+*.iml

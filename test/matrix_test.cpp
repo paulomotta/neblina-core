@@ -90,6 +90,51 @@ TEST_F(MatrixFixture, mat_add) {
 
 }
 
+TEST_F(MatrixFixture, mat_get_set_float) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_FLOAT);
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            matrix_set_real_value(a, i, j, (i + j) * 1.0);
+        }
+    }
+
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            EXPECT_EQ( (i + j) * 1.0, matrix_get_real_value(a, i, j));
+        }
+    }
+    matrix_delete(a);
+
+}
+
+TEST_F(MatrixFixture, mat_get_set_complex) {
+
+    int n = 3;
+
+    matrix_t * a = matrix_new(n, n, T_COMPLEX);
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            matrix_set_complex_value(a, i, j, i * 1.0, j * 1.0);
+        }
+    }
+
+
+    for (int i = 0; i < a->ncol; i++) {
+        for (int j = 0; j < a->nrow; j++) {
+            EXPECT_EQ( i * 1.0, matrix_get_complex_real_value(a, i, j));
+            EXPECT_EQ( j * 1.0, matrix_get_complex_imaginary_value(a, i, j));
+        }
+    }
+    matrix_delete(a);
+
+}
+
 TEST_F(MatrixFixture, mat_add_complex) {
 
     int n = 3;
@@ -190,6 +235,74 @@ TEST_F(MatrixFixture, mat_mul) {
             EXPECT_EQ(27., r->value.f[i * r->ncol + j]);
         }
     }
+    matrix_delete(a);
+    matrix_delete(b);
+    matrix_delete(r);
+
+
+}
+
+TEST_F(MatrixFixture, mat_mul_withComplex) {
+
+    int n = 2;
+
+    matrix_t * a = matrix_new(n, n, T_COMPLEX);
+    matrix_t * b = matrix_new(n, n, T_COMPLEX);
+
+    matrix_set_complex_value(a, 0, 0, 17., 1.0);
+    matrix_set_complex_value(b, 0, 0, 60., 0.0);
+
+    matrix_set_complex_value(a, 0, 1, -3., 0.0);
+    matrix_set_complex_value(b, 0, 1, -4., 1.0);
+    
+    matrix_set_complex_value(a, 1, 0, -7., 1.0);
+    matrix_set_complex_value(b, 1, 0, -12., 0.0);
+    
+    matrix_set_complex_value(a, 1, 1, 1., 0.0);
+    matrix_set_complex_value(b, 1, 1, 0., 1.0);
+    
+    
+    /*matrix_t * r = matrix_new(n, n, T_COMPLEX);
+    
+    for(int i=0; i < a->nrow; i++) {
+        for (int j=0; j < a->ncol; j++) {
+            double sumre = 0;
+            double sumim = 0;
+            for (int k=0; k < a->ncol; k++) {
+                double re1 = matrix_get_complex_real_value(a,i,k);
+                double im1 = matrix_get_complex_imaginary_value(a,i,k);
+                
+                double re2 = matrix_get_complex_real_value(b,k,j);
+                double im2 = matrix_get_complex_imaginary_value(b,k,j);
+                
+                sumre += re1*re2 - im1*im2;
+                sumim += re1*im2 + re2*im1;
+            }
+            matrix_set_complex_value(r, i, j, sumre, sumim);
+        }
+    }*/
+    
+    object_t ** in = convertMatMatToObject(a, b);
+    
+    matrix_t * r = (matrix_t *) mat_mul((void **) in, NULL);
+    
+    matreqhost(r);
+    
+//    [[1056.+60.j  -69.+10.j]
+// [-432.+60.j   27.-10.j]]
+
+    EXPECT_EQ(1056., matrix_get_complex_real_value(r,0,0));
+    EXPECT_EQ(60., matrix_get_complex_imaginary_value(r,0,0));
+
+    EXPECT_EQ(-69., matrix_get_complex_real_value(r,0,1));
+    EXPECT_EQ(10., matrix_get_complex_imaginary_value(r,0,1));
+
+    EXPECT_EQ(-432., matrix_get_complex_real_value(r,1,0));
+    EXPECT_EQ(60., matrix_get_complex_imaginary_value(r,1,0));
+
+    EXPECT_EQ(27., matrix_get_complex_real_value(r,1,1));
+    EXPECT_EQ(-10., matrix_get_complex_imaginary_value(r,1,1));
+
     matrix_delete(a);
     matrix_delete(b);
     matrix_delete(r);
