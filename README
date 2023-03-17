@@ -1,0 +1,26 @@
+# Neblina-core
+For more info, access
+[Paulo Motta's webpage](https://paulomotta.pro.br/wp/2021/05/01/pyneblina-and-neblina-core/).
+
+# Requirements
+- OpenCL
+- Google test framework
+
+# Installation
+To install neblina-core, run the following commands.
+Note that it may be necessary to restart the computer.
+```bash
+git clone https://github.com/paulomotta/neblina-core
+cd neblina-core
+cmake .
+make
+sudo make install
+sudo ldconfig
+```
+- [ ] TODO: create script?
+
+## Testing Installation
+To check whether the installation was successful or not,
+run the unitary tests by executing ``./neblina-core_test``
+(gtest required).
+If any of the tests failed, please contact the developer(s).
