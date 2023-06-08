@@ -1,6 +1,426 @@
 #include "libneblina.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <bridge_api.h>
+#include <dlfcn.h>
+
+
+void load_function(bridge_manager_t *manager, void (**function_ptr)(), char* function_name, int index){
+    
+    void (*externalFunction)() = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+/*
+ 
+ Falta definir 
+ * como passar a pasta de instalacao dos plugins
+ * como passar o nome dos plugins existentes
+ * como passar do python para o C o indice do dispositivo
+ * como fazer testes unitarios com as funcoes de cada plugin carregado
+ * * no opencl bridge esta ok ja, precisa criar uma implementacao do cpu bridge
+ * como implementar o release plugins
+ * 
+ * 
+ */
+void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
+    char *plugin_name;
+    char *result;
+    
+    manager->bridges[index].plugin_handle = dlopen(library_name, RTLD_NOW);
+    if (!manager->bridges[index].plugin_handle) {
+        printf("Cannot load %s: %s", plugin_name, dlerror());
+    }
+
+    load_function(manager, &(manager->bridges[index].addVectorF_f), "addVectorF", index);
+//    manager->bridges[index].addVectorF_f = dlsym(manager->bridges[index].plugin_handle, "addVectorF");
+//    char *result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].addVectorC_f), "addVectorC", index);
+//    manager->bridges[index].addVectorC_f = dlsym(manager->bridges[index].plugin_handle, "addVectorC");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].addVectorFC_f), "addVectorFC", index);
+//    manager->bridges[index].addVectorFC_f = dlsym(manager->bridges[index].plugin_handle, "addVectorFC");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].vecAddOff_f), "vecAddOff", index);
+//    manager->bridges[index].vecAddOff_f = dlsym(manager->bridges[index].plugin_handle, "vecAddOff");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].mulScalarVector_f), "mulScalarVector", index);
+//    manager->bridges[index].mulScalarVector_f = dlsym(manager->bridges[index].plugin_handle, "mulScalarVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].subVector_f), "subVector", index);
+//    manager->bridges[index].subVector_f = dlsym(manager->bridges[index].plugin_handle, "subVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].subVectorC_f), "subVectorC", index);
+//    manager->bridges[index].subVectorC_f = dlsym(manager->bridges[index].plugin_handle, "subVectorC");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].vecConjugate_f), "vecConjugate", index);
+//    manager->bridges[index].vecConjugate_f = dlsym(manager->bridges[index].plugin_handle, "vecConjugate");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].prodVector_f), "prodVector", index);
+//    manager->bridges[index].prodVector_f = dlsym(manager->bridges[index].plugin_handle, "prodVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].prodComplexVector_f), "prodComplexVector", index);
+//    manager->bridges[index].prodComplexVector_f = dlsym(manager->bridges[index].plugin_handle, "prodComplexVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].sumVector_f), "sumVector", index);
+//    manager->bridges[index].sumVector_f = dlsym(manager->bridges[index].plugin_handle, "sumVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].normVector_f), "normVector", index);
+//    manager->bridges[index].normVector_f = dlsym(manager->bridges[index].plugin_handle, "normVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].dotVector_f), "dotVector", index);
+//    manager->bridges[index].dotVector_f = dlsym(manager->bridges[index].plugin_handle, "dotVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].dotVectorComplex_f), "dotVectorComplex", index);
+//    manager->bridges[index].dotVectorComplex_f = dlsym(manager->bridges[index].plugin_handle, "dotVectorComplex");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].vector_new), "vector_new", index);
+//    manager->bridges[index].vector_new = dlsym(manager->bridges[index].plugin_handle, "vector_new");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].vector_delete), "vector_delete", index);
+//    manager->bridges[index].vector_delete = dlsym(manager->bridges[index].plugin_handle, "vector_delete");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].vecreqdev), "vecreqdev", index);
+//    manager->bridges[index].vecreqdev = dlsym(manager->bridges[index].plugin_handle, "vecreqdev");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].vecreqhost), "vecreqhost", index);
+//    manager->bridges[index].vecreqhost = dlsym(manager->bridges[index].plugin_handle, "vecreqhost");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].InitEngine_f), "InitEngine", index);
+//    manager->bridges[index].InitEngine_f = dlsym(manager->bridges[index].plugin_handle, "InitEngine");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].StopEngine_f), "StopEngine", index);
+//    manager->bridges[index].StopEngine_f = dlsym(manager->bridges[index].plugin_handle, "StopEngine");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].list_len), "list_len", index);
+//    manager->bridges[index].list_len = dlsym(manager->bridges[index].plugin_handle, "list_len");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].complex_new), "complex_new", index);
+//    manager->bridges[index].complex_new = dlsym(manager->bridges[index].plugin_handle, "complex_new");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].complex_delete), "complex_delete", index);
+//    manager->bridges[index].complex_delete = dlsym(manager->bridges[index].plugin_handle, "complex_delete");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].mulComplexScalarVector_f), "mulComplexScalarVector", index);
+//    manager->bridges[index].mulComplexScalarVector_f = dlsym(manager->bridges[index].plugin_handle, "mulComplexScalarVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].mulComplexScalarComplexVector_f), "mulComplexScalarComplexVector", index);
+//    manager->bridges[index].mulComplexScalarComplexVector_f = dlsym(manager->bridges[index].plugin_handle, "mulComplexScalarComplexVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].mulFloatScalarComplexVector_f), "mulFloatScalarComplexVector", index);
+//    manager->bridges[index].mulFloatScalarComplexVector_f = dlsym(manager->bridges[index].plugin_handle, "mulFloatScalarComplexVector");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_new), "matrix_new", index);
+//    manager->bridges[index].matrix_new = dlsym(manager->bridges[index].plugin_handle, "matrix_new");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_delete), "matrix_delete", index);
+//    manager->bridges[index].matrix_delete = dlsym(manager->bridges[index].plugin_handle, "matrix_delete");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_get_complex_imaginary_value), "matrix_get_complex_imaginary_value", index);
+//    manager->bridges[index].matrix_get_complex_imaginary_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_complex_imaginary_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_get_complex_real_value), "matrix_get_complex_real_value", index);
+//    manager->bridges[index].matrix_get_complex_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_complex_real_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_get_real_value), "matrix_get_real_value", index);
+//    manager->bridges[index].matrix_get_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_real_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_set_complex_value), "matrix_set_complex_value", index);
+//    manager->bridges[index].matrix_set_complex_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_complex_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matrix_set_real_value), "matrix_set_real_value", index);
+//    manager->bridges[index].matrix_set_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_real_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matreqdev), "matreqdev", index);
+//    manager->bridges[index].matreqdev = dlsym(manager->bridges[index].plugin_handle, "matreqdev");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matreqhost), "matreqhost", index);
+//    manager->bridges[index].matreqhost = dlsym(manager->bridges[index].plugin_handle, "matreqhost");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matMul_f), "matMul", index);
+//    manager->bridges[index].matMul_f = dlsym(manager->bridges[index].plugin_handle, "matMul");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matVecMul3_f), "matVecMul3", index);
+//    manager->bridges[index].matVecMul3_f = dlsym(manager->bridges[index].plugin_handle, "matVecMul3");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].matVecMul3Complex_f), "matVecMul3Complex", index);
+//    manager->bridges[index].matVecMul3Complex_f = dlsym(manager->bridges[index].plugin_handle, "matVecMul3Complex");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_new), "smatrix_new", index);
+//    manager->bridges[index].smatrix_new = dlsym(manager->bridges[index].plugin_handle, "smatrix_new");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_t_clear), "smatrix_t_clear", index);
+//    manager->bridges[index].smatrix_t_clear = dlsym(manager->bridges[index].plugin_handle, "smatrix_t_clear");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_load_double), "smatrix_load_double", index);
+//    manager->bridges[index].smatrix_load_double = dlsym(manager->bridges[index].plugin_handle, "smatrix_load_double");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_set_real_value), "smatrix_set_real_value", index);
+//    manager->bridges[index].smatrix_set_real_value = dlsym(manager->bridges[index].plugin_handle, "smatrix_set_real_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_pack), "smatrix_pack", index);
+//    manager->bridges[index].smatrix_pack = dlsym(manager->bridges[index].plugin_handle, "smatrix_pack");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_set_complex_value), "smatrix_set_complex_value", index);
+//    manager->bridges[index].smatrix_set_complex_value = dlsym(manager->bridges[index].plugin_handle, "smatrix_set_complex_value");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatrix_pack_complex), "smatrix_pack_complex", index);
+//    manager->bridges[index].smatrix_pack_complex = dlsym(manager->bridges[index].plugin_handle, "smatrix_pack_complex");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+   
+    load_function(manager, &(manager->bridges[index].smatrix_load_complex), "smatrix_load_complex", index);
+//    manager->bridges[index].smatrix_load_complex = dlsym(manager->bridges[index].plugin_handle, "smatrix_load_complex");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+
+    load_function(manager, &(manager->bridges[index].smatrix_delete), "smatrix_delete", index);
+//    manager->bridges[index].smatrix_delete = dlsym(manager->bridges[index].plugin_handle, "smatrix_delete");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatreqhost), "smatreqhost", index);
+//    manager->bridges[index].smatreqhost = dlsym(manager->bridges[index].plugin_handle, "smatreqhost");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].smatreqdev), "smatreqdev", index);
+//    manager->bridges[index].smatreqdev = dlsym(manager->bridges[index].plugin_handle, "smatreqdev");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].slist_add), "slist_add", index);
+//    manager->bridges[index].slist_add = dlsym(manager->bridges[index].plugin_handle, "slist_add");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].slist_clear), "slist_clear", index);
+//    manager->bridges[index].slist_clear = dlsym(manager->bridges[index].plugin_handle, "slist_clear");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].sparseVecMul_f), "sparseVecMul", index);
+//    manager->bridges[index].sparseVecMul_f = dlsym(manager->bridges[index].plugin_handle, "sparseVecMul");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+    load_function(manager, &(manager->bridges[index].sparseComplexVecMul_f), "sparseComplexVecMul", index);
+//    manager->bridges[index].sparseComplexVecMul_f = dlsym(manager->bridges[index].plugin_handle, "sparseComplexVecMul");
+//    result = dlerror();
+//    if (result) {
+//        printf("Cannot find init in %s: %s", plugin_name, result);
+//    }
+    
+
+}
+
+void release_plugin(bridge_manager_t *manager, int index) {
+
+    //TODO currently we cannot close the library because the Python interpreter still needs the 
+    //deletion functions
+    
+//    int error = dlclose(manager->bridges[index].plugin_handle);
+//    
+//    if (error) {
+//        printf("Cannot load : %s", dlerror());
+//    }
+
+}
 void ord_smat( double * m, int * idx, int max, int N ) {
     int i, j, tmpi, k;
     double tmpd;
@@ -103,25 +523,6 @@ void print_data_type( data_type t ) {
             printf("type: INDEFINED\n");
     };
 }
-slist * slist_add( slist * l, int col, double re, double im ) {
-    slist * nlist = (slist *) malloc( sizeof(slist) );
-    nlist->col = col;
-    nlist->re = re;
-    nlist->im = im;
-    nlist->next = l;
-    return nlist;
-}
-
-
-void slist_clear( slist * l ) {
-    if( l == NULL )
-        return;    
-    do {    
-        slist * tmp = l->next;
-        free( l );
-        l = tmp;                
-    } while( l != NULL );
-}
 
 matrix_t * matrix_multiply( matrix_t * a, matrix_t * b ) {
     matrix_t * ret = (matrix_t *) malloc( sizeof( matrix_t ) );
@@ -176,7 +577,7 @@ matrix_t * matrix_multiply( matrix_t * a, matrix_t * b ) {
     return ret;
 }
 
-vector_t * smatvec_multiply( smatrix_t * a, vector_t * b ) {
+vector_t * smatvec_multiply( bridge_manager_t *m, int index, smatrix_t * a, vector_t * b ) {
     vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
     ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
     
@@ -306,84 +707,84 @@ void neblina_strtype( data_type type, char out[256] ) {
 }
 
  void ** movetodev( void ** i, int * s ) {
-        cl_int status;
+        //cl_int status;
         object_t ** in = (object_t **) i;
         
-        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
+        //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
         
         if( type( *in[0] ) == T_VECTOR ) {
-            vector_t * v = (vector_t *) vvalue( *in[0] );
-            int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
-            if( v->location == LOCDEV )
-                return (void **) NULL;
-            v->location = LOCDEV;
-            if( clinfo.fp64 ) {
-                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, v->value.f, &status);
-                CLERR
-            } else {
-                int i;
-                float * tmp = (float *) malloc( sizeof(float) * len );
-                #pragma omp parallel for
-                for( i = 0; i < len; i++){ tmp[i] = v->value.f[i]; /*printf("VV-> %f\n", tmp[i] );*/ }
-                
-                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
-                CLERR
-                free( tmp );
-            }
+//            vector_t * v = (vector_t *) vvalue( *in[0] );
+//            int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
+//            if( v->location == LOCDEV )
+//                return (void **) NULL;
+//            v->location = LOCDEV;
+//            if( clinfo.fp64 ) {
+//                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, v->value.f, &status);
+//                CLERR
+//            } else {
+//                int i;
+//                float * tmp = (float *) malloc( sizeof(float) * len );
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++){ tmp[i] = v->value.f[i]; /*printf("VV-> %f\n", tmp[i] );*/ }
+//                
+//                v->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
+//                CLERR
+//                free( tmp );
+//            }
             
         } else if ( type( *in[0] ) == T_MATRIX ) {
-            matrix_t * m = (matrix_t *) vvalue( *in[0] );
-            int len = ( m->type == T_COMPLEX ) ? (2 * m->ncol * m->nrow) : (m->ncol * m->nrow);
-            if( m->location == LOCDEV )
-                return (void **) NULL;
-            m->location = LOCDEV;
-            if( clinfo.fp64 ) {
-                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->value.f, &status);
-                CLERR
-            } else {
-                int i;
-                float * tmp = (float *) malloc( sizeof(float) * len );
-                #pragma omp parallel for
-                for( i = 0; i < len; i++) tmp[i] = (float) m->value.f[i];
-                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
-                CLERR
-                free( tmp );
-            
-            }
+//            matrix_t * m = (matrix_t *) vvalue( *in[0] );
+//            int len = ( m->type == T_COMPLEX ) ? (2 * m->ncol * m->nrow) : (m->ncol * m->nrow);
+//            if( m->location == LOCDEV )
+//                return (void **) NULL;
+//            m->location = LOCDEV;
+//            if( clinfo.fp64 ) {
+//                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->value.f, &status);
+//                CLERR
+//            } else {
+//                int i;
+//                float * tmp = (float *) malloc( sizeof(float) * len );
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++) tmp[i] = (float) m->value.f[i];
+//                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
+//                CLERR
+//                free( tmp );
+//            
+//            }
         } else if ( type( *in[0] ) == T_SMATRIX ) {
             
-            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
-            if( m->location == LOCDEV )
-                return (void **) NULL;
-            int len = ( m->type == T_COMPLEX ) ? (2 * m->maxcols * m->nrow) : (m->maxcols * m->nrow);
-            m->location = LOCDEV;
-            m->idxColMem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, m->maxcols * m->nrow * sizeof(int), m->idx_col, &status);
-            CLERR
-            if( clinfo.fp64 ) {          
-                /*printf("Tot dev\n");
-                int ii;
-                for(ii = 0;ii < len; ii++ )
-                    printf("%lf\n", m->m[ii] );
-                */
-                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->m, &status);
-                CLERR            
-            } else {
-                int i;
-                float * tmp = (float *) malloc( sizeof(float) * len );
-                #pragma omp parallel for
-                for( i = 0; i < len; i++) tmp[i] = (float) m->m[i];
-                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
-                CLERR
-                free( tmp );
-            }
+//            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
+//            if( m->location == LOCDEV )
+//                return (void **) NULL;
+//            int len = ( m->type == T_COMPLEX ) ? (2 * m->maxcols * m->nrow) : (m->maxcols * m->nrow);
+//            m->location = LOCDEV;
+//            m->idxColMem = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, m->maxcols * m->nrow * sizeof(int), m->idx_col, &status);
+//            CLERR
+//            if( clinfo.fp64 ) {          
+//                /*printf("Tot dev\n");
+//                int ii;
+//                for(ii = 0;ii < len; ii++ )
+//                    printf("%lf\n", m->m[ii] );
+//                */
+//                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, len * size_type, m->m, &status);
+//                CLERR            
+//            } else {
+//                int i;
+//                float * tmp = (float *) malloc( sizeof(float) * len );
+//                #pragma omp parallel for
+//                for( i = 0; i < len; i++) tmp[i] = (float) m->m[i];
+//                m->extra = clCreateBuffer( clinfo.c,  CL_MEM_READ_ONLY |  CL_MEM_COPY_HOST_PTR, len * size_type, tmp, &status);
+//                CLERR
+//                free( tmp );
+//            }
         } 
         return (void **) NULL;
 }
 
  void ** movetohost( void ** i, int * s ) {
-        cl_int status;
+        //cl_int status;
         object_t ** in = (object_t **) i;
-        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
+        //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
         if( type( *in[0] ) == T_VECTOR ) {
 //            vector_t * v = (vector_t *) vvalue( *in[0] );
 //           
