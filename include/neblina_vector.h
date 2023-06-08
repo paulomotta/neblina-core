@@ -21,10 +21,10 @@ typedef struct __vector_t {
     void*              extra;
 } vector_t;
 
-vector_t * vector_new( int len, data_type type ) ;
-void vector_delete( vector_t * v ) ;
-void vecreqhost( vector_t * v );
-void vecreqdev ( vector_t * v );
+//vector_t * vector_new( int len, data_type type ) ;
+//void vector_delete( vector_t * v ) ;
+//void vecreqhost( vector_t * v );
+//void vecreqdev ( vector_t * v );
 
 
 #ifdef __cplusplus

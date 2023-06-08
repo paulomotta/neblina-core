@@ -25,15 +25,15 @@ extern "C" {
     void*             extra;
 } matrix_t;
 
-matrix_t * matrix_new( int nrow, int ncol, data_type type );
-void matrix_delete( matrix_t * v );
-void matreqhost( matrix_t * v );
-void matreqdev ( matrix_t * v );
-void matrix_set_real_value(matrix_t *  m, int i, int j, double r);
-double matrix_get_real_value(matrix_t *  m, int i, int j);
-void matrix_set_complex_value(matrix_t *  m, int i, int j, double r, double im);
-double matrix_get_complex_real_value(matrix_t *  m, int i, int j);
-double matrix_get_complex_imaginary_value(matrix_t *  m, int i, int j);
+//matrix_t * matrix_new( int nrow, int ncol, data_type type );
+//void matrix_delete( matrix_t * v );
+//void matreqhost( matrix_t * v );
+//void matreqdev ( matrix_t * v );
+//void matrix_set_real_value(matrix_t *  m, int i, int j, double r);
+//double matrix_get_real_value(matrix_t *  m, int i, int j);
+//void matrix_set_complex_value(matrix_t *  m, int i, int j, double r, double im);
+//double matrix_get_complex_real_value(matrix_t *  m, int i, int j);
+//double matrix_get_complex_imaginary_value(matrix_t *  m, int i, int j);
 
 
 
