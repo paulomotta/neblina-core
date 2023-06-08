@@ -16,7 +16,12 @@ Makefile
 *.txt
 *.zip
 *.xml
-/nbproject/*.xml
+nbproject/*.xml
+nbproject/private/private.xml
+nbproject/configurations.xml
+nbproject/private/configurations.xml
+nbproject/private/private.xml
+nbproject/project.xml
 /include/CL_old
 matrix_test
 sparse_matrix_test
