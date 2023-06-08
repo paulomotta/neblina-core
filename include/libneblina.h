@@ -11,6 +11,7 @@ extern "C" {
 #include "neblina_matrix.h"
 #include "neblina_smatrix.h"
 #include "neblina_complex.h"
+#include "bridge_api.h"
 //#include "clutils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,15 +29,13 @@ void ord_smat( double * m, int * idx, int max, int N );
 void smatrix_line_to_col( double * out, int * idx_out, double * in, int * idx_in, int max, int N );
 void print_data_type( data_type t );
 
-
+void load_plugin(bridge_manager_t *m, char* library_name, int idx);
+void release_plugin(bridge_manager_t *m, int idx);
 
 void ** neblina_sparse( void ** i, int * status );
 
-slist * slist_add( slist * l, int col, double re, double im );
-
-void slist_clear( slist * l );
 matrix_t * matrix_multiply( matrix_t * a, matrix_t * b );
-vector_t * smatvec_multiply( smatrix_t * a, vector_t * b );
+vector_t * smatvec_multiply( bridge_manager_t *m, int index, smatrix_t * a, vector_t * b );
 vector_t * matvec_multiply( matrix_t * a, vector_t * b );
 
 void clear_input( void ** i, int nparams );
