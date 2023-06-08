@@ -6,12 +6,12 @@ extern "C" {
 #include "neblina.h"
 
 
-list_t * list_new(); 
-list_t * list_append( list_t * L, object_t o ) ;
-
-int list_len( list_t * L ) ;
-
-object_t list_get( list_t * L, int i) ;
+//list_t * list_new(); 
+//list_t * list_append( list_t * L, object_t o ) ;
+//
+//int list_len( list_t * L ) ;
+//
+//object_t list_get( list_t * L, int i) ;
 
   #ifdef	__cplusplus
 }

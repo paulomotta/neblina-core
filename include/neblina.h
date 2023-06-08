@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#include <CL/opencl.h>
-#include "clutils.h"
 #define SYM_NO_ERROR             0x000000
 #define SYM_ALREADY_IN_TABLE     0x000001
 #define SYM_MEM_FAIL             0x000002
@@ -15,6 +13,8 @@ extern "C" {
 #define FUNC_ALREADY_IN_TABLE    0x100001
 #define FUNC_INVALID_PARAMS      0x000001
 #define NEB_PRESENT "Neblina Parallel Runtime Interpreter %s, (C) LNCC 2010-2015.\n", 1
+#define LOCHOS 1
+#define LOCDEV 128
 
 typedef struct __func_info_t {
     char name[256];                           // Name
@@ -33,6 +33,7 @@ typedef enum  {
         T_STRING,
         T_INT,
         T_FLOAT,
+        T_COMPLEX,
         T_ADDR,
         T_NDEF,
         T_LIST,
@@ -43,7 +44,6 @@ typedef enum  {
         T_SMATRIX,
         T_RMATRIX,
         T_FILE,
-        T_COMPLEX,
         T_ANY
 } data_type;
 
@@ -100,12 +100,12 @@ typedef struct __slist {
 
 } slist;
 
-typedef struct __rmatrix_t {
-    int nrow;
-    int ncol;
-    cl_kernel kernel;
-    int id;
-}rmatrix_t;    
+//typedef struct __rmatrix_t {
+//    int nrow;
+//    int ncol;
+//    cl_kernel kernel;
+//    int id;
+//}rmatrix_t;    
     
 
 typedef struct __symbol_table_t {

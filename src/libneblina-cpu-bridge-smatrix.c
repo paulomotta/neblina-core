@@ -2,6 +2,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+slist * slist_add( slist * l, int col, double re, double im ) {
+    slist * nlist = (slist *) malloc( sizeof(slist) );
+    nlist->col = col;
+    nlist->re = re;
+    nlist->im = im;
+    nlist->next = l;
+    return nlist;
+}
+
+
+void slist_clear( slist * l ) {
+    if( l == NULL )
+        return;    
+    do {    
+        slist * tmp = l->next;
+        free( l );
+        l = tmp;                
+    } while( l != NULL );
+}
 
 void smatrix_pack(smatrix_t * m){
     //essa parte seta os valores que foram lidos do arquivo em smat para o formato de 
@@ -260,40 +279,19 @@ void smatrix_load_complex( smatrix_t * m, FILE * f ) {
 }
 
 void smatreqhost( smatrix_t * m ) {
-    cl_int status;
     if( m->location != LOCHOS ) {
-        size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);
         m->location = LOCHOS;
-        int len = (m->type == T_COMPLEX) ? (2*m->maxcols * m->nrow  ) : ( m->maxcols * m->nrow );
-        status = clEnqueueReadBuffer (clinfo.q, m->idxColMem, CL_TRUE, 0, m->maxcols * m->nrow * sizeof(int), m->idx_col, 0, NULL, NULL);
-        CLERR            
-        if( clinfo.fp64 ) {
-
-            status = clEnqueueReadBuffer (clinfo.q, m->extra, CL_TRUE, 0, len * size_type, m->m, 0, NULL, NULL);
-            CLERR
-        } else {
-            int i;
-            float * tmp = (float *) malloc( sizeof(float) * len );
-            status = clEnqueueReadBuffer (clinfo.q, m->extra, CL_TRUE, 0, len * size_type, tmp, 0, NULL, NULL);
-            CLERR
-            #pragma omp parallel for
-            for( i = 0; i < len; i++) m->m[i] = tmp[i];
-            free( tmp );
-        }              
-        clReleaseMemObject( m->idxColMem );
-        CLERR                             
-        clReleaseMemObject( m->extra );
-        CLERR
+        m->idx_col = m->idxColMem;
+        m->m = m->extra;
         m->extra = NULL;
         m->idxColMem = NULL;
     }
 }
-void smatreqdev ( smatrix_t * v ) {
-    if( v->location != LOCDEV ) {
-        object_t * in[1]; 
-        object_t o; vvalue( o ) = v; o.type = T_SMATRIX;
-        in[0] = &o; 
-        movetodev( (void **) in, NULL );
+void smatreqdev ( smatrix_t * m ) {
+    if( m->location != LOCDEV ) {
+        m->location = LOCDEV;
+        m->idxColMem = m->idx_col;
+        m->extra = m->m;
     }
 }
 
@@ -320,19 +318,10 @@ void smatrix_delete( smatrix_t * smatrix ) {
         free(smatrix->icount);
     }
 
-    if (smatrix->extra != NULL) {
-        cl_int status = clReleaseMemObject( smatrix->extra );
-        CLERR
-    }
-
-    if (smatrix->idxColMem != NULL) {
-        cl_int status = clReleaseMemObject( smatrix->idxColMem );
-        CLERR
-    }
-
     if (smatrix->m != NULL) {
         free (smatrix->m);
     }
 
     free (smatrix);
 }
+

@@ -40,18 +40,22 @@ typedef struct __smatrix_t {
 
 } smatrix_t;
 
-smatrix_t * smatrix_new( int nrow, int ncol, data_type type );
-void smatrix_t_clear( smatrix_t * m );
-void smatrix_load_double( smatrix_t * m, FILE * f );
-void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
-void smatrix_pack(smatrix_t * m);
-void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im);
-void smatrix_pack_complex(smatrix_t * m);
+//smatrix_t * smatrix_new( int nrow, int ncol, data_type type );
+//void smatrix_t_clear( smatrix_t * m );
+//void smatrix_load_double( smatrix_t * m, FILE * f );
+//void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r);
+//void smatrix_pack(smatrix_t * m);
+//void smatrix_set_complex_value(smatrix_t *  m, int i, int j, double r, double im);
+//void smatrix_pack_complex(smatrix_t * m);
+//
+//void smatrix_load_complex( smatrix_t * m, FILE * f );
+//void smatrix_delete( smatrix_t * v );
+//void smatreqhost( smatrix_t * v ) ;
+//void smatreqdev ( smatrix_t * v );
+//
+//slist * slist_add( slist * l, int col, double re, double im );
+//void slist_clear( slist * l );
 
-void smatrix_load_complex( smatrix_t * m, FILE * f );
-void smatrix_delete( smatrix_t * v );
-void smatreqhost( smatrix_t * v ) ;
-void smatreqdev ( smatrix_t * v );
 
 
 #ifdef __cplusplus

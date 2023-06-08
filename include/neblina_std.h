@@ -9,6 +9,7 @@ extern "C" {
 #include "neblina_matrix.h"
 #include "neblina_smatrix.h"
 #include "neblina_complex.h"
+#include "bridge_api.h"
     
 #define new_str(i) (char *) malloc( sizeof(char)*(i))
 
@@ -21,47 +22,47 @@ extern "C" {
  object_t ** convertScaMatToObject(double s, matrix_t * a);
 
  void ** neblina_type   ( void ** i, int * status );
- int     vec_len        ( void ** i, int * status );
+ int     vec_len        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_add        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_prod       ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_conj       ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_sub        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_add_off    ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_add_off2   ( void ** i, int * status );
+ void ** vec_mulsc      ( bridge_manager_t *m, int index, void ** i, int * status ); 
+ vector_t * vec_mul_complex_scalar ( bridge_manager_t *m, int index, complex_t * s, vector_t * a); 
+ vector_t * mul_complex_scalar_complex_vec( bridge_manager_t *m, int index, complex_t * s, vector_t * a); 
+ vector_t * mul_float_scalar_complex_vec( bridge_manager_t *m, int index, double d, vector_t * a); 
+ void ** vec_sum        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_norm       ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** vec_dot        ( bridge_manager_t *m, int index, void ** i, int * status );
  void ** mat_len_col    ( void ** i, int * status );
  void ** mat_len_row    ( void ** i, int * status );
- void ** mat_mul_cpu    ( void ** i, int * status );
- void ** mat_mul        ( void ** i, int * status );
- void ** vec_add        ( void ** i, int * status );
- void ** vec_prod       ( void ** i, int * status );
- void ** vec_conj       ( void ** i, int * status );
- void ** vec_sub        ( void ** i, int * status );
- void ** vec_sub_cpu    ( void ** i, int * status );
- void ** vec_add_cpu    ( void ** i, int * status );
- void ** mat_add        ( void ** i, int * status ); 
- void ** vec_add_off    ( void ** i, int * status );
- void ** vec_add_off2   ( void ** i, int * status );
- void ** mat_add_cpu    ( void ** i, int * status );
- void ** mat_sub        ( void ** i, int * status );
- void ** mat_sub_cpu    ( void ** i, int * status );
- void ** vec_mulsc      ( void ** i, int * status ); 
- vector_t * vec_mul_complex_scalar ( complex_t * s, vector_t * a); 
- vector_t * mul_complex_scalar_complex_vec( complex_t * s, vector_t * a); 
- vector_t * mul_float_scalar_complex_vec( double d, vector_t * a); 
- matrix_t * mul_complex_scalar_complex_mat( complex_t * s, matrix_t * a);
- matrix_t * mul_complex_scalar_float_mat( complex_t * s, matrix_t * a);
- void ** vec_mulsc_cpu  ( void ** i, int * status );
- void ** mat_mulsc      ( void ** i, int * status ); 
- void ** mat_mulscrow   ( void ** i, int * status );
- void ** mat_mulsccol   ( void ** i, int * status );
- void ** mat_mulsc_cpu  ( void ** i, int * status );
+ void ** mat_mul        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** mat_add        ( bridge_manager_t *m, int index, void ** i, int * status ); 
+ void ** mat_sub        ( bridge_manager_t *m, int index, void ** i, int * status );
+ matrix_t * mul_complex_scalar_complex_mat( bridge_manager_t *m, int index, complex_t * s, matrix_t * a);
+ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *m, int index, complex_t * s, matrix_t * a);
+ void ** mat_mulsc      ( bridge_manager_t *m, int index, void ** i, int * status ); 
+ void ** mat_mulscrow   ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** mat_mulsccol   ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** mat_transp     ( bridge_manager_t *m, int index, void ** i, int * status );
  void ** matvec_mul1    ( void ** i, int * status );
  void ** matvec_mul2    ( void ** i, int * status );
- void ** matvec_mul3    ( void ** i, int * status );
+ void ** matvec_mul3    ( bridge_manager_t *m, int index, void ** i, int * status );
+
+ void ** vec_sub_cpu    ( void ** i, int * status );
+ void ** vec_add_cpu    ( void ** i, int * status );
+ void ** mat_mul_cpu    ( void ** i, int * status );
+ void ** mat_add_cpu    ( void ** i, int * status );
+ void ** mat_sub_cpu    ( void ** i, int * status );
+ void ** vec_mulsc_cpu  ( void ** i, int * status );
+ void ** mat_mulsc_cpu  ( void ** i, int * status );
  void ** matvec_mul_cpu ( void ** i, int * status );
  void ** smatvec_mul_cpu( void ** i, int * status );
- void ** mat_transp     ( void ** i, int * status );
  void ** mat_transp_cpu ( void ** i, int * status );
- void ** vec_sum        ( void ** i, int * status );
  void ** vec_sum_cpu    ( void ** i, int * status );
-
- void ** vec_norm       ( void ** i, int * status );
  void ** vec_norm_cpu   ( void ** i, int * status );
- void ** vec_dot        ( void ** i, int * status );
  void ** vec_dot_cpu    ( void ** i, int * status );
  void ** toint          ( void ** i, int * status );
  void ** tostr          ( void ** i, int * status );

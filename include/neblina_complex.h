@@ -19,8 +19,8 @@ typedef struct __complex_t {
 } complex_t;
 
 
-complex_t * complex_new( double real, double imaginary ) ;
-void complex_delete( complex_t * c ) ;
+//complex_t * complex_new( double real, double imaginary ) ;
+//void complex_delete( complex_t * c ) ;
 
 
 #ifdef __cplusplus
