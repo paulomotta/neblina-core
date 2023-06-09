@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "libneblina.h"
-#include "clutils.h"
 #include "bridge_api.h"
 #include "neblina_std.h"
 //#include "neblina_vector.h"
