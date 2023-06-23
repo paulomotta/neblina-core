@@ -28,3 +28,12 @@ sparse_matrix_test
 vector_test
 /test1/
 *.iml
+neblina_test
+coverage-html/*
+DrMemory-Linux*/*
+nbproject/*
+coverage.info
+nbproject/configurations.xml
+nbproject/project.xml
+nbproject/private/configurations.xml
+nbproject/private/private.xml
