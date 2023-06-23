@@ -1,4 +1,4 @@
-    #ifndef __NEBLINAVECTOROCL
+#ifndef __NEBLINAVECTOROCL
 #define __NEBLINAVECTOROCL
 #define  BLOCK_DIM 16
 
@@ -24,6 +24,7 @@ void luDecomp(void* v1Dev, int n ) {
 
 double * addVectorF( double * v1, double * v2, int n ) {
     double * out = (double *) malloc( n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         //printf("%f %f\n",v1[i] , v2[i]);
         out[i] = v1[i] + v2[i];
@@ -36,6 +37,7 @@ double * addVectorF( double * v1, double * v2, int n ) {
 void* addVectorC(double* v1, double* v2, int n ) {
     
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = v1[2*i] + v2[2*i];
         out[2*i+1] = v1[2*i+1] + v2[2*i+1];
@@ -46,6 +48,7 @@ void* addVectorC(double* v1, double* v2, int n ) {
 
 void* addVectorFC(double* v1, double* v2, int n ) {
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = v1[i] + v2[2*i];
         out[2*i+1] = v2[2*i+1];
@@ -56,6 +59,7 @@ void* addVectorFC(double* v1, double* v2, int n ) {
 
 void* prodVector(double* v1, double* v2, int n ) {
     double * out = (double *) malloc( n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[i] = v1[i] * v2[i];
     }
@@ -70,6 +74,7 @@ void* vecConj(void* v1Dev, int n ) {
 
 void* vecConjugate(double* v1, int n ) {
     double * out = (double *) malloc(2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = v1[2*i];
         out[2*i+1] = -v1[2*i+1];
@@ -86,7 +91,8 @@ void* vecAddOff(double* v1, int offset, int parts ) {
     size_t n = parts * offset;
 
     double * out = (double *) malloc( offset * sizeof(double) );
-    for (int i=0; i<n; i++) {
+    // #pragma omp parallel for
+    for (int i=0; i < offset; i++) {
         double s = 0;
         for(int l=0; l < parts; l++ ) {
             int idx = i + l * offset;
@@ -100,6 +106,7 @@ void* vecAddOff(double* v1, int offset, int parts ) {
 void* prodComplexVector(double* v1, double* v2, int n ) {
     
     double * out = (double *) malloc(2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         int idx_re = 2*i;
         int idx_im = 2*i+1;
@@ -112,6 +119,7 @@ void* prodComplexVector(double* v1, double* v2, int n ) {
 
 void* subVector(double* v1, double* v2, int n ) {
     double * out = (double *) malloc( n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         //printf("%f %f\n",v1[i] , v2[i]);
         out[i] = v1[i] - v2[i];
@@ -123,6 +131,7 @@ void* subVector(double* v1, double* v2, int n ) {
 void* subVectorC(double* v1, double* v2, int n ) {
     
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = v1[2*i] - v2[2*i];
         out[2*i+1] = v1[2*i+1] - v2[2*i+1];
@@ -134,6 +143,7 @@ void* subVectorC(double* v1, double* v2, int n ) {
 
 void* mulScalarVector( double* v1, double scalar, int n ) {
     double * out = (double *) malloc( n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[i] = scalar * v1[i];
     }
@@ -143,6 +153,7 @@ void* mulScalarVector( double* v1, double scalar, int n ) {
 
 void* mulComplexScalarVector( double* v1, double real, double imaginary, int n ) {
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = real * v1[i];
         out[2*i+1] = imaginary;
@@ -153,6 +164,7 @@ void* mulComplexScalarVector( double* v1, double real, double imaginary, int n )
 
 void* mulComplexScalarComplexVector( double* v1, double real, double imaginary, int n ) {
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = real * v1[2*i];
         out[2*i+1] = imaginary * v1[2*i+1];
@@ -163,6 +175,7 @@ void* mulComplexScalarComplexVector( double* v1, double real, double imaginary, 
 
 void* mulFloatScalarComplexVector( double* v1, double real, int n ) {
     double * out = (double *) malloc( 2 * n * sizeof(double) );
+    // #pragma omp parallel for
     for (int i=0; i<n; i++) {
         out[2*i] = real * v1[2*i];
         out[2*i+1] = v1[2*i+1];
@@ -211,6 +224,7 @@ int matrix_get_complex_imag_index(int ncol, int i, int j){
 void* matMulFloat(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) {
     
     double * out = (double *) malloc( nrows * ncols * sizeof(double) );
+    #pragma omp parallel for collapse(2)
     for (int i=0; i<nrows; i++) {
         for(int j=0; j < ncols; j++) {
             double sum = 0;
@@ -231,6 +245,7 @@ void* matMulFloat(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) 
 void* matMulComplex(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) {
     
     double * out = (double *) malloc( 2 * nrows * ncols * sizeof(double) );
+    #pragma omp parallel for collapse(2)
     for (int i=0; i<nrows; i++) {
         for(int j=0; j < ncols; j++) {
             int k;
@@ -260,6 +275,7 @@ void* matMulComplex(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 
 void* matMulFloatComplex(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) {
     
     double * out = (double *) malloc( 2 * nrows * ncols * sizeof(double) );
+    #pragma omp parallel for collapse(2)
     for (int i=0; i<nrows; i++) {
         for(int j=0; j < ncols; j++) {
             int k;
@@ -318,6 +334,7 @@ void* matVecMul3(  double* mat, double* vec, int ncols, int nrows ) {
     
     double * out = (double *) malloc( nrows * sizeof(double) );
     
+    #pragma omp parallel for collapse(2)
     for (int i=0; i<nrows; i++) {
         for(int j=0; j < ncols; j++) {
             double sum = 0;
@@ -351,38 +368,74 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
 //    }
 //    vec_out[row] = sum;
     
-    return (void *)NULL;
+    double * vec_out = (double *) malloc( nrows * maxCols * sizeof(double) );
+    double sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
+    double * m = (double *) mDev;
+    double * vec_in = (double *) vDev;
+    int * col_idx = (int *) idxCol;
+
+    for (size_t idx = 0; idx < nrows; idx++)
+    {
+        int row = idx,i, col, idxt;
+        for (i = 0; i < maxCols; i++) {
+            idxt = (row * maxCols) + i;         
+            col = col_idx[idxt];
+            if( col == -1 )
+                continue;
+            re_m = m[idxt];
+            // im_m = m[2*idxt+1]; 
+            re_v = vec_in[col];
+            // im_v = vec_in[2*col+1];    
+            sum_re += re_m*re_v - im_m*im_v;
+            // sum_im += re_m*im_v + im_m*re_v; 
+        }
+        vec_out[row] = sum_re;
+        // vec_out[2*row+1] = sum_im;
+        
+        
+    }
+           
+    printf("fim smat \n");
+    return (void *)vec_out;
 }
 void* sparseComplexVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols ) {
-//   const int idx = get_global_id(0);
-//    if( idx >= nrows )
-//        return;
-//        
-//    real sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
-//    int row = idx,i, col, idxt;
-//    for (i = 0; i < maxcols; i++) {
-//        idxt = (row * maxcols) + i;         
-//        col = col_idx[idxt];
-//        if( col == -1 )
-//            continue;
-//        re_m = m[2*idxt];
-//        im_m = m[2*idxt+1]; 
-//        re_v = vec_in[2*col];
-//        im_v = vec_in[2*col+1];    
-//        sum_re += re_m*re_v - im_m*im_v;
-//        sum_im += re_m*im_v + im_m*re_v; 
-//    }
-//    vec_out[2*row] = sum_re;
-//    vec_out[2*row+1] = sum_im;
-    
-    return (void *)NULL;
+
+    double * vec_out = (double *) malloc( 2 * nrows * maxCols * sizeof(double) );
+    double sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
+    double * m = (double *) mDev;
+    double * vec_in = (double *) vDev;
+    int * col_idx = (int *) idxCol;
+
+    for (size_t idx = 0; idx < nrows; idx++)
+    {
+        int row = idx,i, col, idxt;
+        for (i = 0; i < maxCols; i++) {
+            idxt = (row * maxCols) + i;         
+            col = col_idx[idxt];
+            if( col == -1 )
+                continue;
+            re_m = m[2*idxt];
+            im_m = m[2*idxt+1]; 
+            re_v = vec_in[2*col];
+            im_v = vec_in[2*col+1];    
+            sum_re += re_m*re_v - im_m*im_v;
+            sum_im += re_m*im_v + im_m*re_v; 
+        }
+        vec_out[2*row] = sum_re;
+        vec_out[2*row+1] = sum_im;
+        
+        
+    }
+           
+    printf("fim smat \n");
+    return (void *)vec_out;
 }
 
 void* matVecMul3Complex(  double* mat, double* vec, int ncols, int nrows ) {
     
-    printf("matVecMul3Complex 1\n");
+    // printf("matVecMul3Complex 1 ---------\n");
     double * out = (double *) malloc( 2 * nrows * sizeof(double) );
-    printf("matVecMul3Complex 2\n");
+    // printf("matVecMul3Complex 2\n");
     
     #pragma omp parallel for collapse(2)
     for (int i=0; i<nrows; i++) {
@@ -391,7 +444,7 @@ void* matVecMul3Complex(  double* mat, double* vec, int ncols, int nrows ) {
             double sumre = 0, sumim = 0;
             double re1, im1, re2, im2;
             for(int k=0; k < ncols; k++) {
-    //printf("matVecMul3Complex 3 i=%d j=%d k=%d\n",i,j,k);
+    // printf("matVecMul3Complex 3 i=%d j=%d k=%d\n",i,j,k);
                 int idx = matrix_get_complex_real_index(ncols,i,k);
                 re1 = mat[idx];
                 im1 = mat[idx+1];
@@ -400,19 +453,20 @@ void* matVecMul3Complex(  double* mat, double* vec, int ncols, int nrows ) {
                 re2 = vec[idx];
                 im2 = vec[idx+1];
 
-//                printf("i=%d j=%d k=%d re1=%f im1=%f re2=%f im2=%f",i,j,k,re1,im1,re2,im2);
+                // printf("i=%d j=%d k=%d re1=%f im1=%f re2=%f im2=%f",i,j,k,re1,im1,re2,im2);
                 sumre += re1*re2 - im1*im2;
                 sumim += re1*im2 + re2*im1;
             }
-    //printf("matVecMul3Complex 4 i=%d j=%d \n",i,j);
+    // printf("matVecMul3Complex 4 i=%d j=%d \n",i,j);
             int idx_out = 2 * j; //matrix_get_complex_real_index(ncols,i,j);
             out[idx_out] = sumre; 
             out[idx_out+1] = sumim;
-            // printf("idx=%d re=%f im=%f\n",j,sumre, sumim);
-    //printf("matVecMul3Complex 5 i=%d j=%d \n",i,j);
+    //         printf("idx=%d re=%f im=%f\n",j,sumre, sumim);
+            // printf("idx_out=%d re=%f im=%f\n",idx_out,out[idx_out], out[idx_out+1]);
+    // printf("matVecMul3Complex 5 i=%d j=%d \n",i,j);
         }    
     }
-    printf("matVecMul3Complex 3\n");
+    // printf("matVecMul3Complex 3 #########\n");
     return out;
 }
 
