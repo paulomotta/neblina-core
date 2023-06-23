@@ -524,139 +524,139 @@ void print_data_type( data_type t ) {
     };
 }
 
-matrix_t * matrix_multiply( matrix_t * a, matrix_t * b ) {
-    matrix_t * ret = (matrix_t *) malloc( sizeof( matrix_t ) );
-    int i, j, k;
-    int nrow = a->nrow;
-    int ncol = b->ncol;
+// matrix_t * matrix_multiply( matrix_t * a, matrix_t * b ) {
+//     matrix_t * ret = (matrix_t *) malloc( sizeof( matrix_t ) );
+//     int i, j, k;
+//     int nrow = a->nrow;
+//     int ncol = b->ncol;
 
-    if( type(*a) == T_FLOAT && type(*b) == T_FLOAT ) {
-        ret->value.f = (double *) malloc( nrow * ncol * sizeof( double ) );
-        double * tmp = (double *) malloc( ncol * sizeof( double ) );
-        double sum;
-        for( i = 0; i < nrow; i++ ) {
+//     if( type(*a) == T_FLOAT && type(*b) == T_FLOAT ) {
+//         ret->value.f = (double *) malloc( nrow * ncol * sizeof( double ) );
+//         double * tmp = (double *) malloc( ncol * sizeof( double ) );
+//         double sum;
+//         for( i = 0; i < nrow; i++ ) {
             
-            for( j = 0; j < ncol; j++ ) {
-                sum = 0;          
-                for( k = 0; k < b->nrow; k++ )
-                    sum += a->value.f[i*a->ncol + k]*b->value.f[k*b->ncol + j];
-                ret->value.f[i*ncol + j] = sum;            
-            }
+//             for( j = 0; j < ncol; j++ ) {
+//                 sum = 0;          
+//                 for( k = 0; k < b->nrow; k++ )
+//                     sum += a->value.f[i*a->ncol + k]*b->value.f[k*b->ncol + j];
+//                 ret->value.f[i*ncol + j] = sum;            
+//             }
             
-        }
-        ret->type       = T_FLOAT;        
+//         }
+//         ret->type       = T_FLOAT;        
         
-    } else if( type(*a) == T_INT && type(*b) == T_INT ) {
-        ret->value.i = (int *) malloc( nrow * ncol * sizeof( int ) );
-        int * tmp = (int *) malloc( ncol * sizeof( int ) );
-        int sum;
-        int ii = 0;
-        for( i = 0; i < nrow; i++ ) {
+//     } else if( type(*a) == T_INT && type(*b) == T_INT ) {
+//         ret->value.i = (int *) malloc( nrow * ncol * sizeof( int ) );
+//         int * tmp = (int *) malloc( ncol * sizeof( int ) );
+//         int sum;
+//         int ii = 0;
+//         for( i = 0; i < nrow; i++ ) {
 
-            ii = i*a->ncol;
-            for( j = 0; j < ncol; j++ ) {
-                sum = 0;                
-                for( k = 0; k < b->nrow; k++ )
-                    tmp[k] = b->value.i[k*b->ncol + j];
-                for( k = 0; k < b->nrow; k++ )
-                    sum += a->value.i[ii + k]*tmp[k];
-                ret->value.i[i*ncol + j] = sum;
-            }
+//             ii = i*a->ncol;
+//             for( j = 0; j < ncol; j++ ) {
+//                 sum = 0;                
+//                 for( k = 0; k < b->nrow; k++ )
+//                     tmp[k] = b->value.i[k*b->ncol + j];
+//                 for( k = 0; k < b->nrow; k++ )
+//                     sum += a->value.i[ii + k]*tmp[k];
+//                 ret->value.i[i*ncol + j] = sum;
+//             }
             
-        }
-        ret->type       = T_INT;
-        free( tmp );
-    } else if( type(*a) == T_FLOAT && type(*b) == T_INT ) {
-        ret->value.f = (double *) malloc( nrow * ncol * sizeof( double ) );
-    } else {
+//         }
+//         ret->type       = T_INT;
+//         free( tmp );
+//     } else if( type(*a) == T_FLOAT && type(*b) == T_INT ) {
+//         ret->value.f = (double *) malloc( nrow * ncol * sizeof( double ) );
+//     } else {
 
-    }
-    ret->nrow       = nrow;
-    ret->ncol       = ncol;
+//     }
+//     ret->nrow       = nrow;
+//     ret->ncol       = ncol;
 
-    return ret;
-}
+//     return ret;
+// }
 
-vector_t * smatvec_multiply( bridge_manager_t *m, int index, smatrix_t * a, vector_t * b ) {
-    vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
-    ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
+// vector_t * smatvec_multiply( bridge_manager_t *m, int index, smatrix_t * a, vector_t * b ) {
+//     vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
+//     ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
     
-    int nrows = a->nrow;
-    int maxcols = a->maxcols;
-    int idx,i;
-    for(idx=0; idx < nrows; idx++ ) {
-//        printf("idx=%d\n",idx);
-        if( idx >= nrows ) //?
-            return NULL;
+//     int nrows = a->nrow;
+//     int maxcols = a->maxcols;
+//     int idx,i;
+//     for(idx=0; idx < nrows; idx++ ) {
+// //        printf("idx=%d\n",idx);
+//         if( idx >= nrows ) //?
+//             return NULL;
             
-        double sum = 0.0f;
-        int row = idx;
-        for (i = 0; i < maxcols; i++) {
-//            printf("row=%d maxcols=%d i=%d result=%d ",row,maxcols,i,((row * maxcols) + i));
-            int col = a->idx_col[((row * maxcols) + i)];
-//            printf("col=%d ",col);
-            if( col == -1 )
-                break;
-            double value = a->m[((row * maxcols) + i)];
-//            printf("value= %lf \n",value);
-            sum += value * b->value.f[col]; 
-        }
-        ret->value.f[row] = sum;
-    }
-    ret->type       = T_FLOAT;
-    ret->len        = a->nrow;
-    ret->extra        = NULL;
-    ret->location   = LOCHOS;
-    return ret;
-}
+//         double sum = 0.0f;
+//         int row = idx;
+//         for (i = 0; i < maxcols; i++) {
+// //            printf("row=%d maxcols=%d i=%d result=%d ",row,maxcols,i,((row * maxcols) + i));
+//             int col = a->idx_col[((row * maxcols) + i)];
+// //            printf("col=%d ",col);
+//             if( col == -1 )
+//                 break;
+//             double value = a->m[((row * maxcols) + i)];
+// //            printf("value= %lf \n",value);
+//             sum += value * b->value.f[col]; 
+//         }
+//         ret->value.f[row] = sum;
+//     }
+//     ret->type       = T_FLOAT;
+//     ret->len        = a->nrow;
+//     ret->extra        = NULL;
+//     ret->location   = LOCHOS;
+//     return ret;
+// }
 
 
-vector_t * matvec_multiply( matrix_t * a, vector_t * b ) {
-    vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
-    int i, j, k;
+// vector_t * matvec_multiply( matrix_t * a, vector_t * b ) {
+//     vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
+//     int i, j, k;
    
-    if( type(*a) == T_FLOAT && type(*b) == T_FLOAT ) {
-        ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
-        double sum;
-        for( i = 0; i < a->nrow; i++ ) {
-            sum = 0.0; 
-            for( j = 0; j < a->ncol; j++ ) {
-                sum += a->value.f[i*a->ncol + j]*b->value.f[j];                            
-            }
-            ret->value.f[i] = sum;
+//     if( type(*a) == T_FLOAT && type(*b) == T_FLOAT ) {
+//         ret->value.f = (double *) malloc( a->nrow * sizeof( double ) );
+//         double sum;
+//         for( i = 0; i < a->nrow; i++ ) {
+//             sum = 0.0; 
+//             for( j = 0; j < a->ncol; j++ ) {
+//                 sum += a->value.f[i*a->ncol + j]*b->value.f[j];                            
+//             }
+//             ret->value.f[i] = sum;
             
-        }
-        ret->type       = T_FLOAT;
-        ret->len        = a->nrow;       
+//         }
+//         ret->type       = T_FLOAT;
+//         ret->len        = a->nrow;       
         
-    } else if( type(*a) == T_COMPLEX && type(*b) == T_COMPLEX ) { 
-        double sumR = 0.0;
-        double sumC = 0.0;
-        ret->value.f = (double *) malloc( 2* a->nrow * sizeof( double ) );
-        int idx = 0;
-        for( i = 0; i < a->nrow; i++ ) {
-            sumR = 0.0;
-            sumC = 0.0; 
-            for( j = 0; j < a->ncol; j++ ) {
-                idx = 2*(i*a->ncol + j);
-                sumR += a->value.f[idx]*b->value.f[2*j] - a->value.f[idx+1]*b->value.f[2*j+1];
-                sumC += a->value.f[idx]*b->value.f[2*j+1] + a->value.f[idx+1]*b->value.f[2*j] ;
-            }
-            ret->value.f[2*i] = sumR;
-            ret->value.f[2*i+1] = sumC;
-        }
+//     } else if( type(*a) == T_COMPLEX && type(*b) == T_COMPLEX ) { 
+//         double sumR = 0.0;
+//         double sumC = 0.0;
+//         ret->value.f = (double *) malloc( 2* a->nrow * sizeof( double ) );
+//         int idx = 0;
+//         for( i = 0; i < a->nrow; i++ ) {
+//             sumR = 0.0;
+//             sumC = 0.0; 
+//             for( j = 0; j < a->ncol; j++ ) {
+//                 idx = 2*(i*a->ncol + j);
+//                 sumR += a->value.f[idx]*b->value.f[2*j] - a->value.f[idx+1]*b->value.f[2*j+1];
+//                 sumC += a->value.f[idx]*b->value.f[2*j+1] + a->value.f[idx+1]*b->value.f[2*j] ;
+//             }
+//             ret->value.f[2*i] = sumR;
+//             ret->value.f[2*i+1] = sumC;
+//         }
         
-        ret->type       = T_COMPLEX;
-        ret->len        = a->nrow;
+//         ret->type       = T_COMPLEX;
+//         ret->len        = a->nrow;
     
-    } else {
-        fprintf(stderr, "Invalid types for matrix vector multiplication");
-        exit( 1 );
-    }
+//     } else {
+//         fprintf(stderr, "Invalid types for matrix vector multiplication");
+//         exit( 1 );
+//     }
     
 
-    return ret;
-}
+//     return ret;
+// }
 
 
 void clear_input( void ** i, int nparams ) {
