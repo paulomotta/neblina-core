@@ -50,8 +50,8 @@ TEST_F(MatrixFixture, mat_add) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < b->ncol; i++) {
         for (int j = 0; j < b->nrow; j++) {
@@ -71,6 +71,7 @@ TEST_F(MatrixFixture, mat_add) {
             EXPECT_EQ(6., r->value.f[i * r->ncol + j]);
         }
     }
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].matrix_delete(r);
@@ -82,7 +83,7 @@ TEST_F(MatrixFixture, mat_get_set_float) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -104,7 +105,7 @@ TEST_F(MatrixFixture, mat_get_set_complex) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -127,8 +128,8 @@ TEST_F(MatrixFixture, mat_add_complex) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 
     for (int i = 0; i < b->ncol; i++) {
         for (int j = 0; j < b->nrow; j++) {
@@ -153,7 +154,7 @@ TEST_F(MatrixFixture, mat_add_complex) {
             EXPECT_EQ(6., r->value.f[idx + 1]);
         }
     }
-    
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].matrix_delete(r);
@@ -165,8 +166,8 @@ TEST_F(MatrixFixture, mat_add_complex_float) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < b->ncol; i++) {
         for (int j = 0; j < b->nrow; j++) {
@@ -190,7 +191,7 @@ TEST_F(MatrixFixture, mat_add_complex_float) {
             EXPECT_EQ(3., r->value.f[idx + 1]);
         }
     }
-    
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].matrix_delete(r);
@@ -202,8 +203,8 @@ TEST_F(MatrixFixture, mat_mul) {
 
     int n = 3;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < b->ncol; i++) {
         for (int j = 0; j < b->nrow; j++) {
@@ -223,6 +224,7 @@ TEST_F(MatrixFixture, mat_mul) {
             EXPECT_EQ(27., r->value.f[i * r->ncol + j]);
         }
     }
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].matrix_delete(r);
@@ -234,8 +236,8 @@ TEST_F(MatrixFixture, mat_mul_withComplex) {
 
     int n = 2;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 
     m.bridges[idx].matrix_set_complex_value(a, 0, 0, 17., 1.0);
     m.bridges[idx].matrix_set_complex_value(b, 0, 0, 60., 0.0);
@@ -291,6 +293,7 @@ TEST_F(MatrixFixture, mat_mul_withComplex) {
     EXPECT_EQ(27., m.bridges[idx].matrix_get_complex_real_value(r,1,1));
     EXPECT_EQ(-10., m.bridges[idx].matrix_get_complex_imaginary_value(r,1,1));
 
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].matrix_delete(r);
@@ -303,7 +306,7 @@ TEST_F(MatrixFixture, scalar_mat_float) {
     int n = 3;
     
     double scalar = 2.0;
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -323,6 +326,7 @@ TEST_F(MatrixFixture, scalar_mat_float) {
         }
     }
 
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(r);
 }
@@ -332,7 +336,7 @@ TEST_F(MatrixFixture, scalar_mat_complex) {
     int n = 3;
     
     double scalar = 2.0;
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -356,6 +360,7 @@ TEST_F(MatrixFixture, scalar_mat_complex) {
         }
     }
 
+    delete_object_array(in, 2);
     m.bridges[idx].matrix_delete(a);
     m.bridges[idx].matrix_delete(r);
 }
@@ -365,7 +370,7 @@ TEST_F(MatrixFixture, complex_scalar_complex_mat) {
     int n = 3;
     
     complex_t * scalar = m.bridges[idx].complex_new(2.0, 2.0);
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -398,7 +403,7 @@ TEST_F(MatrixFixture, complex_scalar_float_mat) {
     int n = 3;
     
     complex_t * scalar = m.bridges[idx].complex_new(2.0, 2.0);
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     for (int i = 0; i < a->ncol; i++) {
         for (int j = 0; j < a->nrow; j++) {
@@ -430,8 +435,8 @@ TEST_F(MatrixFixture, matvec_mul3_WithFloat) {
 
     int n = 3;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT);
+    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
     vector_t * r;
 
     for (int i = 0; i < a->len; i++) {
@@ -453,6 +458,7 @@ TEST_F(MatrixFixture, matvec_mul3_WithFloat) {
     for (int i = 0; i < r->len; i++) {
         EXPECT_EQ(18., r->value.f[i]);
     }
+    delete_object_array(in, 2);
     m.bridges[idx].vector_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].vector_delete(r);
@@ -464,9 +470,9 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex) {
     int n = 700;
 
 //    printf("matvec_mul3_WithComplex\n");
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX);
-    printf("aqui teste vector\n");
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    // printf("aqui teste vector\n");
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 //    printf("aqui teste matrix\n");
     vector_t * r;
 
@@ -487,32 +493,34 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex) {
     gettimeofday(&start, NULL);
     object_t ** in = convertToObject3(a, b);
     r = (vector_t *) matvec_mul3(&m, idx, (void **) in, NULL);
-    printf("aqui teste voltou\n");
+    // printf("aqui teste voltou\n");
     gettimeofday(&stop, NULL);
     //printf("\n\ntook %lu us\n\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
 
     m.bridges[idx].vecreqhost(r);
-    printf("aqui teste moveu\n");
+    // printf("aqui teste moveu\n");
     for (int i = 0; i < 2 * r->len; i += 2) {
-        printf("i=%d\n",i);
+        // printf("i=%d\n",i);
         EXPECT_EQ(0., r->value.f[i]);
         EXPECT_EQ(8400., r->value.f[i + 1]);
     }
+    delete_object_array(in, 2);
     m.bridges[idx].vector_delete(a);
-    printf("delete a\n");
+    // printf("delete a\n");
     m.bridges[idx].matrix_delete(b);
-    printf("delete b\n");
+    // printf("delete b\n");
     m.bridges[idx].vector_delete(r);
-    printf("delete r\n");
+    // printf("delete r\n");
 
 }
 
 TEST_F(MatrixFixture, matvec_mul3_WithComplex_reusingResult) {
 
+
     int n = 15;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
     vector_t * r;
 
     for (int i = 0; i < 2 * a->len; i += 2) {
@@ -530,9 +538,11 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex_reusingResult) {
 
     object_t ** in = convertToObject3(a, b);
     r = (vector_t *) matvec_mul3(&m, idx, (void **) in, NULL);
+    delete_object_array(in, 2);
     for (int i=0; i < 100; i++) {
         object_t ** in = convertToObject3(r, b);
         vector_t * tmp = (vector_t *) matvec_mul3(&m, idx, (void **) in, NULL);
+        delete_object_array(in, 2);
         m.bridges[idx].vector_delete(r);
         r = tmp;
         
@@ -552,13 +562,15 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex_reusingResult) {
 
 TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
 
+
     int n = 1024;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX);
-    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX);
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
     vector_t * r;
-    vector_t * truth = m.bridges[idx].vector_new(n, T_COMPLEX);
+    vector_t * truth = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
 
+    printf("primeiro arquivo\n");
     int i = 0; 
     string line;
     ifstream myfile("initial_vector.txt");
@@ -580,6 +592,7 @@ TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
         myfile.close();
     }
 
+    printf("segundo arquivo\n");
     i = 0; 
     ifstream truth_file("final_vector.txt");
     if (truth_file.is_open()) {
@@ -599,6 +612,8 @@ TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
         }
         truth_file.close();
     }
+
+    printf("terceiro arquivo\n");
     i = 0; 
     ifstream matrix_file("unitary.txt");
     if (matrix_file.is_open()) {
@@ -628,8 +643,9 @@ TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
     }
 
     object_t ** in = convertToObject3(a, b);
-
+    printf("matvec_mul3\n");
     r = (vector_t *) matvec_mul3(&m, idx, (void **) in, NULL);
+    printf("matvec_mul3back\n");
     
     
     m.bridges[idx].vecreqhost(r);
@@ -639,8 +655,10 @@ TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
         //EXPECT_EQ(truth->value.f[i], out->value.f[i]);
         //EXPECT_EQ(truth->value.f[i + 1], out->value.f[i + 1]);
     }
+    delete_object_array(in, 2);
     m.bridges[idx].vector_delete(a);
     m.bridges[idx].matrix_delete(b);
     m.bridges[idx].vector_delete(r);
+    m.bridges[idx].vector_delete(truth);
 
 }

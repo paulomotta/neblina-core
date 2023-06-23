@@ -13,6 +13,8 @@ extern "C" {
     
 #define new_str(i) (char *) malloc( sizeof(char)*(i))
 
+ void delete_object_array(object_t ** in, int len);
+ void delete_object(object_t * in);
  object_t ** convertToObject(vector_t * a, vector_t * b);
  object_t ** convertToObject3(vector_t * a, matrix_t * b);
  object_t ** convertToObject4(vector_t * a, smatrix_t * b);

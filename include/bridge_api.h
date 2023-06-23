@@ -9,7 +9,7 @@ typedef struct __bridge_t {
     void (*luDecomp_f)( void* ADev, int n );
     
     //double * (*addVector_f)(double * v1, double * v2, int n );
-    vector_t * (*vector_new)( int len, data_type type );
+    vector_t * (*vector_new)( int len, data_type type, int initialize );
     void (*vector_delete)( vector_t * v ) ;
     void (*vecreqhost)( vector_t * v );
     void (*vecreqdev) ( vector_t * v );
@@ -22,7 +22,7 @@ typedef struct __bridge_t {
     complex_t * (*complex_new)( double real, double imaginary ) ;
     void (*complex_delete)( complex_t * c ) ;
 
-    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type );
+    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type, int initialize );
     void (*matrix_delete)( matrix_t * v );
     void (*matreqhost)( matrix_t * v );
     void (*matreqdev) ( matrix_t * v );
