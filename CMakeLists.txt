@@ -32,32 +32,32 @@ set(SOURCE_PATH ${PROJECT_SOURCE_DIR}/src)
 set(DIST_PATH ${PROJECT_SOURCE_DIR}/dist)
 set(DIST_INCLUDE_PATH ${PROJECT_SOURCE_DIR}/dist/include)
 set(PROJECT_TEST_DIR ${PROJECT_SOURCE_DIR}/test)
-#set(LCOV_PATH /usr/bin/lcov)
-#set(GENHTML_PATH /usr/bin/genhtml)
+set(LCOV_PATH /usr/bin/lcov)
+set(GENHTML_PATH /usr/bin/genhtml)
 
 include_directories("${HEADER_PATH}")
 include_directories("..")
 LINK_DIRECTORIES(${PROJECT_DIR})
 
-#if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
-#    if(CMAKE_COMPILER_IS_GNUCXX)
-#        message("Building with lcov Code Coverage Tools")
-#        # Warning/Error messages
-#        if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
-#            message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
-#        endif()
-#        if(NOT LCOV_PATH)
-#            message(FATAL_ERROR "lcov not found! Aborting...")
-#        endif()
-#        if(NOT GENHTML_PATH)
-#            message(FATAL_ERROR "genhtml not found! Aborting...")
-#        endif()
-#        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
-#    else()
-#        message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
-#    endif()
-#endif()
+if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
+   if(CMAKE_COMPILER_IS_GNUCXX)
+       message("Building with lcov Code Coverage Tools")
+       # Warning/Error messages
+       if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+           message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
+       endif()
+       if(NOT LCOV_PATH)
+           message(FATAL_ERROR "lcov not found! Aborting...")
+       endif()
+       if(NOT GENHTML_PATH)
+           message(FATAL_ERROR "genhtml not found! Aborting...")
+       endif()
+       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
+   else()
+       message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
+   endif()
+endif()
 
 add_library(neblina-core SHARED ${SOURCE_PATH}/libneblina.c 
                                 ${SOURCE_PATH}/neblina_std.c 
@@ -73,6 +73,22 @@ add_library(neblina-cpu-bridge SHARED ${SOURCE_PATH}/libneblina-cpu-bridge-vecto
 
 target_link_libraries(neblina-core PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
+# Create the coverage target
+add_custom_target(coverage
+    COMMAND lcov --directory . --capture --output-file coverage.info
+    COMMAND lcov --remove coverage.info '/usr/*' --output-file coverage.info
+    COMMAND lcov --list coverage.info
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Generating code coverage report"
+)
+
+# Create the coverage-html target
+add_custom_target(coverage-html
+    COMMAND genhtml coverage.info --output-directory coverage-html
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Generating HTML code coverage report"
+)
+
 #add_executable(vector_test_cpu_bridge ${PROJECT_TEST_DIR}/vector_test_cpu_bridge.cpp)
 #target_link_libraries(vector_test_cpu_bridge PRIVATE Threads::Threads ${GTEST_BOTH_LIBRARIES} neblina-core)
 
@@ -85,9 +101,13 @@ target_link_libraries(matrix_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${G
 add_executable(sparse_matrix_test ${PROJECT_TEST_DIR}/sparse_matrix_test.cpp)
 target_link_libraries(sparse_matrix_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
 
+add_executable(neblina_test ${PROJECT_TEST_DIR}/neblina_test.cpp)
+target_link_libraries(neblina_test PRIVATE Threads::Threads ${OpenCL_LIBRARY} ${GTEST_BOTH_LIBRARIES} neblina-core)
+
 add_test( vector_test vector_test )
 add_test( matrix_test matrix_test )
 add_test( sparse_matrix_test sparse_matrix_test )
+add_test( neblina_test neblina_test )
 
 
 if (EXISTS ${PROJECT_BINARY_DIR}/libneblina-core.so)
