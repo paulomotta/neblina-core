@@ -144,6 +144,7 @@ smatrix_t * smatrix_new( int nrow, int ncol, data_type type ) {
     memset( smatrix->rcount, 0, smatrix->nrow * sizeof(int));    
     memset( smatrix->icount, 0,smatrix->nrow * sizeof(int));    
 
+    smatrix->location = LOCHOS;
     smatrix->smat = NULL;
     smatrix->extra = NULL;
     smatrix->idxColMem = NULL;
