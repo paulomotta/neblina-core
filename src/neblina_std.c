@@ -10,27 +10,27 @@
 #include "bridge_api.h"
 
 void runerror( char * strerr ) {
-    fprintf(stderr, " runtime error: \n", strerr);
+    fprintf(stderr, " runtime error: %s\n", strerr);
     exit( 1 );
 }
 
-int vec_len(bridge_manager_t *m, int index,  void ** i, int * status ) {
-    object_t out;
-    object_t ** in = (object_t **) i;
-    int len = 0;
-    if( type( *in[0] ) == T_VECTOR ) {
-        vector_t * vec = (vector_t *)vvalue( *in[0] );
-        len = vec->len;  
-    } else if( type( *in[0] ) == T_STRING ) {
-        len = strlen( svalue( *in[0] ) );
-    } else if( type( *in[0] ) == T_LIST ) {
-        len = m->bridges[index].list_len(  (list_t *) vvalue( *in[0] ) );
-    } else {
-        runerror("invalid type input for function len()");      
-    }
+// int vec_len(bridge_manager_t *m, int index,  void ** i, int * status ) {
+//     object_t out;
+//     object_t ** in = (object_t **) i;
+//     int len = 0;
+//     if( type( *in[0] ) == T_VECTOR ) {
+//         vector_t * vec = (vector_t *)vvalue( *in[0] );
+//         len = vec->len;  
+//     } else if( type( *in[0] ) == T_STRING ) {
+//         len = strlen( svalue( *in[0] ) );
+//     } else if( type( *in[0] ) == T_LIST ) {
+//         len = m->bridges[index].list_len(  (list_t *) vvalue( *in[0] ) );
+//     } else {
+//         runerror("invalid type input for function len()");      
+//     }
 
-    return len;
-}
+//     return len;
+// }
 
 
  void ** mat_len_col( void ** i, int * status ) {
@@ -42,12 +42,18 @@ int vec_len(bridge_manager_t *m, int index,  void ** i, int * status ) {
     static void * ret[1];
     clear_input( i, 1 );
     ret[0] = (void *) &out;
+    if (status != NULL) {
+        *status = 0;
+    }
     return ret;
 }
 
 
  void ** mat_len_row( void ** i, int * status ) {
     object_t ** in = (object_t **) i;
+    if (status != NULL) {
+        *status = 0;
+    }
     if( type( *in[0] ) == T_MATRIX ) {
         object_t out;// = (object_t *) malloc( sizeof( object_t ) );
 
@@ -59,6 +65,9 @@ int vec_len(bridge_manager_t *m, int index,  void ** i, int * status ) {
         ret[0] = (void *) &out;
         return ret;
     } else {
+        if (status != NULL) {
+            *status = -1;
+        }
         runerror( "Runtime error: no matrix found\n");
     }   
     return NULL;    
@@ -213,6 +222,10 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         } else if (b->type == T_COMPLEX) {
             r->extra = (void*)m->bridges[index].addVectorC_f( a->extra, b->extra, b->len ); 
         }
+
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 }
 //
@@ -227,6 +240,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         r->extra = (void*)m->bridges[index].vecConjugate_f( a->extra, a->len ); 
     
         clear_input( i, 1 );
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 }
 // void ** vec_conjugate( void ** i, int * status ) {
@@ -256,8 +272,6 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * b = (vector_t *) vvalue( *in[1] );
         m->bridges[index].vecreqdev( a ); 
         m->bridges[index].vecreqdev( b );
-        int ii = 0;
-        object_t out;
         vector_t * r = (vector_t *) malloc( sizeof( vector_t ) );
         if( a->type == T_FLOAT ) {
             r->extra = (void*)m->bridges[index].prodVector_f( a->extra, b->extra, b->len ); 
@@ -270,6 +284,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         r->location = LOCDEV;
         r->value.f = NULL;
         clear_input( i, 2 );
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 
 }
@@ -283,6 +300,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         out->value.f = m->bridges[index].sumVector_f( a->extra, a->len );
         out->type  = T_FLOAT;
 
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) out;
 }
 
@@ -295,6 +315,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         type( *out ) = T_FLOAT;
         static void * ret[1];
         ret[0] = (void *) out;
+        if (status != NULL) {
+            *status = 0;
+        }
         return ret;
 }
  void ** vec_dot( bridge_manager_t *m, int index, void ** i, int * status ) {
@@ -321,6 +344,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         
         static void * ret[1];
         ret[0] = (void *) out;
+        if (status != NULL) {
+            *status = 0;
+        }
         return ret;
 }
 //
@@ -390,6 +416,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
             r->extra = (void*)m->bridges[index].subVector_f( a->extra, b->extra, b->len );
         } else if (b->type == T_COMPLEX) {
             r->extra = (void*)m->bridges[index].subVectorC_f( a->extra, b->extra, b->len ); 
+        }
+        if (status != NULL) {
+            *status = 0;
         }
         return (void *) r;
 }
@@ -469,7 +498,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     matrix_t * b = (matrix_t *) vvalue( *in[1] );
     m->bridges[index].matreqdev( a );
     m->bridges[index].matreqdev( b );
-    object_t out;// = (object_t *) malloc( sizeof( object_t ) );
+    // object_t out;
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) { 
         r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
@@ -491,10 +520,12 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
             r->extra = m->bridges[index].addVectorFC_f( b->extra, a->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
         r->value.f = NULL;
-        type( out ) = T_MATRIX;
-        vvalue( out ) = (void *) r;
+        // type( out ) = T_MATRIX;
+        // vvalue( out ) = (void *) r;
     }
-    
+    if (status != NULL) {
+        *status = 0;
+    }
     return (void *) r;
 }
  
@@ -517,6 +548,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     static void * ret[1];
     ret[0] = (void *) &out;
     clear_input(i, 2);
+    if (status != NULL) {
+        *status = 0;
+    }
     return ret;
 }
  void ** mat_mul( bridge_manager_t *m, int index, void ** i, int * status ) {
@@ -525,7 +559,6 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     matrix_t * b = (matrix_t *) vvalue( *in[1] );
     m->bridges[index].matreqdev( a );
     m->bridges[index].matreqdev( b );
-    object_t out;// = (object_t *) malloc( sizeof( object_t ) );
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) {
         r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
@@ -546,6 +579,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     r->value.f = NULL;
     
     //clear_input(i, 2);
+    if (status != NULL) {
+        *status = 0;
+    }
     return (void *)r;
 }
 
@@ -710,7 +746,6 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 //
  void ** vec_mulsc( bridge_manager_t *m, int index, void ** i, int * status ) {
         object_t ** in = (object_t **) i;
-        int k;
         double scalar = 1.0;  
         if( type( *in[0] ) == T_FLOAT ) {
             scalar = fvalue( *in[0] );
@@ -722,13 +757,13 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * v = (vector_t *) vvalue( *in[1] );
         m->bridges[index].vecreqdev( v );
         
-        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0);
         r->location = LOCDEV;
-        //apenas cpu
-        // free( r->value.f);
         
         r->extra = (void*)m->bridges[index].mulScalarVector_f( v->extra, scalar, v->len ); 
-        
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 }
  
@@ -866,7 +901,6 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 //}
  void ** mat_mulsc( bridge_manager_t *mg, int index, void ** i, int * status ) {
         object_t ** in = (object_t **) i;
-        int k;
         double scalar = 1.0;        
         if( type( *in[0] ) == T_FLOAT )
             scalar = fvalue( *in[0] );
@@ -891,6 +925,9 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         }
         
         clear_input(i, 2);
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 }
 
@@ -959,7 +996,6 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
             mg->bridges[index].vecreqdev( v );
         }
 
-        object_t out;
         if( type( *in[1] ) == T_MATRIX ) {        
 
             matrix_t * m = (matrix_t *) vvalue( *in[1] );
@@ -984,7 +1020,9 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 //                r->len = m->nrow;
 //                r->type = T_COMPLEX;
             }
-            
+            if (status != NULL) {
+                *status = 0;
+            }
             return (void *) r;
 
         } else  if( type( *in[1] ) == T_SMATRIX ) {
@@ -1010,6 +1048,9 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 //                    r->len = m->nrow;
 //                    r->type = T_COMPLEX;
                 }
+                if (status != NULL) {
+                    *status = 0;
+                }
                 return (void *) r;
 
         } else if(  type( *in[1] ) == T_RMATRIX ) {
@@ -1025,8 +1066,14 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 //                clear_input(i, 2);
 //                ret[0] = (void *) &out;
 //                return ret;
+                    if (status != NULL) {
+                        *status = -1;
+                    }
                     return (void **)NULL;   
         } else {
+            if (status != NULL) {
+                *status = -1;
+            }
             return (void **)NULL;   
         }
              
@@ -1400,7 +1447,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
     in = (object_t **) malloc(2 * sizeof(object_t *));
 
     in[0] = (object_t *) malloc(sizeof(object_t));
-    vvalue( *in[0] ) = n; in[0]->type = T_INT;
+    ivalue( *in[0] ) = n; in[0]->type = T_INT;
 
     in[1] = (object_t *) malloc(sizeof(object_t));
     vvalue( *in[1] ) = a; in[1]->type = T_VECTOR;
@@ -1424,6 +1471,9 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
         r->extra = (void*)m->bridges[index].vecAddOff_f( a->extra, offset, parts ); 
 
         clear_input( i, 2 );
+        if (status != NULL) {
+            *status = 0;
+        }
         return (void *) r;
 }
 //
