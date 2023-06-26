@@ -5,9 +5,98 @@
 #include <dlfcn.h>
 
 
-void load_function(bridge_manager_t *manager, void (**function_ptr)(), char* function_name, int index){
+void load_function(bridge_manager_t *manager, void* (**function_ptr)(), char* function_name, int index){
     
-    void (*externalFunction)() = dlsym(manager->bridges[index].plugin_handle, function_name);
+    void* (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_double_function(bridge_manager_t *manager, double (**function_ptr)(), char* function_name, int index){
+    
+    double (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_int_function(bridge_manager_t *manager, int (**function_ptr)(), char* function_name, int index){
+    
+    int (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_void_function(bridge_manager_t *manager, void (**function_ptr)(), char* function_name, int index){
+    
+    void (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_vector_function(bridge_manager_t *manager, vector_t * (**function_ptr)(), char* function_name, int index){
+    
+    vector_t * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_matrix_function(bridge_manager_t *manager, matrix_t * (**function_ptr)(), char* function_name, int index){
+    
+    matrix_t * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_smatrix_function(bridge_manager_t *manager, smatrix_t * (**function_ptr)(), char* function_name, int index){
+    
+    smatrix_t * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_slist_function(bridge_manager_t *manager, slist * (**function_ptr)(), char* function_name, int index){
+    
+    slist * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_complex_function(bridge_manager_t *manager, complex_t * (**function_ptr)(), char* function_name, int index){
+    
+    complex_t * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
     *function_ptr = externalFunction;
     char *result = dlerror();
     if (result) {
@@ -27,12 +116,13 @@ void load_function(bridge_manager_t *manager, void (**function_ptr)(), char* fun
  * 
  */
 void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
-    char *plugin_name;
-    char *result;
+    char *plugin_name = NULL;
     
     manager->bridges[index].plugin_handle = dlopen(library_name, RTLD_NOW);
     if (!manager->bridges[index].plugin_handle) {
-        printf("Cannot load %s: %s", plugin_name, dlerror());
+        if (plugin_name != NULL) {
+            printf("Cannot load %s: %s", plugin_name, dlerror());
+        }
     }
 
     load_function(manager, &(manager->bridges[index].addVectorF_f), "addVectorF", index);
@@ -105,91 +195,91 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].sumVector_f), "sumVector", index);
+    load_double_function(manager, &(manager->bridges[index].sumVector_f), "sumVector", index);
 //    manager->bridges[index].sumVector_f = dlsym(manager->bridges[index].plugin_handle, "sumVector");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].normVector_f), "normVector", index);
+    load_double_function(manager, &(manager->bridges[index].normVector_f), "normVector", index);
 //    manager->bridges[index].normVector_f = dlsym(manager->bridges[index].plugin_handle, "normVector");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].dotVector_f), "dotVector", index);
+    load_double_function(manager, &(manager->bridges[index].dotVector_f), "dotVector", index);
 //    manager->bridges[index].dotVector_f = dlsym(manager->bridges[index].plugin_handle, "dotVector");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].dotVectorComplex_f), "dotVectorComplex", index);
+    load_void_function(manager, &(manager->bridges[index].dotVectorComplex_f), "dotVectorComplex", index);
 //    manager->bridges[index].dotVectorComplex_f = dlsym(manager->bridges[index].plugin_handle, "dotVectorComplex");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].vector_new), "vector_new", index);
+    load_vector_function(manager, &(manager->bridges[index].vector_new), "vector_new", index);
 //    manager->bridges[index].vector_new = dlsym(manager->bridges[index].plugin_handle, "vector_new");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].vector_delete), "vector_delete", index);
+    load_void_function(manager, &(manager->bridges[index].vector_delete), "vector_delete", index);
 //    manager->bridges[index].vector_delete = dlsym(manager->bridges[index].plugin_handle, "vector_delete");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].vecreqdev), "vecreqdev", index);
+    load_void_function(manager, &(manager->bridges[index].vecreqdev), "vecreqdev", index);
 //    manager->bridges[index].vecreqdev = dlsym(manager->bridges[index].plugin_handle, "vecreqdev");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].vecreqhost), "vecreqhost", index);
+    load_void_function(manager, &(manager->bridges[index].vecreqhost), "vecreqhost", index);
 //    manager->bridges[index].vecreqhost = dlsym(manager->bridges[index].plugin_handle, "vecreqhost");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].InitEngine_f), "InitEngine", index);
+    load_void_function(manager, &(manager->bridges[index].InitEngine_f), "InitEngine", index);
 //    manager->bridges[index].InitEngine_f = dlsym(manager->bridges[index].plugin_handle, "InitEngine");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].StopEngine_f), "StopEngine", index);
+    load_void_function(manager, &(manager->bridges[index].StopEngine_f), "StopEngine", index);
 //    manager->bridges[index].StopEngine_f = dlsym(manager->bridges[index].plugin_handle, "StopEngine");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].list_len), "list_len", index);
+    load_int_function(manager, &(manager->bridges[index].list_len), "list_len", index);
 //    manager->bridges[index].list_len = dlsym(manager->bridges[index].plugin_handle, "list_len");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].complex_new), "complex_new", index);
+    load_complex_function(manager, &(manager->bridges[index].complex_new), "complex_new", index);
 //    manager->bridges[index].complex_new = dlsym(manager->bridges[index].plugin_handle, "complex_new");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].complex_delete), "complex_delete", index);
+    load_void_function(manager, &(manager->bridges[index].complex_delete), "complex_delete", index);
 //    manager->bridges[index].complex_delete = dlsym(manager->bridges[index].plugin_handle, "complex_delete");
 //    result = dlerror();
 //    if (result) {
@@ -217,63 +307,63 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_new), "matrix_new", index);
+    load_matrix_function(manager, &(manager->bridges[index].matrix_new), "matrix_new", index);
 //    manager->bridges[index].matrix_new = dlsym(manager->bridges[index].plugin_handle, "matrix_new");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_delete), "matrix_delete", index);
+    load_void_function(manager, &(manager->bridges[index].matrix_delete), "matrix_delete", index);
 //    manager->bridges[index].matrix_delete = dlsym(manager->bridges[index].plugin_handle, "matrix_delete");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_get_complex_imaginary_value), "matrix_get_complex_imaginary_value", index);
+    load_double_function(manager, &(manager->bridges[index].matrix_get_complex_imaginary_value), "matrix_get_complex_imaginary_value", index);
 //    manager->bridges[index].matrix_get_complex_imaginary_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_complex_imaginary_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_get_complex_real_value), "matrix_get_complex_real_value", index);
+    load_double_function(manager, &(manager->bridges[index].matrix_get_complex_real_value), "matrix_get_complex_real_value", index);
 //    manager->bridges[index].matrix_get_complex_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_complex_real_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_get_real_value), "matrix_get_real_value", index);
+    load_double_function(manager, &(manager->bridges[index].matrix_get_real_value), "matrix_get_real_value", index);
 //    manager->bridges[index].matrix_get_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_get_real_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_set_complex_value), "matrix_set_complex_value", index);
+    load_void_function(manager, &(manager->bridges[index].matrix_set_complex_value), "matrix_set_complex_value", index);
 //    manager->bridges[index].matrix_set_complex_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_complex_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matrix_set_real_value), "matrix_set_real_value", index);
+    load_void_function(manager, &(manager->bridges[index].matrix_set_real_value), "matrix_set_real_value", index);
 //    manager->bridges[index].matrix_set_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_real_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matreqdev), "matreqdev", index);
+    load_void_function(manager, &(manager->bridges[index].matreqdev), "matreqdev", index);
 //    manager->bridges[index].matreqdev = dlsym(manager->bridges[index].plugin_handle, "matreqdev");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].matreqhost), "matreqhost", index);
+    load_void_function(manager, &(manager->bridges[index].matreqhost), "matreqhost", index);
 //    manager->bridges[index].matreqhost = dlsym(manager->bridges[index].plugin_handle, "matreqhost");
 //    result = dlerror();
 //    if (result) {
@@ -301,91 +391,91 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_new), "smatrix_new", index);
+    load_smatrix_function(manager, &(manager->bridges[index].smatrix_new), "smatrix_new", index);
 //    manager->bridges[index].smatrix_new = dlsym(manager->bridges[index].plugin_handle, "smatrix_new");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_t_clear), "smatrix_t_clear", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_t_clear), "smatrix_t_clear", index);
 //    manager->bridges[index].smatrix_t_clear = dlsym(manager->bridges[index].plugin_handle, "smatrix_t_clear");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_load_double), "smatrix_load_double", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_load_double), "smatrix_load_double", index);
 //    manager->bridges[index].smatrix_load_double = dlsym(manager->bridges[index].plugin_handle, "smatrix_load_double");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_set_real_value), "smatrix_set_real_value", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_set_real_value), "smatrix_set_real_value", index);
 //    manager->bridges[index].smatrix_set_real_value = dlsym(manager->bridges[index].plugin_handle, "smatrix_set_real_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_pack), "smatrix_pack", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_pack), "smatrix_pack", index);
 //    manager->bridges[index].smatrix_pack = dlsym(manager->bridges[index].plugin_handle, "smatrix_pack");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_set_complex_value), "smatrix_set_complex_value", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_set_complex_value), "smatrix_set_complex_value", index);
 //    manager->bridges[index].smatrix_set_complex_value = dlsym(manager->bridges[index].plugin_handle, "smatrix_set_complex_value");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatrix_pack_complex), "smatrix_pack_complex", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_pack_complex), "smatrix_pack_complex", index);
 //    manager->bridges[index].smatrix_pack_complex = dlsym(manager->bridges[index].plugin_handle, "smatrix_pack_complex");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
    
-    load_function(manager, &(manager->bridges[index].smatrix_load_complex), "smatrix_load_complex", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_load_complex), "smatrix_load_complex", index);
 //    manager->bridges[index].smatrix_load_complex = dlsym(manager->bridges[index].plugin_handle, "smatrix_load_complex");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
-    load_function(manager, &(manager->bridges[index].smatrix_delete), "smatrix_delete", index);
+    load_void_function(manager, &(manager->bridges[index].smatrix_delete), "smatrix_delete", index);
 //    manager->bridges[index].smatrix_delete = dlsym(manager->bridges[index].plugin_handle, "smatrix_delete");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatreqhost), "smatreqhost", index);
+    load_void_function(manager, &(manager->bridges[index].smatreqhost), "smatreqhost", index);
 //    manager->bridges[index].smatreqhost = dlsym(manager->bridges[index].plugin_handle, "smatreqhost");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].smatreqdev), "smatreqdev", index);
+    load_void_function(manager, &(manager->bridges[index].smatreqdev), "smatreqdev", index);
 //    manager->bridges[index].smatreqdev = dlsym(manager->bridges[index].plugin_handle, "smatreqdev");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].slist_add), "slist_add", index);
+    load_slist_function(manager, &(manager->bridges[index].slist_add), "slist_add", index);
 //    manager->bridges[index].slist_add = dlsym(manager->bridges[index].plugin_handle, "slist_add");
 //    result = dlerror();
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
     
-    load_function(manager, &(manager->bridges[index].slist_clear), "slist_clear", index);
+    load_void_function(manager, &(manager->bridges[index].slist_clear), "slist_clear", index);
 //    manager->bridges[index].slist_clear = dlsym(manager->bridges[index].plugin_handle, "slist_clear");
 //    result = dlerror();
 //    if (result) {
@@ -455,7 +545,7 @@ void ord_smat( double * m, int * idx, int max, int N ) {
 
 
 void smatrix_line_to_col( double * out, int * idx_out, double * in, int * idx_in, int max, int N ) {
-    int i, col, lin, j;
+    int i, col, j;
     int count[N];
     for(i=0; i < N; i++ ) {
         count[i] = 0;
@@ -706,13 +796,13 @@ void neblina_strtype( data_type type, char out[256] ) {
     }
 }
 
- void ** movetodev( void ** i, int * s ) {
-        //cl_int status;
-        object_t ** in = (object_t **) i;
+//  void ** movetodev( void ** i, int * s ) {
+//         //cl_int status;
+//         object_t ** in = (object_t **) i;
         
-        //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
+//         //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
         
-        if( type( *in[0] ) == T_VECTOR ) {
+//         if( type( *in[0] ) == T_VECTOR ) {
 //            vector_t * v = (vector_t *) vvalue( *in[0] );
 //            int len = (v->type == T_COMPLEX) ? (2*v->len) : (v->len);
 //            if( v->location == LOCDEV )
@@ -732,7 +822,7 @@ void neblina_strtype( data_type type, char out[256] ) {
 //                free( tmp );
 //            }
             
-        } else if ( type( *in[0] ) == T_MATRIX ) {
+        // } else if ( type( *in[0] ) == T_MATRIX ) {
 //            matrix_t * m = (matrix_t *) vvalue( *in[0] );
 //            int len = ( m->type == T_COMPLEX ) ? (2 * m->ncol * m->nrow) : (m->ncol * m->nrow);
 //            if( m->location == LOCDEV )
@@ -751,7 +841,7 @@ void neblina_strtype( data_type type, char out[256] ) {
 //                free( tmp );
 //            
 //            }
-        } else if ( type( *in[0] ) == T_SMATRIX ) {
+        // } else if ( type( *in[0] ) == T_SMATRIX ) {
             
 //            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
 //            if( m->location == LOCDEV )
@@ -777,15 +867,15 @@ void neblina_strtype( data_type type, char out[256] ) {
 //                CLERR
 //                free( tmp );
 //            }
-        } 
-        return (void **) NULL;
-}
+//         } 
+//         return (void **) NULL;
+// }
 
- void ** movetohost( void ** i, int * s ) {
-        //cl_int status;
-        object_t ** in = (object_t **) i;
-        //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
-        if( type( *in[0] ) == T_VECTOR ) {
+//  void ** movetohost( void ** i, int * s ) {
+//         //cl_int status;
+//         object_t ** in = (object_t **) i;
+//         //size_t size_type = (clinfo.fp64) ? sizeof(double) : sizeof(float);   
+//         if( type( *in[0] ) == T_VECTOR ) {
 //            vector_t * v = (vector_t *) vvalue( *in[0] );
 //           
 //            v->location = LOCHOS;
@@ -804,7 +894,7 @@ void neblina_strtype( data_type type, char out[256] ) {
 //            }
 //            clReleaseMemObject( v->mem );
 //            CLERR                                
-        } else if ( type( *in[0] ) == T_MATRIX ) {
+        // } else if ( type( *in[0] ) == T_MATRIX ) {
 //            matrix_t * m = (matrix_t *) vvalue( *in[0] );
 //            int len = (m->type == T_COMPLEX) ? (2*m->ncol * m->nrow ) : (m->ncol * m->nrow);
 //            m->location = LOCHOS;
@@ -823,7 +913,7 @@ void neblina_strtype( data_type type, char out[256] ) {
 //            }    
 //            clReleaseMemObject( m->mem );
 //            CLERR                           
-        } else if ( type( *in[0] ) == T_SMATRIX ) {
+        // } else if ( type( *in[0] ) == T_SMATRIX ) {
 //            smatrix_t * m = (smatrix_t *) vvalue( *in[0] );
 //            m->location = LOCHOS;
 //            int len = (m->type == T_COMPLEX) ? (2*m->maxcols * m->nrow  ) : ( m->maxcols * m->nrow );
@@ -846,6 +936,6 @@ void neblina_strtype( data_type type, char out[256] ) {
 //            CLERR                             
 //            clReleaseMemObject( m->mMem );
 //            CLERR                 
-        }
-        return (void *) NULL;
-}
+//         }
+//         return (void *) NULL;
+// }

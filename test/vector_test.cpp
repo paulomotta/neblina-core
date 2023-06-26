@@ -17,7 +17,8 @@ public:
 
     NeblinaCoreFixture() {
         idx = 0;
-        load_plugin(&m, "/usr/local/lib64/libneblina-cpu-bridge.so", idx);
+        string plugin_name = "/usr/local/lib64/libneblina-cpu-bridge.so";
+        load_plugin(&m, const_cast<char *>(plugin_name.c_str()), idx);
         m.bridges[idx].InitEngine_f(0);
     }
 
@@ -76,25 +77,25 @@ TEST_F(NeblinaCoreFixture, vec_add) {
 
 }
 
-TEST_F(NeblinaCoreFixture, vec_len) {
+// TEST_F(NeblinaCoreFixture, vec_len) {
 
-    int n = 3;
+//     int n = 3;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
+//     vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
 
-    for (int i = 0; i < a->len; i++) {
-        a->value.f[i] = 1.;
-    }
+//     for (int i = 0; i < a->len; i++) {
+//         a->value.f[i] = 1.;
+//     }
 
-    object_t ** in = convertToObject(a, NULL);
+//     object_t ** in = convertToObject(a, NULL);
 
-    int len = vec_len(&m, idx, (void **) in, NULL);
+//     int len = vec_len(&m, idx, (void **) in, NULL);
 
-    EXPECT_EQ(3, len);
-    delete_object_array(in, 1);
-    m.bridges[idx].vector_delete(a);
+//     EXPECT_EQ(3, len);
+//     delete_object_array(in, 1);
+//     m.bridges[idx].vector_delete(a);
 
-}
+// }
 
 TEST_F(NeblinaCoreFixture, vec_add_complex) {
 

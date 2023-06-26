@@ -369,12 +369,12 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
 //    vec_out[row] = sum;
     
     double * vec_out = (double *) malloc( nrows * maxCols * sizeof(double) );
-    double sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
+    double sum_re = 0, re_m, re_v;
     double * m = (double *) mDev;
     double * vec_in = (double *) vDev;
     int * col_idx = (int *) idxCol;
 
-    for (size_t idx = 0; idx < nrows; idx++)
+    for (int idx = 0; idx < nrows; idx++)
     {
         int row = idx,i, col, idxt;
         for (i = 0; i < maxCols; i++) {
@@ -383,16 +383,10 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
             if( col == -1 )
                 continue;
             re_m = m[idxt];
-            // im_m = m[2*idxt+1]; 
             re_v = vec_in[col];
-            // im_v = vec_in[2*col+1];    
-            sum_re += re_m*re_v - im_m*im_v;
-            // sum_im += re_m*im_v + im_m*re_v; 
+            sum_re += re_m*re_v;
         }
         vec_out[row] = sum_re;
-        // vec_out[2*row+1] = sum_im;
-        
-        
     }
            
     printf("fim smat \n");

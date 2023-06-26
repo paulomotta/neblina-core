@@ -17,7 +17,8 @@ public:
 
     NeblinaCoreFixture() {
         idx = 0;
-        load_plugin(&m, "/usr/local/lib64/libneblina-cpu-bridge.so", idx);
+        string plugin_name = "/usr/local/lib64/libneblina-cpu-bridge.so";
+        load_plugin(&m, const_cast<char *>(plugin_name.c_str()), idx);
         m.bridges[idx].InitEngine_f(0);
     }
 
@@ -138,7 +139,6 @@ TEST_F(NeblinaCoreFixture, convertToObject_withNULL) {
 
     int n = 4;
     vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 0 );
-    object_t * r;
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 2.;

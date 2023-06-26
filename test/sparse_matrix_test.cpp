@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <sys/time.h>
+#include <string>
 
 using namespace std;
 
@@ -18,7 +19,8 @@ public:
     
     SparseMatrixFixture() {
         idx = 0;
-        load_plugin(&m, "/usr/local/lib64/libneblina-cpu-bridge.so", idx);
+        string plugin_name = "/usr/local/lib64/libneblina-cpu-bridge.so";
+        load_plugin(&m, const_cast<char *>(plugin_name.c_str()), idx);
         m.bridges[idx].InitEngine_f(0);
     }
 

@@ -298,7 +298,7 @@ void smatreqdev ( smatrix_t * m ) {
 
 void smatrix_delete( smatrix_t * smatrix ) {
     if (smatrix->smat != NULL) {
-        slist * tmp = NULL;
+        slist * tmp;
         for(int i=0; i < smatrix->nrow; i++ ) {
             tmp = smatrix->smat[i];        
             slist_clear( smatrix->smat[i] );
