@@ -44,6 +44,7 @@ void vecreqhost( vector_t * v ) {
 //        free (v->value.f);
 //    printf("vecreqhost 2\n");
 //    }
+    if (v->location == LOCHOS) return;
     v->location  = LOCHOS;
     v->value.f = v->extra;
     v->extra = NULL;
@@ -55,9 +56,16 @@ void vecreqdev ( vector_t * v ) {
 //        free (v->extra);
 //    printf("vecreqdev 2\n");
 //    }
+    if (v->location == LOCDEV) return;
+
     v->location  = LOCDEV;
+    // printf("v->value.f %p\n",v->value.f);
+    // printf("v->extra %p\n",v->extra);
+
     v->extra = v->value.f;
     v->value.f = NULL;
+    // printf("v->value.f %p\n",v->value.f);
+    // printf("v->extra %p\n",v->extra);
     // printf("vecreqdev %p\n",v->value.f);
 }
 
