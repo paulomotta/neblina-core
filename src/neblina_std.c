@@ -110,7 +110,7 @@ object_t ** convertToObject(vector_t * a, vector_t * b) {
         in = (object_t **) malloc(2 * sizeof(object_t *));
         in[1] = (object_t *) malloc(sizeof(object_t));
         // vvalue( *in[1] ) = b; 
-        in[1]->value.v = b;
+        in[1]->value.v = (void *)b;
         in[1]->type = T_VECTOR;
      } else {
         in = (object_t **) malloc(2 * sizeof(object_t *));
@@ -120,7 +120,6 @@ object_t ** convertToObject(vector_t * a, vector_t * b) {
     //vvalue( *in[0] ) = a; 
     in[0]->value.v = (void *)a;
     in[0]->type = T_VECTOR;
-    //printf("convertToObject\n");
     return in;
  }
 

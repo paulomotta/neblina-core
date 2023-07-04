@@ -78,7 +78,7 @@ TEST_F(NeblinaCoreFixture, vector_vecreqdev) {
 
     int n = 4;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 0 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
 
     printf("vecreqdev %p\n",(void *)(a->value.f));
     printf("vecreqdev %p\n",a->extra);
@@ -117,7 +117,7 @@ TEST_F(NeblinaCoreFixture, matrix_matreqdev) {
 
     int n = 4;
 
-    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 0);
+    matrix_t * a = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
 
     printf("matreqdev %p\n",(void *)(a->value.f));
     printf("matreqdev %p\n",a->extra);
@@ -138,7 +138,7 @@ TEST_F(NeblinaCoreFixture, matrix_matreqdev) {
 TEST_F(NeblinaCoreFixture, convertToObject_withNULL) {
 
     int n = 4;
-    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 0 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
 
     for (int i = 0; i < a->len; i++) {
         a->value.f[i] = 2.;

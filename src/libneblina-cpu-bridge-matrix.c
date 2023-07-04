@@ -44,12 +44,16 @@ void matrix_delete( matrix_t * m ) {
 }
 
 void matreqhost( matrix_t * v ) {
+    if (v->location == LOCHOS) return;
+
     v->location  = LOCHOS;
     v->value.f = v->extra;
     v->extra = NULL;
 }
 
 void matreqdev ( matrix_t * v ) {
+    if (v->location == LOCDEV) return;
+
     v->location  = LOCDEV;
     v->extra = v->value.f;
     v->value.f = NULL;
