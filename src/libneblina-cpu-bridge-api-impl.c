@@ -376,17 +376,15 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
 
     for (int idx = 0; idx < nrows; idx++)
     {
-        int row = idx,i, col, idxt;
-        for (i = 0; i < maxCols; i++) {
-            idxt = (row * maxCols) + i;         
-            col = col_idx[idxt];
-            if( col == -1 )
-                continue;
-            re_m = m[idxt];
-            re_v = vec_in[col];
-            sum_re += re_m*re_v;
-        }
-        vec_out[row] = sum_re;
+           double sum = 0;
+           int row = idx;
+           int midx = idx * maxCols;
+           int i;
+           for (i = 0; i < maxCols; i++) {
+               int col = col_idx[midx + i];
+               sum += ( col != -1 ) ? m[midx + i] * vec_in[col] : 0;             
+           }
+           vec_out[row] = sum;
     }
            
     printf("fim smat \n");
@@ -395,13 +393,13 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
 void* sparseComplexVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols ) {
 
     double * vec_out = (double *) malloc( 2 * nrows * maxCols * sizeof(double) );
-    double sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
-    double * m = (double *) mDev;
-    double * vec_in = (double *) vDev;
-    int * col_idx = (int *) idxCol;
 
     for (size_t idx = 0; idx < nrows; idx++)
     {
+        double sum_re = 0,sum_im = 0, re_m, im_m, re_v, im_v;
+        double * m = (double *) mDev;
+        double * vec_in = (double *) vDev;
+        int * col_idx = (int *) idxCol;
         int row = idx,i, col, idxt;
         for (i = 0; i < maxCols; i++) {
             idxt = (row * maxCols) + i;         
