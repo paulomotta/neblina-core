@@ -1032,9 +1032,9 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
                     mg->bridges[index].smatreqdev( m );
                 }
                 if( m->type == T_FLOAT && v->type == T_FLOAT ) {
-                    printf("sparse matvec_mul3 \n");
+                    // printf("sparse matvec_mul3 \n");
                     r->extra = (void*)mg->bridges[index].sparseVecMul_f( m->extra, m->idxColMem, v->extra, m->nrow, m->maxcols );
-                    printf("sparse  matvec_mul3 back\n");
+                    // printf("sparse  matvec_mul3 back\n");
 //                    r->location = LOCDEV;
 //                    r->value.f = NULL;
 //                    r->len = m->nrow;

@@ -23,7 +23,7 @@ endif()
 
 add_compile_options(
   "-Wall" "-Wpedantic" "-Wextra" "-fexceptions"
-  "-O0;-g3;-ggdb"
+  "-O3;-g3;-ggdb"
 )
 #message("OpenCL_LIBRARY ${OpenCL_LIBRARY}")
 message("PROJECT ${PROJECT_SOURCE_DIR}")
