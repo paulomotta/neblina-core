@@ -208,7 +208,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0);
+        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0, NULL);
         //apenas para CPU
         // free(r->value.f);
         m->bridges[index].vecreqdev( a ); 
@@ -231,7 +231,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
  void ** vec_conj( bridge_manager_t *m, int index, void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0);
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL);
         //apenas para cpu
         // free( r->value.f);
         m->bridges[index].vecreqdev( a ); m->bridges[index].vecreqdev( r );
@@ -404,7 +404,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0);
+        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0, NULL);
         // apenas para cpu
         // free(r->value.f);
         m->bridges[index].vecreqdev( a ); 
@@ -756,7 +756,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * v = (vector_t *) vvalue( *in[1] );
         m->bridges[index].vecreqdev( v );
         
-        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0);
+        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0, NULL);
         r->location = LOCDEV;
         
         r->extra = (void*)m->bridges[index].mulScalarVector_f( v->extra, scalar, v->len ); 
@@ -770,7 +770,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -783,7 +783,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
          
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -796,7 +796,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
          
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0 ); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL ); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -998,7 +998,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
         if( type( *in[1] ) == T_MATRIX ) {        
 
             matrix_t * m = (matrix_t *) vvalue( *in[1] );
-            r = mg->bridges[index].vector_new(m->nrow, m->type, 0 );
+            r = mg->bridges[index].vector_new(m->nrow, m->type, 0, NULL );
             mg->bridges[index].vecreqdev( r );
             if (m->location != LOCDEV) {
                 mg->bridges[index].matreqdev( m );
@@ -1026,7 +1026,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 
         } else  if( type( *in[1] ) == T_SMATRIX ) {
                 smatrix_t * m = (smatrix_t *) vvalue( *in[1] );
-                r = mg->bridges[index].vector_new(m->nrow, m->type, 0 );
+                r = mg->bridges[index].vector_new(m->nrow, m->type, 0, NULL );
                 mg->bridges[index].vecreqdev( r );
                 if (m->location != LOCDEV) {
                     mg->bridges[index].smatreqdev( m );
@@ -1461,7 +1461,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
         vector_t * a = (vector_t *) vvalue( *in[1] );
         int parts = a->len / offset;
         
-        vector_t * r = m->bridges[index].vector_new(offset, T_FLOAT, 0);
+        vector_t * r = m->bridges[index].vector_new(offset, T_FLOAT, 0, NULL);
         //apenas cpu
         // free( r->value.f);
         m->bridges[index].vecreqdev( a ); 
