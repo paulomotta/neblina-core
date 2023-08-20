@@ -436,7 +436,7 @@ TEST_F(MatrixFixture, matvec_mul3_WithFloat) {
 
     int n = 3;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1, NULL );
     matrix_t * b = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1);
     vector_t * r;
 
@@ -471,7 +471,7 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex) {
     int n = 700;
 
 //    printf("matvec_mul3_WithComplex\n");
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1, NULL );
     // printf("aqui teste vector\n");
     matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
 //    printf("aqui teste matrix\n");
@@ -520,7 +520,7 @@ TEST_F(MatrixFixture, matvec_mul3_WithComplex_reusingResult) {
 
     int n = 15;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1, NULL );
     matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
     vector_t * r;
 
@@ -566,10 +566,10 @@ TEST_F(MatrixFixture, large_matvec_mul3_WithComplex) {
 
     int n = 1024;
 
-    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1, NULL );
     matrix_t * b = m.bridges[idx].matrix_new(n, n, T_COMPLEX, 1);
     vector_t * r;
-    vector_t * truth = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    vector_t * truth = m.bridges[idx].vector_new(n, T_COMPLEX, 1, NULL );
 
     printf("primeiro arquivo\n");
     int i = 0; 
