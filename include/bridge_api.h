@@ -9,7 +9,7 @@ typedef struct __bridge_t {
     void (*luDecomp_f)( void* ADev, int n );
     
     //double * (*addVector_f)(double * v1, double * v2, int n );
-    vector_t * (*vector_new)( int len, data_type type, int initialize );
+    vector_t * (*vector_new)( int len, data_type type, int initialize, void * data );
     void (*vector_delete)( vector_t * v ) ;
     void (*vecreqhost)( vector_t * v );
     void (*vecreqdev) ( vector_t * v );
