@@ -2,17 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-vector_t * vector_new( int len, data_type type, int initialize ) {
+vector_t * vector_new( int len, data_type type, int initialize, void * data ) {
     vector_t * ret = (vector_t *) malloc( sizeof( vector_t ) );
-    if (initialize) {
+    if (initialize && data == NULL) {
         if( type == T_INT ) {
             ret->value.i = (int *) malloc( len * sizeof( int ) );
         } else if( type == T_FLOAT )
             ret->value.f = (double *) malloc( len * sizeof( double ) ); 
         else if( type == T_COMPLEX )
             ret->value.f = (double *) malloc( 2 * len * sizeof( double ) );
+        ret->externalData = 0;
+    } else if (data != NULL) {
+        ret->value.f = (double *)data;
+        ret->externalData = 1;
     } else {
         ret->value.f = NULL;
+        ret->externalData = 0;
     }
     
     ret->type      = type;
@@ -24,11 +29,11 @@ vector_t * vector_new( int len, data_type type, int initialize ) {
 
 void vector_delete( vector_t * v ) {
 //    printf("vector_delete 1\n");
-    if (v->value.f != NULL) {
+    if (v->value.f != NULL && v->externalData == 0) {
 //    printf("vector_delete 2\n");
         free (v->value.f);
 //    printf("vector_delete 3\n");
-    } else if (v->extra != NULL) {
+    } else if (v->extra != NULL && v->externalData == 0) {
 //    printf("vector_delete 2\n");
         free (v->extra);
 //    printf("vector_delete 3\n");
