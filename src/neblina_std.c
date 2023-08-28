@@ -500,16 +500,16 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     // object_t out;
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) { 
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0, NULL);
         r->extra = m->bridges[index].addVectorF_f( a->extra, b->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
     }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0, NULL);
         r->extra = m->bridges[index].addVectorC_f( a->extra, b->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
     } else if((a->type == T_FLOAT && b->type == T_COMPLEX) ||
               (a->type == T_COMPLEX && b->type == T_FLOAT)) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0, NULL);
         r->ncol = b->ncol;
         r->nrow = b->nrow;
         r->type = T_COMPLEX;
@@ -560,11 +560,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     m->bridges[index].matreqdev( b );
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0, NULL);
         r->type = T_FLOAT; 
     } else if( (a->type == T_COMPLEX && b->type == T_COMPLEX) || 
              (a->type == T_FLOAT && b->type == T_COMPLEX) ) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0, NULL);
         r->type = T_COMPLEX;
     } else {
         runerror( "Invalid types for mat_mul\n" );
@@ -914,11 +914,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 
         matrix_t * r = NULL;
         if( m->type == T_FLOAT ) {
-            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_FLOAT, 0);
+            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_FLOAT, 0, NULL);
             r->extra = mg->bridges[index].mulScalarVector_f( m->extra, scalar, m->nrow * m->ncol ); 
             r->location = LOCDEV;
         } else if( m->type == T_COMPLEX ) {
-            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
             r->extra = mg->bridges[index].mulScalarVector_f( m->extra, scalar, 2 * m->nrow * m->ncol ); 
             r->location = LOCDEV;
         }
@@ -933,7 +933,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 matrix_t * mul_complex_scalar_complex_mat( bridge_manager_t *mg, int index, complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     mg->bridges[index].matreqdev( m );
-    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
     r->extra = mg->bridges[index].mulComplexScalarComplexVector_f( m->extra, s->re, s->im, m->nrow * m->ncol ); 
     r->location = LOCDEV;
 
@@ -943,7 +943,7 @@ matrix_t * mul_complex_scalar_complex_mat( bridge_manager_t *mg, int index, comp
 matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     mg->bridges[index].matreqdev( m );
-    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
     r->extra = mg->bridges[index].mulComplexScalarVector_f( m->extra, s->re, s->im, m->nrow * m->ncol ); 
     r->location = LOCDEV;
 

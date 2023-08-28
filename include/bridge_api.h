@@ -22,7 +22,7 @@ typedef struct __bridge_t {
     complex_t * (*complex_new)( double real, double imaginary ) ;
     void (*complex_delete)( complex_t * c ) ;
 
-    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type, int initialize );
+    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type, int initialize, void * data );
     void (*matrix_delete)( matrix_t * v );
     void (*matreqhost)( matrix_t * v );
     void (*matreqdev) ( matrix_t * v );
