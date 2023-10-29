@@ -73,6 +73,20 @@ add_library(neblina-cpu-bridge SHARED ${SOURCE_PATH}/libneblina-cpu-bridge-vecto
 
 target_link_libraries(neblina-core PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
+# Define the source and destination paths
+set(source_folder "/usr/local/lib")
+set(link_name "/usr/local/lib64")
+
+# Create a custom command to create the symbolic link
+add_custom_command(
+    OUTPUT ${link_name}
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${source_folder} ${link_name}
+    DEPENDS ${source_folder}
+)
+
+# Create symbolic link
+add_custom_target(create_symbolic_link DEPENDS ${link_name})	
+
 # Create the coverage target
 add_custom_target(coverage
     COMMAND lcov --directory . --capture --output-file coverage.info
