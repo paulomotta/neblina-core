@@ -1,0 +1,45 @@
+name: Code Coverage
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup CMake and build
+      run: |
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=true ..
+        make 
+        sudo make install
+        make test
+
+      # Add steps to build your project with CMake
+    - name: Run Code Coverage
+      run: |
+        # Run your tests or execute your application to generate coverage data
+        lcov --directory . --capture --output-file coverage.info
+      # Add any necessary steps to run your tests or generate coverage data
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: coverage.info
+
+    - name: Generate HTML Report
+      run: |
+        genhtml coverage.info --output-directory coverage
+      # Add steps to generate the HTML coverage report
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-html-report
+        path: coverage
