@@ -6,30 +6,21 @@ matrix_t * matrix_new( int nrow, int ncol, data_type type, int initialize ) {
     matrix_t * ret = (matrix_t *) malloc( sizeof( matrix_t ) );
     
     if (initialize) {
-        if( type == T_INT ) {
-            ret->value.i = (int *) malloc( nrow * ncol * sizeof( int ) );
-        } else if( type == T_FLOAT ) {
+        if( type == T_FLOAT ) {
             ret->value.f = (double *) malloc( nrow * ncol * sizeof( double ) );
         } else if( type == T_COMPLEX ) {
-            // printf("matrix_new\n");
             ret->value.f = (double *) malloc( 2 * nrow * ncol * sizeof( double ) );
-            // printf("matrix_new0\n");
         }
     } else {
         ret->value.f = NULL;
     }
-
     
     ret->type       = type;
-    // printf("matrix_new1\n");
     ret->nrow       = nrow;
-    // printf("matrix_new2\n");
     ret->ncol       = ncol;
-    // printf("matrix_new3\n");
     ret->location   = LOCHOS;
-    // printf("matrix_new4\n");
     ret->extra      = NULL;
-    // printf("matrix_new5\n");
+
     return ret;
 }
 
