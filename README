@@ -5,6 +5,7 @@ For more info, access
 # Requirements
 - OpenCL
 - Google test framework
+- lcov
 
 # Installation
 To install neblina-core, run the following commands.
@@ -24,3 +25,10 @@ To check whether the installation was successful or not,
 run the unitary tests by executing ``./neblina-core_test``
 (gtest required).
 If any of the tests failed, please contact the developer(s).
+
+## Code Coverage
+To generate the code coverage report, run the script below:
+
+```bash
+./scripts/coverage.sh
+```

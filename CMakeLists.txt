@@ -39,7 +39,7 @@ include_directories("${HEADER_PATH}")
 include_directories("..")
 LINK_DIRECTORIES(${PROJECT_DIR})
 
-if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
+if(CODE_COVERAGE)
    if(CMAKE_COMPILER_IS_GNUCXX)
        message("Building with lcov Code Coverage Tools")
        # Warning/Error messages
