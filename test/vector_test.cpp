@@ -35,7 +35,6 @@ public:
     }
 
     void TearDown() {
-        //printf("check");
         //getchar();
         
     }
@@ -46,7 +45,7 @@ public:
 
 };
 
-TEST_F(NeblinaCoreFixture, vec_add) {
+TEST_F(NeblinaCoreFixture, vec_add_float) {
 
     int n = 3;
 
@@ -94,7 +93,6 @@ TEST_F(NeblinaCoreFixture, vec_add) {
 //     EXPECT_EQ(3, len);
 //     delete_object_array(in, 1);
 //     m.bridges[idx].vector_delete(a);
-
 // }
 
 TEST_F(NeblinaCoreFixture, vec_add_complex) {
@@ -133,7 +131,7 @@ TEST_F(NeblinaCoreFixture, vec_add_complex) {
 
 }
 
-TEST_F(NeblinaCoreFixture, vec_sub) {
+TEST_F(NeblinaCoreFixture, vec_sub_float) {
 
     int n = 3;
 
@@ -162,7 +160,7 @@ TEST_F(NeblinaCoreFixture, vec_sub) {
 
 }
 
-TEST_F(NeblinaCoreFixture, vec_sub_WithComplex) {
+TEST_F(NeblinaCoreFixture, vec_sub_complex) {
 
     int n = 3;
 
@@ -199,7 +197,7 @@ TEST_F(NeblinaCoreFixture, vec_sub_WithComplex) {
 }
 
 
-TEST_F(NeblinaCoreFixture, scalar_vec) {
+TEST_F(NeblinaCoreFixture, scalar_vec_float) {
 
     int n = 3;
     
@@ -309,7 +307,7 @@ TEST_F(NeblinaCoreFixture, float_scalar_complex_vec) {
     m.bridges[idx].vector_delete(r);
 }
 
-TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
+TEST_F(NeblinaCoreFixture, vec_prod_float) {
 
     int n = 3;
 
@@ -338,7 +336,7 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithFloat) {
 
 }
 
-TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
+TEST_F(NeblinaCoreFixture, vec_prod_complex) {
 
     int n = 3;
 
@@ -370,7 +368,7 @@ TEST_F(NeblinaCoreFixture, vec_prod_WithComplex) {
 
 }
 
-TEST_F(NeblinaCoreFixture, vec_conj) {
+TEST_F(NeblinaCoreFixture, vec_conj_complex) {
 
     int n = 3;
 
@@ -435,24 +433,40 @@ TEST_F(NeblinaCoreFixture, vec_sum) {
         a->value.f[i] = 2.;
     }
 
-    // printf("vec_sum 1\n");
     object_t ** in = convertToObject(a, NULL);
-    // printf("vec_sum 2\n");
 
     r = (object_t *) vec_sum(&m, idx, (void **) in, NULL);
-    // printf("vec_sum 3\n");
 
     EXPECT_EQ(8., r->value.f);
-    // printf("vec_sum 4\n");
     
     delete_object_array(in, 1);
     delete_object(r);
     m.bridges[idx].vector_delete(a);
-    // printf("vec_sum 5\n");
-
 }
 
-TEST_F(NeblinaCoreFixture, addVectorC) {
+TEST_F(NeblinaCoreFixture, vec_sum_complex) {
+
+    int n = 4;
+
+    vector_t * a = m.bridges[idx].vector_new(n, T_COMPLEX, 1 );
+    object_t * r;
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = 2.;
+    }
+
+    object_t ** in = convertToObject(a, NULL);
+
+    r = (object_t *) vec_sum(&m, idx, (void **) in, NULL);
+
+    EXPECT_EQ(8., r->value.f);
+    
+    delete_object_array(in, 1);
+    delete_object(r);
+    m.bridges[idx].vector_delete(a);
+}
+
+TEST_F(NeblinaCoreFixture, add_vector_complex) {
 
     int n = 3;
 
@@ -484,7 +498,7 @@ TEST_F(NeblinaCoreFixture, addVectorC) {
     m.bridges[idx].vector_delete(r);
 }
 
-TEST_F(NeblinaCoreFixture, subVector) {
+TEST_F(NeblinaCoreFixture, sub_vector_float) {
 
     int n = 3;
 

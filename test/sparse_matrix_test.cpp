@@ -102,7 +102,7 @@ public:
 
 // }
 
-TEST_F(SparseMatrixFixture, matvec_mul3_WithSparseMatrixFloat) {
+TEST_F(SparseMatrixFixture, matvec_mul3_with_sparse_matrix_float) {
 
     int n = 10;
 
@@ -170,7 +170,7 @@ TEST_F(SparseMatrixFixture, matvec_mul3_WithSparseMatrixFloat) {
 
 }
 
-TEST_F(SparseMatrixFixture, matvec_mul3_WithSparseMatrixComplex) {
+TEST_F(SparseMatrixFixture, matvec_mul3_with_sparse_matrix_complex) {
 
     int n = 70;
 
