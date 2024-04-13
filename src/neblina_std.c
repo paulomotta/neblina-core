@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
+#include <sys/time.h>
 
 #include "libneblina.h"
 #include "neblina.h"
@@ -208,7 +210,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0);
+        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0, NULL);
         //apenas para CPU
         // free(r->value.f);
         m->bridges[index].vecreqdev( a ); 
@@ -231,7 +233,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
  void ** vec_conj( bridge_manager_t *m, int index, void ** i, int * status ) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0);
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL);
         //apenas para cpu
         // free( r->value.f);
         m->bridges[index].vecreqdev( a ); m->bridges[index].vecreqdev( r );
@@ -404,7 +406,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         object_t ** in = (object_t **) i;
         vector_t * a = (vector_t *) vvalue( *in[0] );
         vector_t * b = (vector_t *) vvalue( *in[1] );
-        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0);
+        vector_t * r = m->bridges[index].vector_new(b->len, b->type, 0, NULL);
         // apenas para cpu
         // free(r->value.f);
         m->bridges[index].vecreqdev( a ); 
@@ -500,16 +502,16 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     // object_t out;
     matrix_t * r;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) { 
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0, NULL);
         r->extra = m->bridges[index].addVectorF_f( a->extra, b->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
     }else if ( a->type == T_COMPLEX && b->type == T_COMPLEX) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0, NULL);
         r->extra = m->bridges[index].addVectorC_f( a->extra, b->extra, b->nrow * b->ncol );
         r->location = LOCDEV;
     } else if((a->type == T_FLOAT && b->type == T_COMPLEX) ||
               (a->type == T_COMPLEX && b->type == T_FLOAT)) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0, NULL);
         r->ncol = b->ncol;
         r->nrow = b->nrow;
         r->type = T_COMPLEX;
@@ -556,26 +558,116 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     object_t ** in = (object_t **) i;
     matrix_t * a = (matrix_t *) vvalue( *in[0] );
     matrix_t * b = (matrix_t *) vvalue( *in[1] );
-    m->bridges[index].matreqdev( a );
-    m->bridges[index].matreqdev( b );
+    
     matrix_t * r;
+    long matrix_size = 0;
     if( a->type == T_FLOAT && b->type == T_FLOAT ) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_FLOAT, 0);
+        r = m->bridges[index].matrix_new(b->ncol,a->nrow,T_FLOAT, 0, NULL);
         r->type = T_FLOAT; 
+        matrix_size = b->ncol;
     } else if( (a->type == T_COMPLEX && b->type == T_COMPLEX) || 
              (a->type == T_FLOAT && b->type == T_COMPLEX) ) {
-        r = m->bridges[index].matrix_new(b->ncol,b->nrow,T_COMPLEX, 0);
+        r = m->bridges[index].matrix_new(b->ncol,a->nrow,T_COMPLEX, 0, NULL);
         r->type = T_COMPLEX;
+        matrix_size = 2 * b->ncol;
     } else {
         runerror( "Invalid types for mat_mul\n" );
     }
+    struct timeval stop, start, ini, end, tval_result;
+    long max_mem = m->bridges[index].get_Engine_Max_Memory_Allocation_f();
+    printf("matrix_size=%ld max_mem=%ld (max_mem / sizeof(double))=%ld\n", matrix_size, max_mem, (max_mem / sizeof(double)));
+    printf("matrix_size < (max_mem / sizeof(double))=%d\n",matrix_size < (max_mem / sizeof(double)));
+    if ( 1 ) { //|| (matrix_size * matrix_size) < (max_mem / sizeof(double))
+        // gettimeofday(&ini, NULL);
+        m->bridges[index].matreqdev( a );
+        m->bridges[index].matreqdev( b );
         
-    r->ncol = b->ncol;
-    r->nrow = a->nrow;
-    // no oclvector.c ele definia a funcao que pelo tipo escolhia o kernel que seria executado
     r->extra = (void *)m->bridges[index].matMul_f( a->extra, b->extra, a->nrow, b->ncol, a->ncol, a->type, b->type );
+        // gettimeofday(&end, NULL);
+            // timersub(&end, &ini, &tval_result);
+            // printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
     r->location = LOCDEV;
     r->value.f = NULL;
+    } else {
+        // A * B -> row from A and col from B
+        // use max_mem
+        printf("processing chunks\n");
+        r->location = LOCHOS;
+        r->value.f = (double *) calloc( a->nrow * b->ncol, sizeof( double ) );
+        printf("callocated\n");
+
+        printf("1\n");
+        printf("max_mem=%d\n", max_mem);
+        printf("(max_mem / sizeof(double))=%d\n", (max_mem / sizeof(double)));
+        long qty_chunks = ceil((matrix_size * 1.0) / (max_mem / sizeof(double)));
+        printf("qty_chunks=%ld\n", qty_chunks);
+        printf("2\n");
+        long chunk_size = matrix_size / qty_chunks;
+        printf("3\n");
+        printf("chunk_size=%ld\n", chunk_size);
+        
+        
+
+        for (int j = 0; j < b->ncol; j++){ //we will move through columns first
+            gettimeofday(&ini, NULL);
+            for (int c = 0; c < qty_chunks; c++){ //then we move through the chunks 
+                // gettimeofday(&start, NULL);
+                double * B_col = m->bridges[index].matrix_copy_col(b, j, c * chunk_size, chunk_size);
+                // gettimeofday(&stop, NULL);
+                // printf(" col copy took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
+                // getchar();
+                //printf("B_col=%p\n",B_col);
+                // for (int n=0; n <chunk_size; n++){
+                //     printf("B_col[%d]=%lf\n", n, B_col[n]);
+                // }
+                vector_t * col = m->bridges[index].vector_new(chunk_size, T_FLOAT, 0, B_col);
+                // for (int n=0; n <col->len; n++){
+                //     printf("col[%d]=%lf\n", n, col->value.f[n]);
+                //     printf("B_col[%d]=%lf\n", n, B_col[n]);
+                // }
+                m->bridges[index].vecreqdev( col );
+                for(int i = 0; i < a->nrow; i++){
+                    //for the same column chunk that was copied to device memory
+                    //we calculate the dot product for all the row chunks to leverage
+                    //the column that was copied first (columns will inccur in more
+                    //cache misses on the CPU)
+
+                    // gettimeofday(&start, NULL);
+                    double * A_row = m->bridges[index].matrix_copy_row(a, i, c * chunk_size, chunk_size);
+                    // gettimeofday(&stop, NULL);
+                    // printf("  row copy took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
+                    //printf("A_row=%p\n",A_row);
+                    vector_t * row = m->bridges[index].vector_new(chunk_size, T_FLOAT, 0, A_row);
+                    // for (int n=0; n <row->len; n++){
+                    //     printf("row[%d]=%lf\n", n, row->value.f[n]);
+                    //     printf("A_row[%d]=%lf\n", n, A_row[n]);
+                    // }
+                    // gettimeofday(&start, NULL);
+                    m->bridges[index].vecreqdev( row );
+                    // gettimeofday(&stop, NULL);
+                    // printf("  row move took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
+                    //printf("dotVector\n");
+                    // gettimeofday(&start, NULL);
+                    double res = m->bridges[index].dotVector_f(row->extra, col->extra, chunk_size);
+                    // gettimeofday(&stop, NULL);
+                    // printf("   dot product took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec); 
+                    //printf("%d %d %d res=%f\n", j, c, i, res);
+                    r->value.f[i * r->ncol + j] += res;
+                    m->bridges[index].vector_delete(row);
+                    free(A_row);
+                }
+                m->bridges[index].vector_delete(col);
+                free(B_col);
+            }
+            printf("j=%d ", j);
+            gettimeofday(&end, NULL);
+            timersub(&end, &ini, &tval_result);
+            printf("Time elapsed: %ld.%06ld\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+            //printf("col took %lu us\n\n", (end.tv_sec - ini.tv_sec) * 1000000 + end.tv_usec - ini.tv_usec);
+            //getchar();
+        }
+
+    }
     
     //clear_input(i, 2);
     if (status != NULL) {
@@ -756,7 +848,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         vector_t * v = (vector_t *) vvalue( *in[1] );
         m->bridges[index].vecreqdev( v );
         
-        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0);
+        vector_t * r = m->bridges[index].vector_new(v->len, T_FLOAT, 0, NULL);
         r->location = LOCDEV;
         
         r->extra = (void*)m->bridges[index].mulScalarVector_f( v->extra, scalar, v->len ); 
@@ -770,7 +862,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
         
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -783,7 +875,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
          
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -796,7 +888,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
          
         m->bridges[index].vecreqdev( a );
         
-        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0 ); //(vector_t *) malloc( sizeof( vector_t ) );
+        vector_t * r = m->bridges[index].vector_new(a->len, T_COMPLEX, 0, NULL ); //(vector_t *) malloc( sizeof( vector_t ) );
         r->location = LOCDEV;
         //apenas cpu
         // free( r->value.f);
@@ -914,11 +1006,11 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 
         matrix_t * r = NULL;
         if( m->type == T_FLOAT ) {
-            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_FLOAT, 0);
+            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_FLOAT, 0, NULL);
             r->extra = mg->bridges[index].mulScalarVector_f( m->extra, scalar, m->nrow * m->ncol ); 
             r->location = LOCDEV;
         } else if( m->type == T_COMPLEX ) {
-            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+            r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
             r->extra = mg->bridges[index].mulScalarVector_f( m->extra, scalar, 2 * m->nrow * m->ncol ); 
             r->location = LOCDEV;
         }
@@ -933,7 +1025,7 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
 matrix_t * mul_complex_scalar_complex_mat( bridge_manager_t *mg, int index, complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     mg->bridges[index].matreqdev( m );
-    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
     r->extra = mg->bridges[index].mulComplexScalarComplexVector_f( m->extra, s->re, s->im, m->nrow * m->ncol ); 
     r->location = LOCDEV;
 
@@ -943,7 +1035,7 @@ matrix_t * mul_complex_scalar_complex_mat( bridge_manager_t *mg, int index, comp
 matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, complex_t * s, matrix_t * m){
     matrix_t * r = NULL;
     mg->bridges[index].matreqdev( m );
-    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0);
+    r = mg->bridges[index].matrix_new(m->nrow, m->ncol, T_COMPLEX, 0, NULL);
     r->extra = mg->bridges[index].mulComplexScalarVector_f( m->extra, s->re, s->im, m->nrow * m->ncol ); 
     r->location = LOCDEV;
 
@@ -998,7 +1090,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
         if( type( *in[1] ) == T_MATRIX ) {        
 
             matrix_t * m = (matrix_t *) vvalue( *in[1] );
-            r = mg->bridges[index].vector_new(m->nrow, m->type, 0 );
+            r = mg->bridges[index].vector_new(m->nrow, m->type, 0, NULL );
             mg->bridges[index].vecreqdev( r );
             if (m->location != LOCDEV) {
                 mg->bridges[index].matreqdev( m );
@@ -1026,7 +1118,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 
         } else  if( type( *in[1] ) == T_SMATRIX ) {
                 smatrix_t * m = (smatrix_t *) vvalue( *in[1] );
-                r = mg->bridges[index].vector_new(m->nrow, m->type, 0 );
+                r = mg->bridges[index].vector_new(m->nrow, m->type, 0, NULL );
                 mg->bridges[index].vecreqdev( r );
                 if (m->location != LOCDEV) {
                     mg->bridges[index].smatreqdev( m );
@@ -1461,7 +1553,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
         vector_t * a = (vector_t *) vvalue( *in[1] );
         int parts = a->len / offset;
         
-        vector_t * r = m->bridges[index].vector_new(offset, T_FLOAT, 0);
+        vector_t * r = m->bridges[index].vector_new(offset, T_FLOAT, 0, NULL);
         //apenas cpu
         // free( r->value.f);
         m->bridges[index].vecreqdev( a ); 

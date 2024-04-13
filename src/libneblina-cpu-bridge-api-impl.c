@@ -17,6 +17,10 @@ void StopEngine(){
     //ReleaseCLInfo(clinfo);
 }
 
+long get_Engine_Max_Memory_Allocation(){
+    return 0L;
+}
+
 void luDecomp(void* v1Dev, int n ) {
     
     return (void *)NULL;
@@ -232,8 +236,8 @@ void* matMulFloat(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) 
             double v2;
             #pragma omp unroll
             for(int k=0; k < ncol_m1; k++) {
-                v1 = m1[i*ncol_m1+k];
-                v2 = m2[k*ncols+j];
+                v1 = m1[i*ncol_m1+k]; //m1 row
+                v2 = m2[k*ncols+j];   //m2 col
                 sum += v1 * v2;
             }
             out[i*ncols+j] = sum;
@@ -512,25 +516,17 @@ double normVector( void* vDev, int len ) {
 
 
 double dotVector(void* v1Dev, void* v2Dev, int len ) {
-//    unsigned int tid = get_local_id(0);
-//    unsigned int i = get_group_id(0)*(get_local_size(0)*2) + get_local_id(0);
-//
-//    sdata[tid] = (i < n) ? m1[i]*m2[i] : 0;
-//    if ((i + get_local_size(0)) < n) {
-//        sdata[tid] += m1[i+get_local_size(0)]*m2[i+get_local_size(0)];
-//    }
-//    barrier(CLK_LOCAL_MEM_FENCE);
-//    for(unsigned int s=get_local_size(0)/2; s>0; s>>=1)
-//    {
-//        if (tid < s)
-//        {
-//            sdata[tid] += sdata[tid + s];
-//        }
-//        barrier(CLK_LOCAL_MEM_FENCE);
-//    }
-//    if (tid == 0) out[get_group_id(0)] = sdata[0];
     
-    return 0.0;
+    double sum = 0;
+
+    double * v1 = (double *) v1Dev;
+    double * v2 = (double *) v2Dev;
+    for (int i = 0; i < len; i++) {
+        // printf("%d v1=%f v2=%f\n", i, v1[i], v2[i]);
+        sum += v1[i] * v2[i];
+    }    
+
+    return sum;
 }
 
 void dotVectorComplex( double * out_re, double * out_im,  void* v1Dev, void* v2Dev, int len ) {

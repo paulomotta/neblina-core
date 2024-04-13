@@ -6,10 +6,11 @@ typedef struct __bridge_t {
     void *plugin_handle;
     void (*InitEngine_f)(int device) ;
     void (*StopEngine_f)() ;
+    long (*get_Engine_Max_Memory_Allocation_f)() ;
     void (*luDecomp_f)( void* ADev, int n );
     
     //double * (*addVector_f)(double * v1, double * v2, int n );
-    vector_t * (*vector_new)( int len, data_type type, int initialize );
+    vector_t * (*vector_new)( int len, data_type type, int initialize, void * data );
     void (*vector_delete)( vector_t * v ) ;
     void (*vecreqhost)( vector_t * v );
     void (*vecreqdev) ( vector_t * v );
@@ -22,7 +23,7 @@ typedef struct __bridge_t {
     complex_t * (*complex_new)( double real, double imaginary ) ;
     void (*complex_delete)( complex_t * c ) ;
 
-    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type, int initialize );
+    matrix_t * (*matrix_new)( int nrow, int ncol, data_type type, int initialize, void * data );
     void (*matrix_delete)( matrix_t * v );
     void (*matreqhost)( matrix_t * v );
     void (*matreqdev) ( matrix_t * v );
@@ -31,6 +32,8 @@ typedef struct __bridge_t {
     void (*matrix_set_complex_value)(matrix_t *  m, int i, int j, double r, double im);
     double (*matrix_get_complex_real_value)(matrix_t *  m, int i, int j);
     double (*matrix_get_complex_imaginary_value)(matrix_t *  m, int i, int j);
+    double * (*matrix_copy_col)(matrix_t * m, int j, int ini, int size);
+    double * (*matrix_copy_row)(matrix_t * m, int i, int ini, int size);
     
     smatrix_t * (*smatrix_new)( int nrow, int ncol, data_type type );
     void (*smatrix_t_clear)( smatrix_t * m );

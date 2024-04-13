@@ -103,6 +103,30 @@ void load_complex_function(bridge_manager_t *manager, complex_t * (**function_pt
         printf("Cannot find init in %s: %s", function_name, result);
     }
 }
+
+void load_double_pointer_function(bridge_manager_t *manager, double * (**function_ptr)(), char* function_name, int index){
+    
+    double * (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+void load_long_function(bridge_manager_t *manager, long (**function_ptr)(), char* function_name, int index){
+    
+    long (*externalFunction)(void);
+    *(void **) (&externalFunction) = dlsym(manager->bridges[index].plugin_handle, function_name);
+    *function_ptr = externalFunction;
+    char *result = dlerror();
+    if (result) {
+        printf("Cannot find init in %s: %s", function_name, result);
+    }
+}
+
+
 /*
  
  Falta definir 
@@ -264,6 +288,7 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //    if (result) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
+    load_long_function(manager, &(manager->bridges[index].get_Engine_Max_Memory_Allocation_f), "get_Engine_Max_Memory_Allocation", index);
     
     load_int_function(manager, &(manager->bridges[index].list_len), "list_len", index);
 //    manager->bridges[index].list_len = dlsym(manager->bridges[index].plugin_handle, "list_len");
@@ -343,11 +368,9 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //    }
 
     load_void_function(manager, &(manager->bridges[index].matrix_set_complex_value), "matrix_set_complex_value", index);
-//    manager->bridges[index].matrix_set_complex_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_complex_value");
-//    result = dlerror();
-//    if (result) {
-//        printf("Cannot find init in %s: %s", plugin_name, result);
-//    }
+    
+    load_double_pointer_function(manager, &(manager->bridges[index].matrix_copy_col), "matrix_copy_col", index);
+    load_double_pointer_function(manager, &(manager->bridges[index].matrix_copy_row), "matrix_copy_row", index);
 
     load_void_function(manager, &(manager->bridges[index].matrix_set_real_value), "matrix_set_real_value", index);
 //    manager->bridges[index].matrix_set_real_value = dlsym(manager->bridges[index].plugin_handle, "matrix_set_real_value");
