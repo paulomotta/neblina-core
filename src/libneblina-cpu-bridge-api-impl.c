@@ -23,7 +23,13 @@ long get_Engine_Max_Memory_Allocation(){
 
 void luDecomp(void* v1Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
+}
+
+double * copyVectorFromDevice( double * vec, int n ) {
+    double * out = (double *) malloc( n );
+    memcpy(out, vec, n);
+    return out;
 }
 
 double * addVectorF( double * v1, double * v2, int n ) {
@@ -191,13 +197,13 @@ void* mulFloatScalarComplexVector( double* v1, double real, int n ) {
 void mulScalarMatRow( void* m, double scalar, int nrow, int ncols, int row) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 void mulScalarMatCol( void* m, double scalar, int nrow, int ncols, int col) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 
@@ -334,7 +340,7 @@ void matSquare( void* * outLin, void* * idxOutLin,
                 int maxcols, int N ) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 void* matVecMul3(  double* mat, double* vec, int ncols, int nrows ) {
@@ -383,12 +389,16 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
     #pragma omp parallel for
     for (int idx = 0; idx < nrows; idx++)
     {
+        // printf("idx=%d ", idx);
            double sum = 0;
            int row = idx;
            int midx = idx * maxCols;
+        //    printf("midx=%d \n", idx);
            int i;
            for (i = 0; i < maxCols; i++) {
+                // printf("i=%d midx + i=%d ", i, (midx + i));
                int col = col_idx[midx + i];
+                // printf("row=%d col=%d value=%.15f vec=%.15f\n", row, col, m[midx + i], vec_in[col]);
                sum += ( col != -1 ) ? m[midx + i] * vec_in[col] : 0;             
            }
            vec_out[row] = sum;
@@ -552,7 +562,7 @@ void dotVectorComplex( double * out_re, double * out_im,  void* v1Dev, void* v2D
 //    }
 //    if (tid == 0){ out_re[get_group_id(0)] = sdata_re[0];out_im[get_group_id(0)] = sdata_im[0]; }
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
     
