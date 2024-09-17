@@ -205,6 +205,27 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     return in;
  }
 
+void ** copy_vector_from_device( bridge_manager_t *m, int idx, void ** i, int * status ) {
+        
+        // a pre condition is that data should be on the device, if not should we throw an erro?
+
+        object_t ** in = (object_t **) i;
+        vector_t * a = (vector_t *) vvalue( *in[0] );
+        vector_t * r = m->bridges[idx].vector_new(a->len, a->type, 1, NULL);
+        // m->bridges[idx].vecreqdev( r ); 
+        
+        int size = (a->type == T_FLOAT) ? sizeof(double) : (sizeof(double) * 2); 
+
+        r->value.f = (void*)m->bridges[idx].copyVectorFromDevice_f( a->extra, (size * a->len) ); 
+
+        // m->bridges[idx].vecreqhost( r ); 
+
+        if (status != NULL) {
+            *status = 0;
+        }
+        return (void *) r;
+}
+
  void ** vec_add( bridge_manager_t *m, int index, void ** i, int * status ) {
         
         object_t ** in = (object_t **) i;
@@ -575,8 +596,8 @@ object_t ** convertToObject4(vector_t * a, smatrix_t * b) {
     }
     struct timeval stop, start, ini, end, tval_result;
     long max_mem = m->bridges[index].get_Engine_Max_Memory_Allocation_f();
-    printf("matrix_size=%ld max_mem=%ld (max_mem / sizeof(double))=%ld\n", matrix_size, max_mem, (max_mem / sizeof(double)));
-    printf("matrix_size < (max_mem / sizeof(double))=%d\n",matrix_size < (max_mem / sizeof(double)));
+    //printf("matrix_size=%ld max_mem=%ld (max_mem / sizeof(double))=%ld\n", matrix_size, max_mem, (max_mem / sizeof(double)));
+    //printf("matrix_size < (max_mem / sizeof(double))=%d\n",matrix_size < (max_mem / sizeof(double)));
     if ( 1 ) { //|| (matrix_size * matrix_size) < (max_mem / sizeof(double))
         // gettimeofday(&ini, NULL);
         m->bridges[index].matreqdev( a );
@@ -1124,7 +1145,7 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
                     mg->bridges[index].smatreqdev( m );
                 }
                 if( m->type == T_FLOAT && v->type == T_FLOAT ) {
-                    // printf("sparse matvec_mul3 \n");
+                    // printf("sparse matvec_mul3 float x float\n");
                     r->extra = (void*)mg->bridges[index].sparseVecMul_f( m->extra, m->idxColMem, v->extra, m->nrow, m->maxcols );
                     // printf("sparse  matvec_mul3 back\n");
 //                    r->location = LOCDEV;
@@ -1133,11 +1154,14 @@ matrix_t * mul_complex_scalar_float_mat( bridge_manager_t *mg, int index, comple
 //                    r->type = T_FLOAT;
                     
                 } else if( m->type == T_COMPLEX && v->type == T_COMPLEX ) {
+                    // printf("sparse matvec_mul3 complex x complex \n");
                     r->extra = (void*)mg->bridges[index].sparseComplexVecMul_f( m->extra, m->idxColMem, v->extra, m->nrow, m->maxcols );
 //                    r->location = LOCDEV;
 //                    r->value.f = NULL;
 //                    r->len = m->nrow;
 //                    r->type = T_COMPLEX;
+                } else {
+                    // printf("sparse matvec_mul3 other types\n");
                 }
                 if (status != NULL) {
                     *status = 0;

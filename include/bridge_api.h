@@ -1,6 +1,11 @@
 #ifndef __BRIDGE_API_
 #define __BRIDGE_API_
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+
 typedef struct __bridge_t {
     
     void *plugin_handle;
@@ -53,6 +58,7 @@ typedef struct __bridge_t {
 
 
 
+    void * (*copyVectorFromDevice_f)(void * vec, int n );
     void * (*addVectorF_f)(void * v1Dev, void * v2Dev, int n ); 
     void * (*addVectorC_f)(void * v1Dev, void * v2Dev, int n );
     void * (*addVectorFC_f)(void * v1Dev, void * v2Dev, int n );
@@ -100,5 +106,7 @@ typedef struct __bridge_manager_t {
 
 //typedef void * rmatVecMul3Complex_f(  rmatrix_t * M, void * vDev, int ncols, int nrows ); 
 //rmatVecMul3Complex_f rmatVecMul3Complex; 
-    
+#ifdef	__cplusplus
+}
+#endif
 #endif

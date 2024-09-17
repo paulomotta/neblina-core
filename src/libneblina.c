@@ -156,6 +156,8 @@ void load_plugin(bridge_manager_t *manager, char* library_name, int index) {
 //        printf("Cannot find init in %s: %s", plugin_name, result);
 //    }
 
+    load_function(manager, &(manager->bridges[index].copyVectorFromDevice_f), "copyVectorFromDevice", index);
+
     load_function(manager, &(manager->bridges[index].addVectorC_f), "addVectorC", index);
 //    manager->bridges[index].addVectorC_f = dlsym(manager->bridges[index].plugin_handle, "addVectorC");
 //    result = dlerror();
