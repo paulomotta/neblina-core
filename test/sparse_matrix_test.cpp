@@ -238,3 +238,57 @@ TEST_F(SparseMatrixFixture, matvec_mul3_WithSparseMatrixComplex) {
 
 }
 
+TEST_F(SparseMatrixFixture, matvec_mul3_WithLargeSparseMatrixFloat) {
+
+    int n = 1000;
+
+    vector_t * a = m.bridges[idx].vector_new(n, T_FLOAT, 1, NULL );
+    smatrix_t * b = m.bridges[idx].smatrix_new(n, n, T_FLOAT);
+    matrix_t * b_dense = m.bridges[idx].matrix_new(n, n, T_FLOAT, 1, NULL);
+    vector_t * r;
+    vector_t * r_dense;
+
+    for (int i = 0; i < a->len; i++) {
+        a->value.f[i] = i * 1.;
+    }
+
+    for (int i = 0; i < b->ncol; i++) {
+        for (int j = 0; j < b->nrow; j++) {
+            m.bridges[idx].smatrix_set_real_value(b, i, j, (i + j) * 1.);
+            b_dense->value.f[i * b->ncol + j] = (i + j) * 1.;
+        }
+    }
+
+    m.bridges[idx].smatrix_pack(b);
+
+    object_t ** in = convertToObject4(a, b);
+    
+    object_t ** in_dense = convertToObject3(a, b_dense);
+
+    r_dense = (vector_t *) matvec_mul3(&m, idx, (void **) in_dense, NULL);
+
+    m.bridges[idx].vecreqhost(r_dense);
+
+    r = (vector_t *) matvec_mul3(&m, idx, (void **) in, NULL);
+
+    m.bridges[idx].vecreqhost(r);
+
+    for (int i = 0; i < r->len; i++) {
+        EXPECT_EQ(r_dense->value.f[i], r->value.f[i]);
+    
+    }
+
+    delete_object_array(in, 2);
+    delete_object_array(in_dense, 2);
+
+    m.bridges[idx].vector_delete(a);
+
+    m.bridges[idx].smatrix_delete(b);
+
+    m.bridges[idx].vector_delete(r);
+
+    m.bridges[idx].matrix_delete(b_dense);
+    m.bridges[idx].vector_delete(r_dense);
+
+
+}
