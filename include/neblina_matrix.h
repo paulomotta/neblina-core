@@ -23,6 +23,7 @@ extern "C" {
     data_type          type;
     unsigned char    location;
     void*             extra;
+    int                externalData;
 } matrix_t;
 
 //matrix_t * matrix_new( int nrow, int ncol, data_type type );

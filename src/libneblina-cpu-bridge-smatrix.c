@@ -34,25 +34,25 @@ void smatrix_pack(smatrix_t * m){
     slist * tmp = NULL;
     for(int i=0; i < m->nrow; i++ ) {
         tmp = m->smat[i];        
-//        printf("%p \n",&tmp);
+        // printf("%p \n",&tmp);
         while( tmp != NULL ) {
             int idx = i*m->maxcols + m->icount[i];
-//            printf("%d %d %d ",i, tmp->col, idx);
+            // printf("i=%d tmp->col=%d idx=%d ",i, tmp->col, idx);
             m->idx_col[idx] = tmp->col;
             int midx = i*m->maxcols + m->icount[i];
-//            printf("%d ",midx);
+            // printf("midx=%d ",midx);
             m->m[midx] = tmp->re;
-//            printf("%lf ",tmp->re);
-//            printf("%d ",m->icount[i]);
+            // printf("value=%lf ",tmp->re);
+            // printf("m->icount[i]=%d ",m->icount[i]);
             m->icount[i]++;
             tmp = tmp->next;
-//            printf("\n");
+            // printf("\n");
         }    
-//        printf("\n");
+        // printf("\n");
         slist_clear( m->smat[i] );
         m->smat[i] = NULL;
     }
-//    printf("--------\n");
+    // printf("--------\n");
     m->isPacked = 1;
 }
 
@@ -100,7 +100,7 @@ void smatrix_set_real_value(smatrix_t *  m, int i, int j, double r){
         printf("invalid col index on loading sparse matrix\n");
         exit( -1 );
     }
-                    
+    // printf("set_real i=%d j=%d value=%f \n",i,j,r);
     m->smat[i] = slist_add( m->smat[i], j, r, 0.0);
     m->rcount[i]++;
     if( m->rcount[i] > m->maxcols ) {
@@ -293,6 +293,8 @@ void smatreqdev ( smatrix_t * m ) {
         m->location = LOCDEV;
         m->idxColMem = m->idx_col;
         m->extra = m->m;
+        m->idx_col = NULL;
+        m->m = NULL;
     }
 }
 

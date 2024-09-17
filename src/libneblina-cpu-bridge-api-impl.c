@@ -17,9 +17,19 @@ void StopEngine(){
     //ReleaseCLInfo(clinfo);
 }
 
+long get_Engine_Max_Memory_Allocation(){
+    return 0L;
+}
+
 void luDecomp(void* v1Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
+}
+
+double * copyVectorFromDevice( double * vec, int n ) {
+    double * out = (double *) malloc( n );
+    memcpy(out, vec, n);
+    return out;
 }
 
 double * addVectorF( double * v1, double * v2, int n ) {
@@ -187,13 +197,13 @@ void* mulFloatScalarComplexVector( double* v1, double real, int n ) {
 void mulScalarMatRow( void* m, double scalar, int nrow, int ncols, int row) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 void mulScalarMatCol( void* m, double scalar, int nrow, int ncols, int col) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 
@@ -232,8 +242,8 @@ void* matMulFloat(  double* m1, double* m2, int nrows, int ncols, int ncol_m1 ) 
             double v2;
             #pragma omp unroll
             for(int k=0; k < ncol_m1; k++) {
-                v1 = m1[i*ncol_m1+k];
-                v2 = m2[k*ncols+j];
+                v1 = m1[i*ncol_m1+k]; //m1 row
+                v2 = m2[k*ncols+j];   //m2 col
                 sum += v1 * v2;
             }
             out[i*ncols+j] = sum;
@@ -330,7 +340,7 @@ void matSquare( void* * outLin, void* * idxOutLin,
                 int maxcols, int N ) {
     //void* v1Dev, void* v2Dev, int n ) {
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
 void* matVecMul3(  double* mat, double* vec, int ncols, int nrows ) {
@@ -379,12 +389,16 @@ void* sparseVecMul(void* mDev, void* idxCol, void* vDev, int nrows, int maxCols 
     #pragma omp parallel for
     for (int idx = 0; idx < nrows; idx++)
     {
+        // printf("idx=%d ", idx);
            double sum = 0;
            int row = idx;
            int midx = idx * maxCols;
+        //    printf("midx=%d \n", idx);
            int i;
            for (i = 0; i < maxCols; i++) {
+                // printf("i=%d midx + i=%d ", i, (midx + i));
                int col = col_idx[midx + i];
+                // printf("row=%d col=%d value=%.15f vec=%.15f\n", row, col, m[midx + i], vec_in[col]);
                sum += ( col != -1 ) ? m[midx + i] * vec_in[col] : 0;             
            }
            vec_out[row] = sum;
@@ -512,25 +526,17 @@ double normVector( void* vDev, int len ) {
 
 
 double dotVector(void* v1Dev, void* v2Dev, int len ) {
-//    unsigned int tid = get_local_id(0);
-//    unsigned int i = get_group_id(0)*(get_local_size(0)*2) + get_local_id(0);
-//
-//    sdata[tid] = (i < n) ? m1[i]*m2[i] : 0;
-//    if ((i + get_local_size(0)) < n) {
-//        sdata[tid] += m1[i+get_local_size(0)]*m2[i+get_local_size(0)];
-//    }
-//    barrier(CLK_LOCAL_MEM_FENCE);
-//    for(unsigned int s=get_local_size(0)/2; s>0; s>>=1)
-//    {
-//        if (tid < s)
-//        {
-//            sdata[tid] += sdata[tid + s];
-//        }
-//        barrier(CLK_LOCAL_MEM_FENCE);
-//    }
-//    if (tid == 0) out[get_group_id(0)] = sdata[0];
     
-    return 0.0;
+    double sum = 0;
+
+    double * v1 = (double *) v1Dev;
+    double * v2 = (double *) v2Dev;
+    for (int i = 0; i < len; i++) {
+        // printf("%d v1=%f v2=%f\n", i, v1[i], v2[i]);
+        sum += v1[i] * v2[i];
+    }    
+
+    return sum;
 }
 
 void dotVectorComplex( double * out_re, double * out_im,  void* v1Dev, void* v2Dev, int len ) {
@@ -556,7 +562,7 @@ void dotVectorComplex( double * out_re, double * out_im,  void* v1Dev, void* v2D
 //    }
 //    if (tid == 0){ out_re[get_group_id(0)] = sdata_re[0];out_im[get_group_id(0)] = sdata_im[0]; }
     
-    return (void *)NULL;
+    // return (void *)NULL;
 }
 
     

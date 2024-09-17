@@ -10,6 +10,12 @@ include_directories(${GTEST_INCLUDE_DIR})
 #find_package(OpenCL REQUIRED)
 #include_directories( ${OPENCL_INCLUDE_DIR} )
 
+# Set the C standard to C99
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+# set(CMAKE_C_EXTENSIONS OFF)  # Optional: Disable compiler-specific extensions
+
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 find_package(OpenMP)

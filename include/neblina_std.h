@@ -38,6 +38,7 @@ extern "C" {
  void ** vec_sum        ( bridge_manager_t *m, int index, void ** i, int * status );
  void ** vec_norm       ( bridge_manager_t *m, int index, void ** i, int * status );
  void ** vec_dot        ( bridge_manager_t *m, int index, void ** i, int * status );
+ void ** copy_vector_from_device( bridge_manager_t *m, int idx, void ** i, int * status );
  void ** mat_len_col    ( void ** i, int * status );
  void ** mat_len_row    ( void ** i, int * status );
  void ** mat_mul        ( bridge_manager_t *m, int index, void ** i, int * status );
@@ -84,13 +85,13 @@ extern "C" {
  void ** neblina_list_get( void ** i, int * status );
 
 
- void ** neblina_mat_sqr( void ** i, int * s );
+void ** neblina_mat_sqr( void ** i, int * s );
 
 void ** init     ( void ** i, int * status );
 
- void ** neblina_rmatrix( void ** i, int * status );
+void ** neblina_rmatrix( void ** i, int * status );
 
-  #ifdef	__cplusplus
+#ifdef	__cplusplus
 }
 #endif
 
